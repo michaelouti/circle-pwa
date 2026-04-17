@@ -1,0 +1,13 @@
+{
+  "name": "Circle — Friends Introduce",
+  "short_name": "Circle",
+  "description": "Friends introduce. You decide.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#D85A30",
+  "orientation": "portrait-primary",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
