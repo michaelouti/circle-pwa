@@ -25,12 +25,14 @@ html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFo
 #app{height:100%;height:100dvh;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.5)}
 
 /* SCREENS */
-.screen{position:absolute;inset:0;background:var(--bg);overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
-  transform:translateX(100%);
+.screen{position:absolute;inset:0;background:var(--bg);overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);will-change:transform;
   padding-bottom:calc(72px + var(--safe));padding-top:var(--sat)}
 .screen.active{transform:translateX(0)}
+.screen.behind{transform:translateX(-26%)}
+.screen.no-trans{transition:none!important}
 .screen.no-nav{padding-bottom:var(--sat)}
-.screen.no-anim{transition:none}
 
 /* TYPOGRAPHY */
 h1{font-size:30px;font-weight:700;letter-spacing:-.6px;line-height:1.1}
@@ -122,9 +124,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 
 /* BOTTOM NAV */
 #bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
-  background:rgba(255,255,255,.95);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-top:.5px solid var(--bd2);display:none;flex-direction:row;
-  padding-bottom:var(--safe);z-index:200}
+  padding-bottom:var(--safe);z-index:500}
 #bnav.on{display:flex}
 .nbt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:9px 4px 10px;background:none;border:none;cursor:pointer;gap:3px;
@@ -914,25 +916,6 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 </div>
 
 <!-- ═══ BOTTOM NAV ═══ -->
-<nav id="bnav">
-  <button class="nbt" id="nb-home" onclick="navTo('home')">
-    <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 10L11 3l8 7V19a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10z" stroke-linejoin="round"/></svg>Home
-  </button>
-  <button class="nbt" id="nb-intros" onclick="navTo('intros')">
-    <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9"/><path d="M7.5 11l2.5 2.5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    Intros<span class="nbadge" id="nb-badge" style="display:none">0</span>
-  </button>
-  <button class="nbt nbt-center" id="nb-intro" onclick="navTo('introduce')">
-    <div class="nbt-ring"><svg class="nbt-svg" viewBox="0 0 22 22"><path d="M11 4v14M4 11h14" stroke-linecap="round"/></svg></div>
-    Intro
-  </button>
-  <button class="nbt" id="nb-chat" onclick="navTo('intros');switchTab('matches')">
-    <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6l-4 4V5z" stroke-linejoin="round"/></svg>Chat
-  </button>
-  <button class="nbt" id="nb-profile" onclick="navTo('profile')">
-    <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="7" r="4"/><path d="M3 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>Profile
-  </button>
-</nav>
 
 <!-- ═══ INVITE MODAL ═══ -->
 <div class="modal-ov" id="modal-invite">
@@ -988,6 +971,27 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 <div id="toast"></div>
 
 </div><!-- #app -->
+
+<!-- bnav OUTSIDE #app so overflow:hidden doesn't clip it on mobile -->
+<nav id="bnav">
+  <button class="nbt" id="nb-home" onclick="navTo('home')">
+    <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 10L11 3l8 7V19a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10z" stroke-linejoin="round"/></svg>Home
+  </button>
+  <button class="nbt" id="nb-intros" onclick="navTo('intros')">
+    <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9"/><path d="M7.5 11l2.5 2.5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    Intros<span class="nbadge" id="nb-badge" style="display:none">0</span>
+  </button>
+  <button class="nbt nbt-center" id="nb-intro" onclick="navTo('introduce')">
+    <div class="nbt-ring"><svg class="nbt-svg" viewBox="0 0 22 22"><path d="M11 4v14M4 11h14" stroke-linecap="round"/></svg></div>
+    Intro
+  </button>
+  <button class="nbt" id="nb-chat" onclick="navTo('intros');switchTab('matches')">
+    <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6l-4 4V5z" stroke-linejoin="round"/></svg>Chat
+  </button>
+  <button class="nbt" id="nb-profile" onclick="navTo('profile')">
+    <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="7" r="4"/><path d="M3 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>Profile
+  </button>
+</nav>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
@@ -1089,56 +1093,50 @@ function go(id){
   const prevEl=_el(prev);
   const nextEl=_el(id);
   if(!nextEl)return;
-  // Animate: current slides left, next comes from right
+  // 1. Instantly snap ALL screens off-screen right (no transition)
   document.querySelectorAll('.screen').forEach(s=>{
-    s.style.transition='';
-    s.classList.remove('active','prev','back-out','back-in');
+    s.classList.add('no-trans');
+    s.classList.remove('active','behind');
   });
-  if(prevEl){
-    prevEl.style.transform='translateX(0)';
-    prevEl.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
-    requestAnimationFrame(()=>{ prevEl.style.transform='translateX(-28%)'; });
-  }
-  nextEl.style.transform='translateX(100%)';
-  nextEl.style.transition='none';
+  // 2. Snap prev to center (0%) — still no transition
+  if(prevEl) prevEl.classList.add('active');
+  // 3. Force browser to apply those instant positions
+  nextEl.getBoundingClientRect();
+  // 4. Re-enable transitions only for the two animated screens
+  if(prevEl) prevEl.classList.remove('no-trans');
+  nextEl.classList.remove('no-trans');
+  // 5. Animate: prev slides to behind (-26%), next slides 100%→0
+  if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind');}
   nextEl.classList.add('active');
   nextEl.scrollTop=0;
-  requestAnimationFrame(()=>{
-    nextEl.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
-    nextEl.style.transform='translateX(0)';
-  });
   S.stack.push(prev);
   S.screen=id;
   updateNav(id);
   _init(id);
 }
 function back(){
-  if(S.stack.length===0)return;
+  if(!S.stack.length)return;
   const prev=S.stack.pop();
   const currEl=_el(S.screen);
   const prevEl=_el(prev);
   if(!prevEl)return;
-  // Animate: current slides right out, previous comes back from left
+  // 1. Instantly snap ALL screens off-screen right (no transition)
   document.querySelectorAll('.screen').forEach(s=>{
-    s.style.transition='';
-    s.classList.remove('active','prev');
+    s.classList.add('no-trans');
+    s.classList.remove('active','behind');
   });
-  prevEl.style.transform='translateX(-28%)';
-  prevEl.style.transition='none';
+  // 2. Snap current to center (0%) and prev to behind (-26%) — no transition
+  if(currEl) currEl.classList.add('active');
+  prevEl.classList.add('behind');
+  // 3. Force reflow
+  prevEl.getBoundingClientRect();
+  // 4. Re-enable transitions for the two animated screens
+  if(currEl) currEl.classList.remove('no-trans');
+  prevEl.classList.remove('no-trans');
+  // 5. Animate: current slides out to 100%, prev comes from -26% to 0
+  if(currEl) currEl.classList.remove('active');
+  prevEl.classList.remove('behind');
   prevEl.classList.add('active');
-  prevEl.scrollTop=0;
-  if(currEl){
-    currEl.style.transform='translateX(0)';
-    currEl.style.transition='none';
-  }
-  requestAnimationFrame(()=>{
-    if(currEl){
-      currEl.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
-      currEl.style.transform='translateX(100%)';
-    }
-    prevEl.style.transition='transform .3s cubic-bezier(.4,0,.2,1)';
-    prevEl.style.transform='translateX(0)';
-  });
   S.screen=prev;
   updateNav(prev);
 }
