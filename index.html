@@ -322,7 +322,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 <div class="col" style="height:100%">
   <div class="between px" style="padding-top:max(16px,var(--sat));padding-bottom:8px">
     <span></span>
-    <button class="btn-ghost" onclick="go('s-login')">Skip</button>
+    <button class="btn-ghost" onclick="go('login')">Skip</button>
   </div>
   <div style="flex:1;overflow:hidden;position:relative">
     <div id="ob-track" class="ob-track" style="height:100%">
@@ -391,14 +391,14 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
       <div class="ob-dot on"></div><div class="ob-dot"></div><div class="ob-dot"></div>
     </div>
     <button class="btn btn-p mb8" id="ob-btn" onclick="obNext()">Next</button>
-    <button class="btn-ghost w100 center" onclick="go('s-login')">Already have an account</button>
+    <button class="btn-ghost w100 center" onclick="go('login')">Already have an account</button>
   </div>
 </div>
 </div>
 
 <!-- ═══ LOGIN ═══ -->
 <div id="s-login" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-ob')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Sign in</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('ob')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Sign in</span><span style="min-width:56px"></span></div>
   <div class="p20">
     <h2 class="mb4">Welcome back</h2>
     <p class="cap mb24">Good to see you again</p>
@@ -406,13 +406,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <div class="igrp"><label class="lbl">Password</label><input type="password" id="li-pw" placeholder="••••••••" autocomplete="current-password"></div>
     <div style="text-align:right;margin-bottom:20px"><button class="btn-ghost primary" style="font-size:13px;padding:4px 0">Forgot password?</button></div>
     <button class="btn btn-p mb12" onclick="doLogin()">Sign in</button>
-    <p class="cap center">Don't have an account? <button class="btn-ghost primary" onclick="go('s-signup')">Sign up</button></p>
+    <p class="cap center">Don't have an account? <button class="btn-ghost primary" onclick="go('signup')">Sign up</button></p>
   </div>
 </div>
 
 <!-- ═══ SIGNUP ═══ -->
 <div id="s-signup" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-login')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Create account</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('login')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Create account</span><span style="min-width:56px"></span></div>
   <div class="p20">
     <h2 class="mb4">Join Circle</h2>
     <p class="cap mb24">Where real introductions happen</p>
@@ -435,7 +435,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <div style="background:var(--okbg);border-radius:var(--r2);padding:12px 16px;margin:16px 0 28px;max-width:300px;width:100%">
       <p class="tiny" style="color:var(--ok);line-height:1.6;text-align:center">✅ <strong>MVP mode:</strong> No real email is sent yet — a real backend is needed for that. Tap below to continue building your profile.</p>
     </div>
-    <button class="btn btn-p" style="max-width:280px;width:100%" onclick="go('s-setup-basic')">Set up my profile →</button>
+    <button class="btn btn-p" style="max-width:280px;width:100%" onclick="go('setup-basic')">Set up my profile →</button>
   </div>
 </div>
 
@@ -482,7 +482,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ SETUP: PHOTOS ═══ -->
 <div id="s-setup-photos" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-setup-basic')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Photos</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('setup-basic')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Photos</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:8px">
     <div class="progbar"><div class="progfill" style="width:33%"></div></div>
     <h2 class="mb4">Add your photos</h2>
@@ -499,7 +499,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ SETUP: DETAILS ═══ -->
 <div id="s-setup-details" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-setup-photos')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Details</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('setup-photos')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Details</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:8px">
     <div class="progbar"><div class="progfill" style="width:50%"></div></div>
     <h2 class="mb4">A bit more about you</h2>
@@ -532,7 +532,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ SETUP: TAGS ═══ -->
 <div id="s-setup-tags" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-setup-details')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Friend tags</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('setup-details')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Friend tags</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:8px">
     <div class="progbar"><div class="progfill" style="width:66%"></div></div>
     <h2 class="mb4">How would friends describe you?</h2>
@@ -545,7 +545,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ SETUP: QUESTIONS ═══ -->
 <div id="s-setup-qs" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-setup-tags')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Personality</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('setup-tags')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Personality</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:8px">
     <div class="progbar"><div class="progfill" style="width:83%"></div></div>
     <h2 class="mb4">A bit about you</h2>
@@ -557,7 +557,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ SETUP: PREFERENCES ═══ -->
 <div id="s-setup-prefs" class="screen no-nav">
-  <div class="topbar"><button class="back-btn" onclick="go('s-setup-qs')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Preferences</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('setup-qs')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Preferences</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:8px">
     <div class="progbar"><div class="progfill" style="width:100%"></div></div>
     <h2 class="mb4">Your preferences</h2>
@@ -600,11 +600,11 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
   <div class="topbar between" style="padding-top:max(12px,var(--sat))">
     <div><p class="tiny">Good to see you</p><h3 id="h-name" class="mt4" style="color:var(--tx)"></h3></div>
     <div class="row gap8">
-      <button class="btn-icon" style="position:relative" onclick="go('s-notifs')">
+      <button class="btn-icon" style="position:relative" onclick="go('notifs')">
         <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M11 3A6 6 0 005 9v3.5L3 15h16l-2-2.5V9A6 6 0 0011 3z" stroke-linejoin="round"/><path d="M9.5 18a1.5 1.5 0 003 0" stroke-linecap="round"/></svg>
         <span id="notif-dot" style="display:none;position:absolute;top:7px;right:7px;width:8px;height:8px;border-radius:50%;background:var(--p);border:2px solid var(--bg)"></span>
       </button>
-      <div id="h-av" class="av" style="width:38px;height:38px;cursor:pointer;font-size:14px;font-weight:700" onclick="go('s-profile')"></div>
+      <div id="h-av" class="av" style="width:38px;height:38px;cursor:pointer;font-size:14px;font-weight:700" onclick="go('profile')"></div>
     </div>
   </div>
   <div class="p20" style="padding-top:4px">
@@ -627,7 +627,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <!-- My singles -->
     <div class="between"><div class="sec-hd">My singles</div><button class="btn-ghost primary btn-sm" onclick="showModal('modal-invite')">+ Invite</button></div>
     <div id="h-singles"></div>
-    <button class="btn btn-o btn-sm w100 mb4" onclick="go('s-introduce')">
+    <button class="btn btn-o btn-sm w100 mb4" onclick="go('introduce')">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 1v12M1 7h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Introduce someone now
     </button>
     <!-- Activity -->
@@ -654,13 +654,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ INTRO DETAIL ═══ -->
 <div id="s-intro-detail" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-intros')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduction</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('intros')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduction</span><span style="min-width:56px"></span></div>
   <div id="id-body" class="p20"></div>
 </div>
 
 <!-- ═══ INTRODUCE ═══ -->
 <div id="s-introduce" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduce</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduce</span><span style="min-width:56px"></span></div>
   <div class="p20" style="padding-top:4px">
     <p class="cap mb16">Who would you like to introduce today?</p>
     <div class="car-track mb4" id="car-track"><div class="car-inner" id="car-inner"></div></div>
@@ -670,13 +670,13 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
       <button class="btn-icon" id="car-next" onclick="carNav(1)" style="width:40px;height:40px;background:var(--bg2);border:.5px solid var(--bd2)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M7 4l5 5-5 5" stroke="var(--tx2)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
     <button class="btn btn-p mb8" id="intro-btn" onclick="startIntroFlow()"></button>
-    <button class="btn btn-s" onclick="go('s-home')">Not now</button>
+    <button class="btn btn-s" onclick="go('home')">Not now</button>
   </div>
 </div>
 
 <!-- ═══ QR DISPLAY ═══ -->
 <div id="s-qr" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-introduce')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Show this QR code</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('introduce')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Show this QR code</span><span style="min-width:56px"></span></div>
   <div class="p20 col center">
     <div id="qr-single-info" class="row mb16" style="justify-content:center"></div>
     <p class="cap mb20" style="max-width:260px">Show to someone you'd like to introduce. They scan with their camera to see the profile.</p>
@@ -694,7 +694,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ CONTEXT NOTE ═══ -->
 <div id="s-context" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-qr')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Add context</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('qr')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Add context</span><span style="min-width:56px"></span></div>
   <div class="p20">
     <div class="card-warm mb20">
       <div class="row gap8"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0"></div><p class="cap" id="ctx-scan-msg" style="color:var(--p6)">Someone scanned the QR!</p></div>
@@ -723,15 +723,15 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <h2 class="mb8">Introduction sent! 🎉</h2>
     <p class="cap mb4" style="max-width:240px" id="sent-msg"></p>
     <p class="tiny mb28" id="sent-pts" style="color:var(--p);font-weight:600"></p>
-    <button class="btn btn-p" style="max-width:240px;width:100%" onclick="go('s-intros');switchTab('activity')">See activity</button>
-    <button class="btn-ghost primary mt8" onclick="go('s-introduce')">Introduce another friend</button>
+    <button class="btn btn-p" style="max-width:240px;width:100%" onclick="go('intros');switchTab('activity')">See activity</button>
+    <button class="btn-ghost primary mt8" onclick="go('introduce')">Introduce another friend</button>
   </div>
 </div>
 
 <!-- ═══ CHAT ═══ -->
 <div id="s-chat" class="screen" style="padding-bottom:0">
   <div class="topbar between bd" id="chat-topbar" style="padding-top:max(12px,var(--sat))">
-    <button class="back-btn" onclick="go('s-intros');switchTab('matches')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back-btn" onclick="go('intros');switchTab('matches')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <div style="flex:1;text-align:center"><div id="chat-name" style="font-weight:700;font-size:16px"></div><p class="tiny" id="chat-sub" style="color:var(--p)"></p></div>
     <button class="btn-icon" onclick="showChatMenu()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="10" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="15" r="1.5" fill="var(--tx3)"/></svg></button>
   </div>
@@ -750,7 +750,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 <div id="s-profile" class="screen">
   <div style="position:relative">
     <div id="prof-photo" style="height:240px;background:var(--p1);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative"></div>
-    <button class="btn btn-s btn-sm" style="position:absolute;top:max(12px,var(--sat));right:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px)" onclick="go('s-edit-profile')">Edit</button>
+    <button class="btn btn-s btn-sm" style="position:absolute;top:max(12px,var(--sat));right:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px)" onclick="go('edit-profile')">Edit</button>
   </div>
   <div class="p20">
     <div class="between mb4"><h2 id="prof-name"></h2><div id="prof-openpill"></div></div>
@@ -764,7 +764,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <div class="between mb10"><div class="sec-hd" style="padding:0">My matchmakers</div><button class="btn-ghost primary btn-sm" onclick="showModal('modal-invite')">+ Invite</button></div>
     <div id="prof-mms" class="mb16"></div>
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:0">
-      <button class="li" onclick="go('s-settings')"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.3 3.3l.7.7M12 12l.7.7M3.3 12.7l.7-.7M12 4l.7-.7" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div><span class="flex1" style="font-size:15px">Settings</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="li" onclick="go('settings')"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.3 3.3l.7.7M12 12l.7.7M3.3 12.7l.7-.7M12 4l.7-.7" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div><span class="flex1" style="font-size:15px">Settings</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="li" style="color:var(--er);border:none" onclick="confirmLogout()"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5H3a1 1 0 00-1 1v9a1 1 0 001 1h3.5M10.5 11.5l3-3.5-3-3.5M13.5 8H6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="flex1" style="font-size:15px">Sign out</span></button>
     </div>
   </div>
@@ -777,17 +777,17 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ NOTIFICATIONS ═══ -->
 <div id="s-notifs" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Notifications</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Notifications</span><span style="min-width:56px"></span></div>
   <div id="notifs-list" style="padding:8px 0"></div>
 </div>
 
 <!-- ═══ SETTINGS ═══ -->
 <div id="s-settings" class="screen">
-  <div class="topbar"><button class="back-btn" onclick="go('s-profile')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Settings</span><span style="min-width:56px"></span></div>
+  <div class="topbar"><button class="back-btn" onclick="go('profile')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Settings</span><span style="min-width:56px"></span></div>
   <div style="padding:8px 0">
     <div class="sec-hd px">Account</div>
     <div class="card" style="margin:0 20px 16px;padding:0;overflow:hidden">
-      <button class="li" onclick="go('s-edit-profile')"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="flex1" style="font-size:15px">Edit profile</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="li" onclick="go('edit-profile')"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="flex1" style="font-size:15px">Edit profile</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="li"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a4 4 0 014 4v1h1.5l-1.5 7H4L2.5 7H4V6a4 4 0 014-4z" stroke="var(--tx3)" stroke-width="1.4" stroke-linejoin="round"/></svg></div><span class="flex1" style="font-size:15px">Change password</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="li"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2a5 5 0 015 5v2.5L14 12H2l1-2.5V7a5 5 0 015-5z" stroke="var(--tx3)" stroke-width="1.4" stroke-linejoin="round"/><path d="M6.5 13.5a1.5 1.5 0 003 0" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div><span class="flex1" style="font-size:15px">Push notifications</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     </div>
@@ -804,7 +804,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 <!-- ═══ EDIT PROFILE ═══ -->
 <div id="s-edit-profile" class="screen">
   <div class="topbar between">
-    <button class="back-btn" onclick="go('s-profile')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="back-btn" onclick="go('profile')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
     <span style="font-weight:700">Edit profile</span>
     <button class="btn-ghost primary" style="font-weight:700;min-width:56px" onclick="saveEditProfile()">Save</button>
   </div>
@@ -821,21 +821,21 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 
 <!-- ═══ BOTTOM NAV ═══ -->
 <nav id="bnav">
-  <button class="nbt" id="nb-home" onclick="navTo('s-home')">
+  <button class="nbt" id="nb-home" onclick="navTo('home')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 10L11 3l8 7V19a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10z" stroke-linejoin="round"/></svg>Home
   </button>
-  <button class="nbt" id="nb-intros" onclick="navTo('s-intros')">
+  <button class="nbt" id="nb-intros" onclick="navTo('intros')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="11" r="9"/><path d="M7.5 11l2.5 2.5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
     Intros<span class="nbadge" id="nb-badge" style="display:none">0</span>
   </button>
-  <button class="nbt nbt-center" id="nb-intro" onclick="navTo('s-introduce')">
+  <button class="nbt nbt-center" id="nb-intro" onclick="navTo('introduce')">
     <div class="nbt-ring"><svg class="nbt-svg" viewBox="0 0 22 22"><path d="M11 4v14M4 11h14" stroke-linecap="round"/></svg></div>
     Intro
   </button>
-  <button class="nbt" id="nb-chat" onclick="navTo('s-intros');switchTab('matches')">
+  <button class="nbt" id="nb-chat" onclick="navTo('intros');switchTab('matches')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H6l-4 4V5z" stroke-linejoin="round"/></svg>Chat
   </button>
-  <button class="nbt" id="nb-profile" onclick="navTo('s-profile')">
+  <button class="nbt" id="nb-profile" onclick="navTo('profile')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="7" r="4"/><path d="M3 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>Profile
   </button>
 </nav>
