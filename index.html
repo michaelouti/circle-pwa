@@ -808,13 +808,108 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <button class="btn-ghost primary" style="font-weight:700;min-width:56px" onclick="saveEditProfile()">Save</button>
   </div>
   <div class="p20">
+
+    <!-- PHOTOS -->
+    <div class="sec-hd" style="padding-top:0">Photos</div>
     <div class="pgrid" id="pg-edit"></div>
     <input type="file" accept="image/*" multiple id="ph-input-edit" style="display:none" onchange="photosAdded(event,'edit')">
     <button class="btn btn-s btn-sm mb20" onclick="document.getElementById('ph-input-edit').click()">+ Add photos</button>
+
+    <!-- BASIC INFO -->
+    <div class="sec-hd">Basic info</div>
     <div class="igrp"><label class="lbl">Display name</label><input type="text" id="ep-name"></div>
-    <div class="igrp"><label class="lbl">Occupation</label><input type="text" id="ep-job"></div>
-    <div class="igrp"><label class="lbl">Location</label><input type="text" id="ep-loc"></div>
-    <div class="igrp"><label class="lbl">Matchmaker note <span style="text-transform:none;font-weight:400;letter-spacing:0">(private)</span></label><textarea id="ep-note" rows="3" placeholder="Anything to help your matchmaker?"></textarea></div>
+    <div class="igrp mb4"><label class="lbl">Date of birth</label>
+      <div class="picker-wrap" id="ep-dob-wrap">
+        <div class="pcol" id="ep-pc-day" onscroll="pickerScroll(this,'ep-day')"></div>
+        <div class="psep"></div>
+        <div class="pcol" id="ep-pc-month" onscroll="pickerScroll(this,'ep-month')"></div>
+        <div class="psep"></div>
+        <div class="pcol" id="ep-pc-year" onscroll="pickerScroll(this,'ep-year')"></div>
+        <div class="pfa top"></div><div class="pfa bot"></div><div class="pline"></div>
+      </div>
+      <p class="tiny center mt8" id="ep-dob-preview"></p>
+    </div>
+    <div class="igrp"><label class="lbl">Gender</label>
+      <div class="opills" id="ep-gender-pills">
+        <button class="opill" onclick="epSelOpt(this,'gender','Man')">Man</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Woman')">Woman</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Non-binary')">Non-binary</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Trans man')">Trans man</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Trans woman')">Trans woman</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Genderqueer')">Genderqueer</button>
+        <button class="opill" onclick="epSelOpt(this,'gender','Prefer not to say')">Prefer not to say</button>
+      </div>
+    </div>
+    <div class="igrp"><label class="lbl">Location</label><input type="text" id="ep-loc" autocomplete="off" oninput="locInputEdit(this)" placeholder="Your city"></div>
+
+    <!-- DETAILS -->
+    <div class="sec-hd">Details</div>
+    <div class="igrp">
+      <label class="lbl">Height</label>
+      <div class="row mb8 gap12">
+        <span id="ep-ht-display" style="font-size:20px;font-weight:700;color:var(--p);min-width:90px"></span>
+        <div class="row gap6">
+          <button class="opill sel" id="ep-ht-cm" onclick="epSetHUnit('cm')" style="padding:7px 14px;font-size:12px">cm</button>
+          <button class="opill" id="ep-ht-in" onclick="epSetHUnit('in')" style="padding:7px 14px;font-size:12px">inches</button>
+        </div>
+      </div>
+      <input type="range" id="ep-ht-slider" min="140" max="220" value="170" oninput="epHtSlide()">
+      <div class="between mt4"><span class="tiny">140cm</span><span class="tiny">220cm</span></div>
+    </div>
+    <div class="igrp"><label class="lbl">Occupation or industry</label><input type="text" id="ep-job" placeholder="e.g. Product Designer, Finance…"></div>
+    <div class="igrp"><label class="lbl">Religion</label>
+      <select id="ep-rel">
+        <option value="">Select…</option>
+        <option>Christian</option><option>Catholic</option><option>Muslim</option><option>Jewish</option>
+        <option>Buddhist</option><option>Hindu</option><option>Sikh</option><option>Agnostic</option>
+        <option>Atheist</option><option>Spiritual but not religious</option><option>Other</option>
+        <option>Prefer not to say</option>
+      </select>
+    </div>
+
+    <!-- FRIEND TAGS -->
+    <div class="sec-hd">Friend tags <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:var(--tx3)">(choose exactly 3)</span></div>
+    <p class="tiny mb12" id="ep-tag-count" style="color:var(--p);font-weight:600"></p>
+    <div class="tags-wrap mb20" id="ep-tags-wrap"></div>
+
+    <!-- PERSONALITY QUESTIONS -->
+    <div class="sec-hd">Personality</div>
+    <div id="ep-q-list" class="mb4"></div>
+
+    <!-- DATING PREFERENCES -->
+    <div class="sec-hd">Dating preferences <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:var(--tx3)">(private — matchmakers only)</span></div>
+    <div class="igrp"><label class="lbl">I want to meet a…</label>
+      <div class="opills" id="ep-pref-gender">
+        <button class="opill" onclick="epSelOpt(this,'pref_gender','Man')">Man</button>
+        <button class="opill" onclick="epSelOpt(this,'pref_gender','Woman')">Woman</button>
+        <button class="opill" onclick="epSelOpt(this,'pref_gender','Everyone')">Everyone</button>
+      </div>
+    </div>
+    <div class="igrp"><label class="lbl">Relationship pace</label>
+      <div class="opills" id="ep-pref-pace">
+        <button class="opill" onclick="epSelOpt(this,'pref_pace','Slow &amp; steady')">Slow &amp; steady</button>
+        <button class="opill" onclick="epSelOpt(this,'pref_pace','Balanced')">Balanced</button>
+        <button class="opill" onclick="epSelOpt(this,'pref_pace','Fast-paced')">Fast-paced</button>
+      </div>
+    </div>
+    <div class="igrp"><label class="lbl">Age range</label>
+      <div class="irow">
+        <div class="iu"><input type="number" id="ep-amin" min="18" max="70" placeholder="Min"><span class="iu-unit">min</span></div>
+        <div class="iu"><input type="number" id="ep-amax" min="18" max="70" placeholder="Max"><span class="iu-unit">max</span></div>
+      </div>
+    </div>
+    <div class="igrp"><label class="lbl">Religion preference</label>
+      <div class="opills" id="ep-pref-rel"></div>
+    </div>
+
+    <!-- MATCHMAKER NOTE -->
+    <div class="sec-hd">For your matchmaker</div>
+    <div class="igrp"><label class="lbl">Private note <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+      <textarea id="ep-note" rows="3" placeholder="Anything to help your matchmaker?"></textarea>
+    </div>
+
+    <button class="btn btn-p mt8" onclick="saveEditProfile()">Save profile</button>
+    <div style="height:20px"></div>
   </div>
 </div>
 
@@ -985,8 +1080,8 @@ document.querySelectorAll('.modal-ov').forEach(m=>{
 // ═══════════════════════════════════════════════════
 // ROUTER
 // ═══════════════════════════════════════════════════
-const NAV_SCREENS=new Set(['s-home','s-intros','s-introduce','s-profile','s-settings','s-edit-profile','s-notifs','s-intro-detail','s-qr','s-context','s-intro-sent','s-chat']);
-const NAV_MAP={'s-home':'nb-home','s-intros':'nb-intros','s-intro-detail':'nb-intros','s-introduce':'nb-intro','s-qr':'nb-intro','s-context':'nb-intro','s-intro-sent':'nb-intro','s-chat':'nb-chat','s-profile':'nb-profile','s-edit-profile':'nb-profile','s-settings':'nb-profile','s-notifs':'nb-home'};
+const NAV_SCREENS=new Set(['home','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat']);
+const NAV_MAP={'home':'nb-home','intros':'nb-intros','intro-detail':'nb-intros','introduce':'nb-intro','qr':'nb-intro','context':'nb-intro','intro-sent':'nb-intro','chat':'nb-chat','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','notifs':'nb-home'};
 
 function go(id){
   const prev=S.screen;
@@ -1170,18 +1265,6 @@ function fillPcol(id,items,initIdx){
     el.scrollTop=initIdx*48;
     highlightPcol(el,initIdx);
   }));
-}
-function pickerScroll(el,type){
-  clearTimeout(el._t);
-  el._t=setTimeout(()=>{
-    const idx=Math.round(el.scrollTop/48);
-    el.scrollTop=idx*48;
-    highlightPcol(el,idx);
-    if(type==='day')S.dob.d=idx+1;
-    else if(type==='month')S.dob.m=idx+1;
-    else{const cy=new Date().getFullYear();S.dob.y=cy-18-idx;}
-    updateDobPreview();
-  },100);
 }
 function highlightPcol(el,idx){
   // idx+2 because of the 2 leading spacer divs
@@ -1916,24 +1999,197 @@ function initProfile(){
       <span class="pill pill-ok">Active</span>
     </div>`).join('')||`<p class="cap" style="color:var(--tx3)">No matchmakers yet</p>`;
 }
+// Edit profile state
+let epDob={d:15,m:6,y:1995};let epHtVal=170;let epHUnit='cm';let epTags=[];let epQs={};let epPrefs={};
+
 function initEditProfile(){
   const u=DB.user();if(!u)return;
+  // Photos
   editPhotos=[...(u.photos||[])];
   renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');
+  // Basic
   document.getElementById('ep-name').value=u.name||'';
-  document.getElementById('ep-job').value=u.job||'';
   document.getElementById('ep-loc').value=u.location||'';
+  // DOB
+  if(u.dob){const parts=u.dob.split('-');epDob={y:+parts[0],m:+parts[1],d:+parts[2]};}
+  else epDob={d:15,m:6,y:new Date().getFullYear()-28};
+  buildEpPicker();
+  // Gender
+  epSelOptById('ep-gender-pills','gender',u.gender||'');
+  epPrefs.gender=u.gender;
+  // Details
+  epHtVal=u.height||170;epHUnit='cm';
+  document.getElementById('ep-ht-slider').value=epHtVal;
+  epDispHeight();
+  document.getElementById('ep-job').value=u.job||'';
+  document.getElementById('ep-rel').value=u.religion||'';
+  // Tags
+  epTags=[...(u.tags||[])];
+  buildEpTags();
+  // Questions
+  epQs={...(u.qs||{})};
+  buildEpQs();
+  // Prefs
+  epPrefs={...(u.prefs||{})};
+  epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');
+  epSelOptById('ep-pref-pace','pref_pace',u.prefs?.pace||'');
+  document.getElementById('ep-amin').value=u.prefs?.ageMin||22;
+  document.getElementById('ep-amax').value=u.prefs?.ageMax||36;
+  buildEpRelPrefs(u.prefs?.religions||[]);
+  // Note
   document.getElementById('ep-note').value=u.prefs?.note||'';
+}
+
+function buildEpPicker(){
+  const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0'));
+  const months=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const cy=new Date().getFullYear();
+  const years=Array.from({length:65},(_,i)=>String(cy-18-i));
+  fillEpPcol('ep-pc-day',days,epDob.d-1);
+  fillEpPcol('ep-pc-month',months,epDob.m-1);
+  fillEpPcol('ep-pc-year',years,Math.max(0,cy-18-epDob.y));
+  updateEpDobPreview();
+}
+function fillEpPcol(id,items,initIdx){
+  const el=document.getElementById(id);if(!el)return;
+  el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+
+    items.map(x=>`<div class="pitem">${x}</div>`).join('')+
+    '<div class="pitem"></div><div class="pitem"></div>';
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    el.scrollTop=initIdx*48;highlightPcol(el,initIdx);
+  }));
+}
+function pickerScroll(el,type){
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>{
+    const idx=Math.round(el.scrollTop/48);
+    el.scrollTop=idx*48;highlightPcol(el,idx);
+    if(type==='day')S.dob.d=idx+1;
+    else if(type==='month')S.dob.m=idx+1;
+    else if(type==='year'){const cy=new Date().getFullYear();S.dob.y=cy-18-idx;}
+    else if(type==='ep-day')epDob.d=idx+1;
+    else if(type==='ep-month')epDob.m=idx+1;
+    else if(type==='ep-year'){const cy=new Date().getFullYear();epDob.y=cy-18-idx;}
+    if(type.startsWith('ep-'))updateEpDobPreview();else updateDobPreview();
+  },100);
+}
+function updateEpDobPreview(){
+  const mns=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const age=new Date().getFullYear()-epDob.y;
+  const el=document.getElementById('ep-dob-preview');
+  if(el)el.textContent=`${mns[epDob.m-1]} ${epDob.d}, ${epDob.y} — Age ${age}`;
+}
+function epDispHeight(){
+  const v=epHtVal;const ins=v/2.54;const ft=Math.floor(ins/12);const inch=Math.round(ins%12);
+  document.getElementById('ep-ht-display').textContent=epHUnit==='cm'?`${v} cm`:`${ft}'${inch}"`;
+}
+function epHtSlide(){epHtVal=parseInt(document.getElementById('ep-ht-slider').value);epDispHeight();}
+function epSetHUnit(u){
+  epHUnit=u;
+  document.getElementById('ep-ht-cm').classList.toggle('sel',u==='cm');
+  document.getElementById('ep-ht-in').classList.toggle('sel',u==='in');
+  epDispHeight();
+}
+function epSelOpt(btn,key,val){
+  btn.closest('.opills').querySelectorAll('.opill').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');epPrefs[key]=val;
+}
+function epSelOptById(wrapId,key,val){
+  const wrap=document.getElementById(wrapId);if(!wrap||!val)return;
+  wrap.querySelectorAll('.opill').forEach(b=>{
+    if(b.textContent.trim()===val||b.getAttribute('onclick')?.includes(val)){
+      b.classList.add('sel');epPrefs[key]=val;
+    }
+  });
+}
+function buildEpTags(){
+  const w=document.getElementById('ep-tags-wrap');if(!w)return;
+  w.innerHTML=TAGS.map(t=>`<button class="tag-pill ${epTags.includes(t)?'sel':''}" onclick="epToggleTag(this,'${t}')">${t}</button>`).join('');
+  updateEpTagCount();
+}
+function epToggleTag(btn,t){
+  if(epTags.includes(t)){epTags=epTags.filter(x=>x!==t);btn.classList.remove('sel')}
+  else if(epTags.length<3){epTags.push(t);btn.classList.add('sel')}
+  else{toast('Choose exactly 3 tags');return}
+  updateEpTagCount();
+}
+function updateEpTagCount(){
+  const n=epTags.length;
+  const el=document.getElementById('ep-tag-count');
+  if(el){el.textContent=`${n}/3 selected`;el.style.color=n===3?'var(--ok)':'var(--p)';}
+}
+function buildEpQs(){
+  const l=document.getElementById('ep-q-list');if(!l)return;
+  l.innerHTML=QS.map(q=>`<div class="qblock"><div class="qttl">${q.q}</div><div class="qopts">${q.a.map(o=>`<button class="qopt ${epQs[q.id]===o?'sel':''}" onclick="epSelQ(this,'${q.id}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div></div>`).join('');
+}
+function epSelQ(btn,qid,val){
+  epQs[qid]=val;
+  btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function buildEpRelPrefs(selected){
+  const w=document.getElementById('ep-pref-rel');if(!w)return;
+  epPrefs.religions=[...selected];
+  w.innerHTML=RELIGIONS.map(r=>`<button class="opill ${selected.includes(r)?'sel':''}" onclick="epToggleRel(this,'${r}')">${r}</button>`).join('');
+}
+function epToggleRel(btn,v){
+  btn.classList.toggle('sel');
+  epPrefs.religions=Array.from(document.querySelectorAll('#ep-pref-rel .opill.sel')).map(b=>b.textContent);
+}
+function locInputEdit(el){
+  clearTimeout(locT);
+  const q=el.value.trim();
+  let sug=document.getElementById('ep-loc-suggestions');
+  if(!sug){
+    sug=document.createElement('div');sug.id='ep-loc-suggestions';
+    sug.style.cssText='position:absolute;left:0;right:0;top:100%;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r);margin-top:4px;z-index:100;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);display:none';
+    el.parentElement.style.position='relative';el.parentElement.appendChild(sug);
+  }
+  if(q.length<2){sug.style.display='none';sug.innerHTML='';return}
+  locT=setTimeout(()=>{
+    fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&featuretype=city`,{headers:{'Accept-Language':'en'}})
+      .then(r=>r.json()).then(results=>{
+        if(!results.length){sug.style.display='none';return}
+        sug.innerHTML=results.slice(0,5).map((r,i,arr)=>{
+          const label=r.display_name.split(',').slice(0,3).map(s=>s.trim()).join(', ');
+          const border=i<arr.length-1?'border-bottom:.5px solid var(--bd)':'';
+          return `<div onclick="epPickLoc('${label.replace(/'/g,"\\'")}')" style="padding:12px 14px;font-size:14px;cursor:pointer;${border};transition:background .1s" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">${label}</div>`;
+        }).join('');sug.style.display='block';
+      }).catch(()=>{sug.style.display='none'});
+  },350);
+}
+function epPickLoc(val){
+  document.getElementById('ep-loc').value=val;
+  const sug=document.getElementById('ep-loc-suggestions');
+  if(sug){sug.style.display='none';sug.innerHTML='';}
 }
 function saveEditProfile(){
   const u=DB.user();if(!u)return;
+  if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}
+  // Basic
   u.name=document.getElementById('ep-name').value.trim()||u.name;
-  u.job=document.getElementById('ep-job').value.trim()||u.job;
   u.location=document.getElementById('ep-loc').value.trim()||u.location;
-  if(!u.prefs)u.prefs={};u.prefs.note=document.getElementById('ep-note').value.trim();
+  u.dob=`${epDob.y}-${epDob.m}-${epDob.d}`;
+  u.age=new Date().getFullYear()-epDob.y;
+  u.gender=epPrefs.gender||u.gender;
+  // Details
+  u.height=epHtVal;
+  u.job=document.getElementById('ep-job').value.trim()||u.job;
+  u.religion=document.getElementById('ep-rel').value||u.religion;
+  // Tags & questions
+  u.tags=epTags;u.qs=epQs;
+  // Photos
   if(editPhotos.length>=3)u.photos=editPhotos;
+  // Prefs
+  if(!u.prefs)u.prefs={};
+  u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;
+  u.prefs.pace=epPrefs.pref_pace||u.prefs.pace;
+  u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;
+  u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;
+  u.prefs.religions=epPrefs.religions||u.prefs.religions;
+  u.prefs.note=document.getElementById('ep-note').value.trim();
   DB.setUser(u);S.user=u;
-  toast('Profile updated ✓');go('profile');
+  toast('Profile updated ✓');back();
 }
 
 // ═══════════════════════════════════════════════════
