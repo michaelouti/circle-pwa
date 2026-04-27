@@ -22,17 +22,34 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:#1A1614;color:var(--tx);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-#app{height:100%;height:100dvh;max-width:430px;margin:0 auto;background:var(--bg);position:relative;overflow:hidden;box-shadow:0 0 80px rgba(0,0,0,.5)}
 
-/* SCREENS */
-.screen{position:absolute;inset:0;background:var(--bg);overflow-y:auto;overflow-x:hidden;
-  -webkit-overflow-scrolling:touch;transform:translateX(100%);
-  transition:transform .28s cubic-bezier(.4,0,.2,1);will-change:transform;
-  padding-bottom:calc(72px + var(--safe));padding-top:var(--sat)}
+/* App shell: full height flex column */
+#app{
+  height:100%;height:100dvh;max-width:430px;margin:0 auto;
+  background:var(--bg);display:flex;flex-direction:column;
+  box-shadow:0 0 80px rgba(0,0,0,.5);overflow:hidden;
+  position:relative;
+}
+
+/* Screen stack: takes all remaining space, clips transitioning screens */
+#screen-stack{
+  flex:1;position:relative;overflow:hidden;
+  min-height:0;/* required for flex child to shrink */
+}
+
+/* SCREENS: absolute inside #screen-stack */
+.screen{
+  position:absolute;inset:0;background:var(--bg);
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  transform:translateX(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);will-change:transform;
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  padding-top:var(--sat);
+}
 .screen.active{transform:translateX(0)}
-.screen.behind{transform:translateX(-26%)}
+.screen.behind{transform:translateX(-100%)}/* fully off-screen left */
 .screen.no-trans{transition:none!important}
-.screen.no-nav{padding-bottom:var(--sat)}
+.screen.no-nav{padding-bottom:0}
 
 /* TYPOGRAPHY */
 h1{font-size:30px;font-weight:700;letter-spacing:-.6px;line-height:1.1}
@@ -123,10 +140,12 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .progfill{height:100%;background:var(--p);border-radius:2px;transition:width .35s ease}
 
 /* BOTTOM NAV */
-#bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
-  background:rgba(255,255,255,.96);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+#bnav{
+  flex-shrink:0;width:100%;background:rgba(255,255,255,.97);
+  backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
   border-top:.5px solid var(--bd2);display:none;flex-direction:row;
-  padding-bottom:var(--safe);z-index:500}
+  padding-bottom:var(--safe);z-index:10;
+}
 #bnav.on{display:flex}
 .nbt{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:9px 4px 10px;background:none;border:none;cursor:pointer;gap:3px;
@@ -234,9 +253,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .bubble-me{background:var(--p);color:#fff;border-bottom-right-radius:5px}
 .bubble-th{background:var(--bg2);color:var(--tx);border-bottom-left-radius:5px}
 .mts{font-size:10px;color:var(--tx3);margin-top:3px;padding:0 4px}
-.chat-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;
+.chat-bar{position:sticky;bottom:0;left:0;right:0;width:100%;
   padding:10px 16px;padding-bottom:max(10px,var(--safe));background:rgba(255,255,255,.95);
-  backdrop-filter:blur(12px);border-top:.5px solid var(--bd);display:flex;align-items:center;gap:10px;z-index:50}
+  backdrop-filter:blur(12px);border-top:.5px solid var(--bd);display:flex;align-items:center;gap:10px;z-index:10;margin-top:auto}
 .chat-in{flex:1;padding:10px 16px;background:var(--bg2);border-radius:100px;font-size:15px;font-family:inherit;color:var(--tx);border:none;outline:none}
 .send-btn{width:40px;height:40px;border-radius:50%;background:var(--p);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 3px 10px rgba(216,90,48,.4)}
 
@@ -259,7 +278,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 #qr-out canvas,#qr-out img{display:block!important;border-radius:8px!important}
 
 /* SCAN LANDING */
-.scan-actions{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;padding:16px;padding-bottom:max(16px,var(--safe));background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:.5px solid var(--bd)}
+.scan-actions{position:sticky;bottom:0;left:0;right:0;width:100%;padding:16px;padding-bottom:max(16px,var(--safe));background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:.5px solid var(--bd)}
 
 /* MODAL SHEET */
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .25s;pointer-events:none}
@@ -269,7 +288,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 .mhandle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 16px}
 
 /* TOAST */
-#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(8px);background:#1A1614;color:#fff;padding:11px 18px;border-radius:100px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none;max-width:88%}
+#toast{position:absolute;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:#1A1614;color:#fff;padding:11px 18px;border-radius:100px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none;max-width:88%}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
 /* SUCCESS ANIM */
@@ -307,6 +326,7 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 </head>
 <body>
 <div id="app">
+<div id="screen-stack">
 
 <!-- ═══ SPLASH ═══ -->
 <div id="s-splash" class="screen active no-nav" style="padding-bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
@@ -970,9 +990,9 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
 <!-- ═══ TOAST ═══ -->
 <div id="toast"></div>
 
-</div><!-- #app -->
+</div><!-- #screen-stack -->
 
-<!-- bnav OUTSIDE #app so overflow:hidden doesn't clip it on mobile -->
+<!-- nav is a flex sibling of #screen-stack, inside #app -->
 <nav id="bnav">
   <button class="nbt" id="nb-home" onclick="navTo('home')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><path d="M3 10L11 3l8 7V19a1 1 0 01-1 1h-5v-5H9v5H4a1 1 0 01-1-1V10z" stroke-linejoin="round"/></svg>Home
@@ -992,6 +1012,8 @@ input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;bac
     <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="7" r="4"/><path d="M3 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>Profile
   </button>
 </nav>
+
+</div><!-- #app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════
@@ -1094,7 +1116,7 @@ function go(id){
   const nextEl=_el(id);
   if(!nextEl)return;
   // 1. Instantly snap ALL screens off-screen right (no transition)
-  document.querySelectorAll('.screen').forEach(s=>{
+  document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{
     s.classList.add('no-trans');
     s.classList.remove('active','behind');
   });
@@ -1121,7 +1143,7 @@ function back(){
   const prevEl=_el(prev);
   if(!prevEl)return;
   // 1. Instantly snap ALL screens off-screen right (no transition)
-  document.querySelectorAll('.screen').forEach(s=>{
+  document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{
     s.classList.add('no-trans');
     s.classList.remove('active','behind');
   });
@@ -2222,7 +2244,7 @@ function confirmLogout(){
   if(confirm('Sign out of Circle?')){
     S.user=null;
     document.getElementById('bnav').classList.remove('on');
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));
+    document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));
     const sp=document.getElementById('s-splash');sp.classList.add('active','no-anim');
     go('ob');
     toast('Signed out');
@@ -2238,7 +2260,7 @@ function deleteAccount(){
   ['user','singles','intros','matches','notifs'].forEach(k=>DB.rm(k));
   S.user=null;closeModal('modal-delete');
   document.getElementById('bnav').classList.remove('on');
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));
+  document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));
   go('ob');
   toast('Account deleted');
 }
@@ -2286,7 +2308,7 @@ window.addEventListener('beforeinstallprompt',e=>{
 // ═══════════════════════════════════════════════════
 // SCROLL TOPBAR SHADOW
 // ═══════════════════════════════════════════════════
-document.querySelectorAll('.screen').forEach(scr=>{
+document.getElementById('screen-stack').querySelectorAll('.screen').forEach(scr=>{
   const tb=scr.querySelector('.topbar');
   if(tb)scr.addEventListener('scroll',()=>tb.classList.toggle('scroll-bd',scr.scrollTop>4),{passive:true});
 });
