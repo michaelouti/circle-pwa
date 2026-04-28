@@ -56,7 +56,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .sing-card{min-width:min(190px,54vw);height:264px;border-radius:var(--r3);overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:center;flex-shrink:0;background:var(--bg3);transition:transform .15s}
 .sing-card:active{transform:scale(.97)}
 .sing-card-overlay{position:absolute;bottom:0;left:0;right:0;padding:12px 14px 16px;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.08) 65%,transparent 100%)}
-.sing-card-menu{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.88);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
+.sing-card-menu{position:absolute;top:10px;left:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.88);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);z-index:5}
 .sing-add-card{background:var(--bg2);border:2px dashed var(--bd3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
 .sing-add-card:active{transform:scale(.97)}
 .scroll-dots{display:flex;gap:6px;justify-content:center;margin:10px 0 16px}
@@ -66,10 +66,24 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .invite-cta-card:active{background:var(--bg2)}
 .invite-cta-icon{width:42px;height:42px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 /* MY CIRCLE */
-.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 20px}
+.mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 100px}
 .mc-card{border-radius:var(--r3);overflow:hidden;position:relative;cursor:pointer;background:var(--bg2);aspect-ratio:.75;transition:transform .15s}
 .mc-card:active{transform:scale(.97)}.mc-card-overlay{position:absolute;bottom:0;left:0;right:0;padding:10px 12px 14px;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%)}
-.mc-add{background:var(--bg2);border:2px dashed var(--bd3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.mc-add{background:transparent;border:2px dashed rgba(216,90,48,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:var(--r3)}
+.mc-menu{position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.88);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);z-index:5;flex-shrink:0}
+.ctx-menu{position:fixed;z-index:800;background:var(--bg);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.1);padding:6px 0;min-width:210px;opacity:0;transform:scale(.93) translateY(-4px);transition:opacity .18s,transform .18s;pointer-events:none}
+.ctx-menu.on{opacity:1;transform:none;pointer-events:all}
+.ctx-item{display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px;font-weight:500;color:var(--tx);cursor:pointer;transition:background .12s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
+.ctx-item:hover,.ctx-item:active{background:var(--bg2)}
+.ctx-item svg{width:18px;height:18px;stroke:var(--tx2);stroke-width:1.7;fill:none;flex-shrink:0}
+.ctx-item.danger{color:var(--p)}
+.ctx-item.danger svg{stroke:var(--p)}
+.ctx-sep{height:.5px;background:var(--bd);margin:4px 0}
+.mc-fab{position:sticky;bottom:max(16px,var(--safe));left:16px;right:16px;margin:0 16px;width:calc(100% - 32px);z-index:20}
+.mc-tab-bar{display:flex;background:var(--bg3);border-radius:100px;padding:4px;margin:14px 16px 4px;gap:0}
+.mc-tab{flex:1;padding:10px 8px;border-radius:100px;border:none;cursor:pointer;font-size:14px;font-weight:600;font-family:inherit;background:transparent;color:var(--tx3);transition:all .2s;line-height:1.2}
+.mc-tab.on{background:var(--bg);color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.mc-counter{font-size:12px;color:var(--tx3);font-weight:500;text-align:right;padding:4px 16px 8px}
 /* MISC */
 .tog{position:relative;width:48px;height:28px;flex-shrink:0}.tog input{opacity:0;width:0;height:0;position:absolute}.tog-sl{position:absolute;inset:0;background:var(--bg4);border-radius:14px;cursor:pointer;transition:background .22s}.tog-sl:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .22s;box-shadow:0 1px 4px rgba(0,0,0,.2)}.tog input:checked+.tog-sl{background:var(--p)}.tog input:checked+.tog-sl:before{transform:translateX(20px)}
 .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.pslot{aspect-ratio:3/4;border-radius:var(--r2);background:var(--bg2);border:1.5px dashed var(--bd3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative}.pslot.req{border-color:rgba(216,90,48,.4)}.pslot.filled{border:none}.pslot img{width:100%;height:100%;object-fit:cover;display:block}.prm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:14px;z-index:2;line-height:1}.pslot.filled .prm{display:flex}.pnum{position:absolute;bottom:5px;left:6px;font-size:10px;font-weight:700;color:rgba(255,255,255,.9);background:rgba(0,0,0,.35);border-radius:4px;padding:2px 5px}.plbl{font-size:11px;font-weight:600;color:var(--tx3);margin-top:5px}.pslot.req .plbl{color:rgba(216,90,48,.7)}
@@ -134,7 +148,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Sign in</span><span style="min-width:56px"></span></div>
   <div class="p20"><h2 class="mb4">Welcome back</h2><p class="cap mb24">Good to see you again</p>
     <div class="igrp"><label class="lbl">Email</label><input type="email" id="li-email" placeholder="you@example.com" inputmode="email" autocomplete="email"></div>
-    <div class="igrp"><label class="lbl">Password</label><div style="position:relative"><input type="password" id="li-pw" placeholder="••••••••" autocomplete="current-password" style="padding-right:46px"><button type="button" onclick="togglePw('li-pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)">&#128065;</button></div></div>
+    <div class="igrp"><label class="lbl">Password</label><div style="position:relative"><input type="password" id="li-pw" placeholder="••••••••" autocomplete="current-password" style="padding-right:46px"><button type="button" onclick="togglePw('li-pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="9" cy="9" rx="7" ry="4.5"/><circle cx="9" cy="9" r="2"/></svg></button></div></div>
     <div style="text-align:right;margin-bottom:20px"><button class="btn-ghost primary" style="font-size:13px;padding:4px 0">Forgot password?</button></div>
     <button class="btn btn-p mb12" onclick="doLogin()">Sign in</button>
     <p class="cap center">Don't have an account? <button class="btn-ghost primary" onclick="go('signup')">Sign up</button></p>
@@ -145,8 +159,8 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Create account</span><span style="min-width:56px"></span></div>
   <div class="p20"><h2 class="mb4">Join Circle</h2><p class="cap mb24">Where real introductions happen</p>
     <div class="igrp"><label class="lbl">Email</label><input type="email" id="su-email" placeholder="you@example.com" inputmode="email" autocomplete="email"></div>
-    <div class="igrp"><label class="lbl">Password</label><div style="position:relative"><input type="password" id="su-pw" placeholder="Minimum 8 characters" autocomplete="new-password" style="padding-right:46px"><button type="button" onclick="togglePw('su-pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)">&#128065;</button></div></div>
-    <div class="igrp"><label class="lbl">Confirm password</label><div style="position:relative"><input type="password" id="su-pw2" placeholder="Repeat password" autocomplete="new-password" style="padding-right:46px"><button type="button" onclick="togglePw('su-pw2',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)">&#128065;</button></div></div>
+    <div class="igrp"><label class="lbl">Password</label><div style="position:relative"><input type="password" id="su-pw" placeholder="Minimum 8 characters" autocomplete="new-password" style="padding-right:46px"><button type="button" onclick="togglePw('su-pw',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="9" cy="9" rx="7" ry="4.5"/><circle cx="9" cy="9" r="2"/></svg></button></div></div>
+    <div class="igrp"><label class="lbl">Confirm password</label><div style="position:relative"><input type="password" id="su-pw2" placeholder="Repeat password" autocomplete="new-password" style="padding-right:46px"><button type="button" onclick="togglePw('su-pw2',this)" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:4px;color:var(--tx3)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="9" cy="9" rx="7" ry="4.5"/><circle cx="9" cy="9" r="2"/></svg></button></div></div>
     <button class="btn btn-p mt8" onclick="doSignup()">Create account</button>
     <p class="tiny center mt16" style="color:var(--tx3);line-height:1.6">By signing up you agree to our Terms &amp; Privacy Policy.</p>
   </div>
@@ -292,10 +306,28 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 </div>
 
 <!-- MY CIRCLE -->
-<div id="s-my-circle" class="screen">
-  <div class="topbar between" style="padding-top:max(12px,var(--sat))"><h2>My Circle</h2><button class="btn btn-p btn-sm" onclick="toast('Add single friend - coming soon!')">+ Add</button></div>
-  <div style="padding:6px 16px 10px"><p class="cap">Single friends you're matchmaking for</p></div>
-  <div id="mc-grid" class="mc-grid"></div>
+<div id="s-my-circle" class="screen" style="padding-bottom:0">
+  <div class="topbar between" style="padding-top:max(12px,var(--sat))">
+    <button class="back-btn" onclick="navTo('home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <h2>My Circle</h2>
+    <button class="btn-icon" onclick="go('notifs')"><svg width="20" height="20" viewBox="0 0 22 22" fill="none" stroke="var(--tx2)" stroke-width="1.8"><path d="M11 3A6 6 0 005 9v3.5L3 15h16l-2-2.5V9A6 6 0 0011 3z" stroke-linejoin="round"/><path d="M9.5 18a1.5 1.5 0 003 0" stroke-linecap="round"/></svg></button>
+  </div>
+  <!-- Tab bar -->
+  <div class="mc-tab-bar">
+    <button class="mc-tab on" id="mc-t-singles" onclick="mcSwitchTab('singles')">Singles I'm helping</button>
+    <button class="mc-tab" id="mc-t-mms" onclick="mcSwitchTab('mms')">My Matchmakers</button>
+  </div>
+  <div id="mc-counter" class="mc-counter"></div>
+  <!-- Grids -->
+  <div id="mc-singles-grid" class="mc-grid"></div>
+  <div id="mc-mms-grid" class="mc-grid" style="display:none"></div>
+  <!-- Floating action button -->
+  <div class="mc-fab" id="mc-fab">
+    <button class="btn btn-p" id="mc-fab-btn" style="border-radius:100px;box-shadow:0 4px 18px rgba(216,90,48,.38);gap:10px" onclick="mcFabAction()">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17s-7-4.3-7-8.5C3 5.1 5.3 3 10 6.5c4.7-3.5 7-1.4 7 2C17 12.7 10 17 10 17z" stroke="white" stroke-width="1.8" fill="rgba(255,255,255,.2)"/></svg>
+      <span id="mc-fab-label">Introduce</span>
+    </button>
+  </div>
 </div>
 
 <!-- INTROS -->
@@ -383,20 +415,55 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- PROFILE -->
 <div id="s-profile" class="screen">
-  <div style="position:relative">
-    <div id="prof-photo" style="height:240px;background:var(--p1);display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative"></div>
-    <button class="btn btn-s btn-sm" style="position:absolute;top:max(12px,var(--sat));right:16px;background:rgba(255,255,255,.88);backdrop-filter:blur(8px)" onclick="go('edit-profile')">Edit</button>
+  <!-- Photo strip -->
+  <div style="position:relative;background:var(--bg2)">
+    <div id="prof-photos-scroll" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:300px"></div>
+    <div id="prof-photo-dots" style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px"></div>
+    <!-- Edit button -->
+    <button class="btn btn-s btn-sm" style="position:absolute;top:max(12px,var(--sat));right:12px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border:none" onclick="go('edit-profile')">Edit</button>
   </div>
-  <div class="p20">
-    <div class="between mb4"><h2 id="prof-name"></h2><div id="prof-openpill"></div></div>
-    <p class="cap mb16" id="prof-sub"></p>
-    <div class="card-warm mb16"><div class="between mb8"><h3 id="prof-lvl" style="color:var(--p8)"></h3><span class="pill pill-p" id="prof-pts"></span></div><div class="lvlbar"><div class="lvlfill" id="prof-lvlf"></div></div><p class="tiny mt6" style="color:var(--p6)" id="prof-pnext"></p></div>
-    <div id="prof-tags" class="mb16"></div>
-    <div class="between mb10"><div class="sec-hd" style="padding:0">My matchmakers</div><button class="btn-ghost primary btn-sm" onclick="showModal('modal-invite')">+ Invite</button></div>
-    <div id="prof-mms" class="mb16"></div>
+
+  <div class="p20" style="padding-bottom:32px">
+    <!-- Name + open toggle -->
+    <div class="between mb4" style="align-items:flex-start;gap:12px">
+      <div>
+        <h2 id="prof-name" style="margin-bottom:2px"></h2>
+        <p class="cap" id="prof-sub"></p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex-shrink:0;padding-top:2px">
+        <label class="tog"><input type="checkbox" id="prof-open-toggle" onchange="toggleOpenStatus(this.checked)"><span class="tog-sl"></span></label>
+        <span id="prof-open-label" class="tiny" style="font-weight:600;color:var(--ok)">Open</span>
+      </div>
+    </div>
+
+    <!-- Preview + QR buttons -->
+    <div class="row mt12 mb20" style="gap:8px">
+      <button class="btn btn-s flex1" style="gap:8px;font-size:14px" onclick="previewProfile()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="8" cy="8" rx="6" ry="4"/><circle cx="8" cy="8" r="2"/></svg>
+        Preview as others see you
+      </button>
+      <button class="btn-icon" style="width:44px;height:44px;background:var(--bg3);border-radius:var(--r2);flex-shrink:0;border:.5px solid var(--bd2)" onclick="showMyQR()">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--tx2)" stroke-width="1.5"><rect x="2" y="2" width="6" height="6" rx=".8"/><rect x="12" y="2" width="6" height="6" rx=".8"/><rect x="2" y="12" width="6" height="6" rx=".8"/><rect x="12" y="12" width="2.5" height="2.5"/><rect x="15.5" y="12" width="2.5" height="2.5"/><rect x="12" y="15.5" width="2.5" height="2.5"/><rect x="15.5" y="15.5" width="2.5" height="2.5"/></svg>
+      </button>
+    </div>
+
+    <!-- Tags -->
+    <div id="prof-tags" class="mb20"></div>
+
+    <!-- Matchmaker Status card -->
+    <div id="prof-status-card" class="card mb16" style="padding:18px 18px 14px"></div>
+
+    <!-- Settings list -->
     <div class="card" style="padding:0;overflow:hidden;margin-bottom:0">
-      <button class="li" onclick="go('settings')"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div><span class="flex1" style="font-size:15px">Settings</span><svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      <button class="li" style="color:var(--er)" onclick="confirmLogout()"><div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5H3a1 1 0 00-1 1v9a1 1 0 001 1h3.5M10.5 11.5l3-3.5-3-3.5M13.5 8H6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span class="flex1" style="font-size:15px">Sign out</span></button>
+      <button class="li" onclick="go('settings')">
+        <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.3 3.3l.7.7M12 12l.7.7M3.3 12.7l.7-.7M12 4l.7-.7" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="flex1" style="font-size:15px">Settings</span>
+        <svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="li" style="color:var(--er)" onclick="confirmLogout()">
+        <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5H3a1 1 0 00-1 1v9a1 1 0 001 1h3.5M10.5 11.5l3-3.5-3-3.5M13.5 8H6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="flex1" style="font-size:15px">Sign out</span>
+      </button>
     </div>
   </div>
 </div>
@@ -468,6 +535,120 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-feedback"><div class="modal-sheet"><div class="mhandle"></div><h3 class="mb4">Rate this intro</h3><p class="cap mb16" id="fb-from"></p><div class="stack" style="gap:8px;margin-bottom:16px"><button class="qopt" data-v="great" onclick="selFb(this)"><div class="row" style="gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--okbg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 6.5l3 3 6-6" stroke="var(--ok)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span style="font-size:15px;font-weight:600">Nice intro! &#128077;</span></div></button><button class="qopt" data-v="okay" onclick="selFb(this)"><div class="row" style="gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><div style="width:11px;height:2px;background:var(--tx3);border-radius:1px"></div></div><span style="font-size:15px;font-weight:600">It was okay &#128528;</span></div></button><button class="qopt" data-v="nf" onclick="selFb(this)"><div class="row" style="gap:8px"><div style="width:30px;height:30px;border-radius:50%;background:var(--erbg);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2L2 10" stroke="var(--er)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:15px;font-weight:600">Not a fit &#128078;</span></div></button></div><div id="fb-note-area" style="display:none"><textarea id="fb-note" rows="2" placeholder="Optional note for your matchmaker..." style="width:100%;margin-bottom:10px;padding:11px 14px;background:var(--bg2);border:1px solid var(--bd2);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--tx);resize:none;outline:none"></textarea><button class="btn btn-p mb8" onclick="submitFb()">Send feedback</button></div></div></div>
 <div class="modal-ov" id="modal-delete"><div class="modal-sheet"><div class="mhandle"></div><h3 class="mb4" style="color:var(--er)">Delete account</h3><p class="cap mb16">This is permanent and cannot be undone.</p><div class="igrp"><label class="lbl">Type DELETE to confirm</label><input type="text" id="del-confirm" placeholder="DELETE"></div><button class="btn btn-danger mb8" id="del-btn" onclick="deleteAccount()" disabled>Delete my account permanently</button><button class="btn btn-s" onclick="closeModal('modal-delete')">Cancel</button></div></div>
 
+
+<!-- SINGLE DASHBOARD -->
+<div id="s-single-dash" class="screen">
+  <div class="topbar between">
+    <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span id="dash-title" style="font-weight:700">Dashboard</span>
+    <span style="min-width:56px"></span>
+  </div>
+  <div id="dash-body" class="p20"></div>
+</div>
+
+<!-- MODAL: SHARE INTRO CARD -->
+<div class="modal-ov" id="modal-share-intro">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <div class="between mb16">
+      <h3 id="share-intro-title">Share Intro Card</h3>
+      <button class="btn-icon" onclick="closeModal('modal-share-intro')" style="color:var(--tx3)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l12 12M15 3L3 15"/></svg></button>
+    </div>
+    <p class="cap mb16" id="share-intro-sub">Invite your circle to suggest someone great.</p>
+    <div class="igrp">
+      <label class="lbl">You are <span id="share-intro-name-lbl"></span>'s... <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+      <input type="text" id="share-intro-rel" placeholder="e.g. Sister, Friend, Colleague">
+      <p class="tiny mt4" style="color:var(--tx3);line-height:1.55">This helps build trust — e.g. "Backed by Marie (Terence's Sister)"</p>
+    </div>
+    <button class="btn btn-p mt8" onclick="doShareIntroCard()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round"><circle cx="13" cy="4" r="2"/><circle cx="13" cy="14" r="2"/><circle cx="4" cy="9" r="2"/><path d="M6 8l5-3M6 10l5 3"/></svg>
+      Share Intro Card
+    </button>
+  </div>
+</div>
+
+<!-- MODAL: STOP HELPING -->
+<div class="modal-ov" id="modal-stop-helping">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb8" style="color:var(--p)">Stop helping?</h3>
+    <p class="cap mb20" id="stop-helping-msg">Are you sure you want to remove this person from the people you help?</p>
+    <button class="btn btn-danger mb8" onclick="doStopHelping()">Yes, stop helping</button>
+    <button class="btn btn-s" onclick="closeModal('modal-stop-helping')">Cancel</button>
+  </div>
+</div>
+
+<!-- MODAL: PAUSE MATCHMAKER -->
+<div class="modal-ov" id="modal-pause-mm">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb8">Pause introductions?</h3>
+    <p class="cap mb20" id="pause-mm-msg">This matchmaker won't be able to send you new introductions while paused.</p>
+    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseMm()">Yes, pause</button>
+    <button class="btn btn-s" onclick="closeModal('modal-pause-mm')">Cancel</button>
+  </div>
+</div>
+
+<!-- MODAL: REMOVE MATCHMAKER -->
+<div class="modal-ov" id="modal-remove-mm">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb8" style="color:var(--er)">Remove matchmaker?</h3>
+    <p class="cap mb20" id="remove-mm-msg">They will no longer be able to make introductions for you.</p>
+    <button class="btn btn-danger mb8" onclick="doRemoveMm()">Yes, remove</button>
+    <button class="btn btn-s" onclick="closeModal('modal-remove-mm')">Cancel</button>
+  </div>
+</div>
+
+<!-- CONTEXT MENU (shared floating panel) -->
+<div id="ctx-menu" class="ctx-menu"></div>
+<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none" onclick="closeCtxMenu()"></div>
+
+
+<!-- LEVELS & REWARDS SCREEN -->
+<div id="s-levels-rewards" class="screen">
+  <div class="topbar">
+    <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span style="font-weight:700">Levels &amp; Rewards</span>
+    <span style="min-width:56px"></span>
+  </div>
+  <div id="levels-body" class="p20"></div>
+</div>
+
+<!-- PROFILE PREVIEW SCREEN -->
+<div id="s-prof-preview" class="screen no-nav">
+  <div class="topbar between">
+    <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <span style="font-weight:600;color:var(--tx3);font-size:13px">Preview mode</span>
+    <span style="min-width:56px"></span>
+  </div>
+  <div id="preview-body" class="p20"></div>
+</div>
+
+<!-- PHOTO LIGHTBOX -->
+<div class="modal-ov" id="modal-photo-view" style="align-items:center;background:rgba(0,0,0,.92)">
+  <div style="width:100%;max-width:430px;position:relative">
+    <img id="lightbox-img" src="" style="width:100%;max-height:88dvh;object-fit:contain;display:block">
+    <button onclick="closeModal('modal-photo-view')" style="position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.55);border:none;color:#fff;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center">&#215;</button>
+    <div id="lightbox-counter" style="position:absolute;bottom:14px;right:14px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;font-weight:600;padding:4px 10px;border-radius:100px"></div>
+  </div>
+</div>
+
+<!-- MY QR MODAL -->
+<div class="modal-ov" id="modal-my-qr">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb4">My QR Code</h3>
+    <p class="cap mb16">Let anyone scan this to see your profile and get introduced to you.</p>
+    <div style="background:var(--bg2);border-radius:var(--r3);padding:22px;margin-bottom:14px;display:flex;align-items:center;justify-content:center"><div id="my-qr-out"></div></div>
+    <button class="btn btn-p mb8" onclick="shareMyQR()">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="13" r="1.5"/><circle cx="3.5" cy="8" r="1.5"/><path d="M5 7.3l5.5-3M5 8.7l5.5 3"/></svg>
+      Share my QR
+    </button>
+    <button class="btn btn-s" onclick="closeModal('modal-my-qr')">Close</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 </div><!-- screen-stack -->
 
@@ -493,6 +674,12 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 </div><!-- app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+function calcAge(y,m,d){
+  const today=new Date(),birth=new Date(y,m-1,d);
+  let age=today.getFullYear()-birth.getFullYear();
+  const hasBirthdayPassed=(today.getMonth()>birth.getMonth())||(today.getMonth()===birth.getMonth()&&today.getDate()>=birth.getDate());
+  return hasBirthdayPassed?age:age-1;
+}
 const LEVELS=[{n:'Connector',p:0},{n:'Insider',p:50},{n:'Social Butterfly',p:100},{n:'Matchmaker',p:200},{n:'Cupid',p:350},{n:'Luminary',p:500}];
 const TAGS=['Adventurous','Creative','Ambitious','Romantic','Intellectual','Funny','Caring','Spontaneous','Reliable','Passionate','Authentic','Optimistic','Independent','Thoughtful','Foodie','Traveler','Homebody','Social butterfly','Deep thinker','Athletic'];
 const QS=[{id:'intent',q:'Relationship intent',a:['Looking for something serious','Open to casual dating','Just exploring','Open to anything']},{id:'location',q:'Location flexibility',a:["I'd relocate for the right person","Maybe, depends","I prefer staying local"]},{id:'family',q:'Family vision',a:["I want kids","I don't want kids","Open to it","I already have kids"]},{id:'sport',q:'Physical activity',a:['Very active (daily)','Moderately active','Occasionally active','Not really my thing']},{id:'travel',q:'Travel lifestyle',a:['Every chance I get','A couple times a year','Rarely','Not my thing']},{id:'food',q:'Food lifestyle',a:['Vegan','Vegetarian','Omnivore','Halal','Kosher','No preference']}];
@@ -511,14 +698,14 @@ function addPts(n){const u=DB.user();if(!u)return;u.points=(u.points||0)+n;DB.se
 function showModal(id){document.getElementById(id).classList.add('on')}
 function closeModal(id){document.getElementById(id).classList.remove('on')}
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')})});
-const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat']);
-const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile'};
+const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview']);
+const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile'};
 function go(id){const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
 function back(){if(!S.stack.length)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
 function navTo(id){S.stack=[];go(id)}
 function _el(id){return document.getElementById('s-'+id)}
 function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.has(id)?bnav.classList.add('on'):bnav.classList.remove('on');document.querySelectorAll('.nbt').forEach(b=>b.classList.remove('on'));const act=NAV_MAP[id];if(act)document.getElementById(act)?.classList.add('on');const pend=DB.intros().filter(i=>i.status==='pending').length;const bd=document.getElementById('nb-badge'),pb=document.getElementById('pb-badge');if(bd){bd.textContent=pend;bd.style.display=pend>0?'flex':'none'}if(pb){pb.textContent=pend;pb.style.display=pend>0?'':'none'}}
-const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'scan':initScan};
+const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'scan':initScan,'levels-rewards':initLevelsRewards};
 function _init(id){const fn=INIT_FNS[id.replace('s-','')];if(fn)fn()}
 (function(){const arc=document.getElementById('sp-arc'),circ=2*Math.PI*40,speed=circ/30;let p=0;const t=setInterval(()=>{p=Math.min(p+speed,circ);arc.setAttribute('stroke-dasharray',`${p} ${circ}`);if(p>=circ){clearInterval(t);setTimeout(()=>{const u=DB.user();if(u){S.user=u;go('home')}else{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan')}else go('ob')}},300)}},16)})();
 let obX0=0;
@@ -530,14 +717,21 @@ function doSignup(){const email=document.getElementById('su-email').value.trim()
 function buildPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')),months=['January','February','March','April','May','June','July','August','September','October','November','December'],cy=new Date().getFullYear(),years=Array.from({length:65},(_,i)=>String(cy-18-i));fillPcol('pc-day',days,S.dob.d-1);fillPcol('pc-month',months,S.dob.m-1);fillPcol('pc-year',years,0);updateDobPreview()}
 function fillPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function highlightPcol(el,idx){el.querySelectorAll('.pitem').forEach((item,i)=>item.classList.toggle('active',i===idx+2))}
-function updateDobPreview(){const mns=['January','February','March','April','May','June','July','August','September','October','November','December'],el=document.getElementById('dob-preview');if(el)el.textContent=`${mns[S.dob.m-1]} ${S.dob.d}, ${S.dob.y} — Age ${new Date().getFullYear()-S.dob.y}`}
+function updateDobPreview(){const mns=['January','February','March','April','May','June','July','August','September','October','November','December'],el=document.getElementById('dob-preview');if(el)el.textContent=`${mns[S.dob.m-1]} ${S.dob.d}, ${S.dob.y} — Age ${calcAge(S.dob.y,S.dob.m,S.dob.d)}`}
 function selOpt(btn,group,val){const wrap=btn.closest('.opills');if(wrap)wrap.querySelectorAll('.opill').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');S.setup[group]=val}
-function togglePw(inputId,btn){const el=document.getElementById(inputId);if(!el)return;const show=el.type==='password';el.type=show?'text':'password';btn.textContent=show?'🙈':'👁';btn.style.color=show?'var(--p)':'var(--tx3)'}
+function togglePw(inputId,btn){
+  const el=document.getElementById(inputId);if(!el)return;
+  const show=el.type==='password';el.type=show?'text':'password';
+  btn.style.color=show?'var(--p)':'var(--tx3)';
+  btn.innerHTML=show
+    ? '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="9" cy="9" rx="7" ry="4.5"/><circle cx="9" cy="9" r="2"/><line x1="2" y1="2" x2="16" y2="16" stroke-width="1.8"/></svg>'
+    : '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="9" cy="9" rx="7" ry="4.5"/><circle cx="9" cy="9" r="2"/></svg>';
+}
 function gpsLocate(){const el=document.getElementById('f-loc');if(!el)return;el.placeholder='Detecting...';if(!navigator.geolocation){toast('GPS not available');el.placeholder='Your city';return}navigator.geolocation.getCurrentPosition(pos=>{fetch(`https://nominatim.openstreetmap.org/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&format=json&zoom=10`,{headers:{'Accept-Language':'en'}}).then(r=>r.json()).then(d=>{const city=d.address?.city||d.address?.town||d.address?.village||'',country=d.address?.country||'';const loc=city&&country?`${city}, ${country}`:d.display_name?.split(',').slice(0,2).join(',') ||'';el.value=loc;el.placeholder='Your city';toast('GPS: '+loc)}).catch(()=>{el.placeholder='Your city';toast('Type your city manually')})},()=>{el.placeholder='Your city';toast('Location unavailable')},{timeout:8000})}
 let locT;
 function locInput(el){clearTimeout(locT);const q=el.value.trim();let sug=document.getElementById('loc-sug');if(!sug){sug=document.createElement('div');sug.id='loc-sug';sug.style.cssText='position:absolute;left:0;right:0;top:100%;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r);margin-top:4px;z-index:100;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);display:none';el.parentElement.style.position='relative';el.parentElement.appendChild(sug)}if(q.length<2){sug.style.display='none';return}locT=setTimeout(()=>{fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&featuretype=city`,{headers:{'Accept-Language':'en'}}).then(r=>r.json()).then(results=>{if(!results.length){sug.style.display='none';return}sug.innerHTML=results.slice(0,5).map((r,i,arr)=>{const label=r.display_name.split(',').slice(0,3).map(s=>s.trim()).join(', ');const border=i<arr.length-1?'border-bottom:.5px solid var(--bd)':'';return `<div onclick="pickLoc('${label.replace(/'/g,"\'")}','loc-sug','f-loc')" style="padding:12px 14px;font-size:14px;cursor:pointer;${border}" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">${label}</div>`}).join('');sug.style.display='block'}).catch(()=>{sug.style.display='none'})},350)}
 function pickLoc(val,sugId,inputId){const el=document.getElementById(inputId);if(el)el.value=val;const sug=document.getElementById(sugId);if(sug){sug.style.display='none';sug.innerHTML=''}}
-function saveBasic(){const name=document.getElementById('f-name').value.trim();if(!name){toast('Please enter your name');return}if(!S.setup.gender){toast('Please select your gender');return}const loc=document.getElementById('f-loc').value.trim();if(!loc){toast('Please enter your location');return}S.setup.name=name;S.setup.location=loc;S.setup.dob=`${S.dob.y}-${S.dob.m}-${S.dob.d}`;S.setup.age=new Date().getFullYear()-S.dob.y;go('setup-photos')}
+function saveBasic(){const name=document.getElementById('f-name').value.trim();if(!name){toast('Please enter your name');return}if(!S.setup.gender){toast('Please select your gender');return}const loc=document.getElementById('f-loc').value.trim();if(!loc){toast('Please enter your location');return}S.setup.name=name;S.setup.location=loc;S.setup.dob=`${S.dob.y}-${S.dob.m}-${S.dob.d}`;S.setup.age=calcAge(S.dob.y,S.dob.m,S.dob.d);go('setup-photos')}
 let editPhotos=[];
 function initSetupPhotos(){renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup')}
 function renderPhotoGrid(gridId,photos,inputId,mode){const g=document.getElementById(gridId);if(!g)return;let html='';for(let i=0;i<6;i++){const p=photos[i];if(p){html+=`<div class="pslot filled"><img src="${p}"><span class="pnum">${i+1}</span><button class="prm" onclick="rmPhoto(${i},'${mode}')">x</button></div>`}else{const req=i<3;html+=`<div class="pslot ${req?'req':''}" onclick="document.getElementById('${inputId}').click()"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="${req?'rgba(216,90,48,.6)':'var(--bd3)'}" stroke-width="2" stroke-linecap="round"/></svg><span class="plbl">${req?'Required':'Optional'}</span></div>`}}g.innerHTML=html;const cnt=document.getElementById('ph-count');if(cnt)cnt.textContent=`${photos.length}/6 added${photos.length>=3?' ✓':' (3 required)'}`;const btn=document.getElementById('ph-next');if(btn)btn.disabled=photos.length<3}
@@ -558,7 +752,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup-prefs')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('')}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,pace:S.setup.pref_pace,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',ci:0},{name:'Paul',rel:'Colleague',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,pace:S.setup.pref_pace,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){DB.setSingles([{id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,bio:'Creative soul who loves design and the outdoors.'},{id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,bio:'Passionate about food and people.'},{id:'s3',name:'Camille',age:26,job:'Marketing',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,bio:'Marketing lead by day, world traveller by weekend.'}]);const now=Date.now(),i1='intro_'+now,i2='intro_'+(now+1),m1='match_'+now;DB.setIntros([{id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris',mmName:'Marie',mmRel:'Best friend',ctx:"You both love hiking and he's one of the most thoughtful people I know.",status:'pending',ts:now-7200000,exp:now+3600000*70,ci:2},{id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris',mmName:'Paul',mmRel:'Colleague',ctx:"She's brilliant, funny, and has the same dry humor as you.",status:'pending',ts:now-3600000*18,exp:now+3600000*54,ci:6}]);DB.setMatches([{id:m1,oName:'Sara',oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2}]);DB.setMsgs(m1,[{id:1,from:'them',text:'Hey! Marie introduced us 😊',ts:now-3600000*46},{id:2,from:'me',text:'Hi Sara! Great taste Marie has 😄 I am '+uname,ts:now-3600000*45},{id:3,from:'them',text:'So you work in design? I write about tech.',ts:now-3600000*44},{id:4,from:'me',text:"That's a small world!",ts:now-3600000*43},{id:5,from:'them',text:'I wrote about how dating apps are broken...',ts:now-3600000*42},{id:6,from:'me',text:'And yet here we are on one that might work 😄',ts:now-3600000*41}]);DB.addNotif({id:'n1',text:'Marie introduced you to Thomas!',ts:now-7200000,read:false});DB.addNotif({id:'n2',text:'Sara sent you a message',ts:now-3600000*40,read:false});DB.addNotif({id:'n3',text:'Paul introduced you to Lea',ts:now-3600000*18,read:true})}
 
 function initHome(){
@@ -577,7 +771,7 @@ function initHome(){
     scroll.innerHTML=singles.map(function(s){
       const c=AVCOLS[s.ci%AVCOLS.length];
       const inner=s.photos&&s.photos.length?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block">':'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+c.bg+','+c.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:'+c.tc+';opacity:.45;letter-spacing:-4px">'+ini(s.name)+'</span></div>';
-      return '<div class="sing-card" onclick="singCardTap(\''+s.id+'\')">'+inner+'<button class="sing-card-menu" onclick="event.stopPropagation();singCardMenu(\''+s.id+'\')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">'+s.name+'</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">'+s.loc+'</div></div></div>';
+      return '<div class="sing-card" onclick="singCardTap(\''+s.id+'\')">'+inner+'<button class="sing-card-menu" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">'+s.name+'</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">'+s.loc+'</div></div></div>';
     }).join('')+'<div class="sing-card sing-add-card" onclick="toast(\'Add single friend — coming soon!\')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>';
     dotsEl.innerHTML=Array.from({length:total},function(_,i){return '<div class="scroll-dot '+(i===0?'on':'')+'" style="width:'+(i===0?'18px':'6px')+'"></div>'}).join('');
     scroll.onscroll=function(){
@@ -592,8 +786,124 @@ function initHome(){
 
 function singCardTap(id){const idx=DB.singles().findIndex(s=>s.id===id);if(idx!==-1){S.carIdx=idx;go('introduce')}}
 function singCardMenu(id){const s=DB.singles().find(x=>x.id===id);if(!s)return;S.introSingle=s;S.carIdx=DB.singles().findIndex(x=>x.id===id);toast(s.name+' — tap + to generate a QR')}
-function initMyCircle(){const singles=DB.singles(),grid=document.getElementById('mc-grid');if(!grid)return;if(!singles.length){grid.innerHTML=`<div style="grid-column:1/-1;padding:48px 20px;text-align:center"><div style="font-size:44px;margin-bottom:12px">👥</div><h3 class="mb8">No singles yet</h3><p class="cap" style="max-width:220px;margin:0 auto">Add single friends to make introductions for them</p><button class="btn btn-p mt20" onclick="toast('Add single friend - coming soon!')">+ Add a single friend</button></div>`;return}grid.innerHTML=singles.map(s=>{const c=AVCOLS[s.ci%AVCOLS.length];const inner=s.photos&&s.photos.length?`<img src="${s.photos[0]}" style="width:100%;height:100%;object-fit:cover;display:block">`:`<div style="width:100%;height:100%;background:linear-gradient(145deg,${c.bg},${c.bg}cc);display:flex;align-items:center;justify-content:center"><span style="font-size:52px;font-weight:800;color:${c.tc};opacity:.45">${ini(s.name)}</span></div>`;return `<div class="mc-card" onclick="mcCardTap('${s.id}')">${inner}<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">${s.name}, ${s.age}</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">${s.loc}</div></div></div>`}).join('')+`<div class="mc-card mc-add" onclick="toast('Add single friend - coming soon!')"><div style="width:44px;height:44px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 3v14M3 10h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3);margin-top:8px">Add friend</span></div>`}
-function mcCardTap(id){const idx=DB.singles().findIndex(s=>s.id===id);if(idx!==-1){S.carIdx=idx;go('introduce')}}
+// My Circle tab state
+let mcTab = 'singles';
+
+function mcSwitchTab(tab) {
+  mcTab = tab;
+  document.getElementById('mc-t-singles').classList.toggle('on', tab === 'singles');
+  document.getElementById('mc-t-mms').classList.toggle('on', tab === 'mms');
+  document.getElementById('mc-singles-grid').style.display = tab === 'singles' ? '' : 'none';
+  document.getElementById('mc-mms-grid').style.display = tab === 'mms' ? '' : 'none';
+  const fabLabel = document.getElementById('mc-fab-label');
+  const fabBtn = document.getElementById('mc-fab-btn');
+  if (tab === 'singles') {
+    fabLabel.textContent = 'Introduce';
+    fabBtn.querySelector('svg').style.display = '';
+  } else {
+    fabLabel.textContent = 'Add to your Team';
+    fabBtn.querySelector('svg').style.display = 'none';
+  }
+  renderMcCounter();
+}
+
+function renderMcCounter() {
+  const el = document.getElementById('mc-counter');
+  if (!el) return;
+  const MAX = 6;
+  if (mcTab === 'singles') {
+    const n = DB.singles().length;
+    el.innerHTML = 'Your circle: ' + n + ' / ' + MAX + ' <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p);margin-left:2px;vertical-align:middle"></span>';
+  } else {
+    const mms = (DB.user()?.matchmakers || []);
+    const n = mms.length;
+    const dots = Array.from({length: Math.min(n, 3)}, () => '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p);margin-left:2px;vertical-align:middle"></span>').join('');
+    el.innerHTML = 'Your team: ' + n + ' / ' + MAX + ' ' + dots;
+  }
+}
+
+function mcFabAction() {
+  if (mcTab === 'singles') go('introduce');
+  else showModal('modal-invite');
+}
+
+function initMyCircle() {
+  mcTab = 'singles';
+  document.getElementById('mc-t-singles').classList.add('on');
+  document.getElementById('mc-t-mms').classList.remove('on');
+  document.getElementById('mc-singles-grid').style.display = '';
+  document.getElementById('mc-mms-grid').style.display = 'none';
+  document.getElementById('mc-fab-label').textContent = 'Introduce';
+  renderMcSinglesGrid();
+  renderMcMmsGrid();
+  renderMcCounter();
+}
+
+function renderMcSinglesGrid() {
+  const singles = DB.singles();
+  const grid = document.getElementById('mc-singles-grid');
+  if (!grid) return;
+  const MAX = 6;
+  let html = '';
+  for (let i = 0; i < MAX; i++) {
+    const s = singles[i];
+    if (s) {
+      const c = AVCOLS[s.ci % AVCOLS.length];
+      const inner = (s.photos && s.photos.length)
+        ? '<img src="' + s.photos[0] + '" style="width:100%;height:100%;object-fit:cover;display:block">'
+        : '<div style="width:100%;height:100%;background:linear-gradient(145deg,' + c.bg + ',' + c.bg + 'cc);display:flex;align-items:center;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1.2" opacity=".5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>';
+      html += '<div class="mc-card" data-sid="' + s.id + '" onclick="mcCardTap(this.dataset.sid)">'
+            + inner
+            + '<button class="mc-menu" onclick="event.stopPropagation();openSingleMenu(this.closest(\'.mc-card\').dataset.sid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + s.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + s.loc + '</div></div>'
+            + '</div>';
+    } else {
+      const isNext = (i === singles.length);
+      const col = isNext ? 'rgba(216,90,48,.45)' : 'var(--bd3)';
+      const txtCol = isNext ? 'var(--p)' : 'var(--tx3)';
+      html += '<div class="mc-card mc-add" onclick="toast(\'Add single friend \u2014 coming soon!\')" style="border-color:' + col + '">'
+            + '<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v20M4 14h20" stroke="' + (isNext ? 'var(--p)' : 'var(--bd3)') + '" stroke-width="2" stroke-linecap="round"/></svg>'
+            + '<span style="font-size:12px;font-weight:600;color:' + txtCol + ';margin-top:4px">Add</span>'
+            + '</div>';
+    }
+  }
+  grid.innerHTML = html;
+}
+
+function renderMcMmsGrid() {
+  const u = DB.user();
+  const mms = (u && u.matchmakers) ? u.matchmakers : [];
+  const grid = document.getElementById('mc-mms-grid');
+  if (!grid) return;
+  const MAX = 6;
+  let html = '';
+  for (let i = 0; i < MAX; i++) {
+    const mm = mms[i];
+    if (mm) {
+      const c = AVCOLS[mm.ci % AVCOLS.length];
+      html += '<div class="mc-card" style="cursor:default;background:' + c.bg + '">'
+            + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity=".45"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
+            + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + (mm.loc || mm.rel || '') + '</div></div>'
+            + '</div>';
+    } else {
+      const isNext = (i === mms.length);
+      const col = isNext ? 'rgba(216,90,48,.45)' : 'var(--bd3)';
+      const txtCol = isNext ? 'var(--p)' : 'var(--tx3)';
+      html += '<div class="mc-card mc-add" onclick="showModal(\'modal-invite\')" style="border-color:' + col + '">'
+            + '<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v20M4 14h20" stroke="' + (isNext ? 'var(--p)' : 'var(--bd3)') + '" stroke-width="2" stroke-linecap="round"/></svg>'
+            + '<span style="font-size:12px;font-weight:600;color:' + txtCol + ';margin-top:4px">Add</span>'
+            + '</div>';
+    }
+  }
+  grid.innerHTML = html;
+}
+
+function mcCardTap(id) {
+  const idx = DB.singles().findIndex(s => s.id === id);
+  if (idx !== -1) { S.carIdx = idx; go('introduce'); }
+}
+
 function initIntros(){renderPending();renderMatches();renderActivity()}
 function switchTab(t){['pending','matches','activity'].forEach(x=>{document.getElementById('t-'+x)?.classList.toggle('on',x===t);document.getElementById('tp-'+x)?.classList.toggle('on',x===t)});if(t==='pending')renderPending();if(t==='matches')renderMatches();if(t==='activity')renderActivity()}
 function renderPending(){const list=document.getElementById('pending-list');if(!list)return;const intros=DB.intros().filter(i=>i.status==='pending');if(!intros.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;return}list.innerHTML=intros.map(i=>`<div class="ic" onclick="openIntroDetail('${i.id}')"><div class="ic-accent"></div><div class="ic-body"><div class="between mb10"><span class="pill pill-new">New intro</span><span class="tiny">${ago(i.ts)}</span></div><div class="row gap8 mb10">${av(ini(i.sName),i.ci,50)}<div class="flex1"><div style="font-size:17px;font-weight:700">${i.sName}, ${i.sAge}</div><p class="tiny">${i.sJob} · ${i.sLoc}</p></div></div><div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From ${i.mmName} (${i.mmRel})</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${i.ctx||'No context yet'}"</p></div><div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro('${i.id}')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro('${i.id}')">Accept ✓</button></div></div></div>`).join('')}
@@ -622,13 +932,109 @@ function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.curre
 function renderMsgs(matchId){const msgs=DB.msgs(matchId),el=document.getElementById('chat-msgs');if(!el)return;el.innerHTML=msgs.map(m=>`<div class="msg ${m.from==='me'?'msg-me':'msg-th'}"><div class="bubble ${m.from==='me'?'bubble-me':'bubble-th'}">${m.text}</div><div class="mts">${fmtTime(m.ts)}</div></div>`).join('');el.scrollTop=el.scrollHeight}
 function sendMsg(){if(!S.currentMatch)return;const el=document.getElementById('chat-in'),txt=el.value.trim();if(!txt)return;el.value='';const msg={id:Date.now(),from:'me',text:txt,ts:Date.now()};DB.addMsg(S.currentMatch.id,msg);renderMsgs(S.currentMatch.id);setTimeout(()=>{const replies=["That's really interesting!","Ha, I love that! 😄","Yes, exactly!","Tell me more.","Same here!"];const r={id:Date.now()+1,from:'them',text:replies[Math.floor(Math.random()*replies.length)],ts:Date.now()};DB.addMsg(S.currentMatch.id,r);renderMsgs(S.currentMatch.id)},1200+Math.random()*1000)}
 function showChatMenu(){const m=S.currentMatch;if(!m)return;if(confirm('Close conversation with '+m.oName+'?')){const matches=DB.matches(),idx=matches.findIndex(x=>x.id===m.id);if(idx!==-1){matches[idx].closed=true;DB.setMatches(matches)}go('intros');switchTab('matches');toast('Conversation closed')}}
-function initProfile(){const u=S.user||DB.user();if(!u)return;const pa=document.getElementById('prof-photo'),c=AVCOLS[0];pa.style.background=c.bg;pa.innerHTML=u.photos&&u.photos.length?`<img src="${u.photos[0]}" style="width:100%;height:100%;object-fit:cover">`:`<div class="av" style="width:100px;height:100px;font-size:36px;font-weight:700;background:${c.bg};color:${c.tc}">${ini(u.name)}</div>`;document.getElementById('prof-name').textContent=u.name+(u.age?', '+u.age:'');document.getElementById('prof-openpill').innerHTML=u.isOpen!==false?'<span class="pill pill-ok">Open</span>':'<span class="pill pill-gray">Paused</span>';document.getElementById('prof-sub').textContent=(u.job||'')+' · '+(u.location||'');const li=lvlInfo(u.points||0);document.getElementById('prof-lvl').textContent=li.name;document.getElementById('prof-pts').textContent=(u.points||0)+' pts';document.getElementById('prof-lvlf').style.width=li.pct+'%';document.getElementById('prof-pnext').textContent=li.max?'Maximum level 🏆':`${li.rem} pts to next level`;document.getElementById('prof-tags').innerHTML=u.tags?.length?`<div style="display:flex;flex-wrap:wrap;gap:8px">${u.tags.map(t=>`<span class="pill pill-p">${t}</span>`).join('')}</div>`:'';document.getElementById('prof-mms').innerHTML=(u.matchmakers||[]).map(mm=>`<div class="row card" style="padding:12px 14px;margin-bottom:8px;gap:12px">${av(ini(mm.name),mm.ci||0,40)}<div class="flex1"><div style="font-weight:600">${mm.name}</div><p class="tiny">${mm.rel}</p></div><span class="pill pill-ok">Active</span></div>`).join('')||'<p class="cap" style="color:var(--tx3)">No matchmakers yet</p>'}
+function initProfile() {
+  const u = S.user || DB.user(); if (!u) return;
+
+  // ── Photo strip ────────────────────────────────────────────────
+  const strip = document.getElementById('prof-photos-scroll');
+  const dots  = document.getElementById('prof-photo-dots');
+  const photos = u.photos && u.photos.length ? u.photos : [];
+  if (photos.length) {
+    strip.innerHTML = photos.map(function(p, i) {
+      return '<div style="min-width:100%;height:300px;scroll-snap-align:start;flex-shrink:0;cursor:zoom-in" onclick="openLightbox(' + i + ')">'
+           + '<img src="' + p + '" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
+    }).join('');
+    dots.innerHTML = photos.map(function(_, i) {
+      return '<div style="width:' + (i===0?'14px':'6px') + ';height:6px;border-radius:3px;background:' + (i===0?'#fff':'rgba(255,255,255,.5)') + ';transition:all .22s"></div>';
+    }).join('');
+    strip.onscroll = function() {
+      const idx = Math.round(strip.scrollLeft / strip.offsetWidth);
+      dots.querySelectorAll('div').forEach(function(d, i) {
+        d.style.width = i===idx ? '14px' : '6px';
+        d.style.background = i===idx ? '#fff' : 'rgba(255,255,255,.5)';
+      });
+    };
+  } else {
+    const col = AVCOLS[0];
+    strip.innerHTML = '<div style="min-width:100%;height:300px;display:flex;align-items:center;justify-content:center;background:' + col.bg + '">'
+      + '<div class="av" style="width:100px;height:100px;font-size:36px;background:' + col.bg + ';color:' + col.tc + '">' + ini(u.name) + '</div></div>';
+    dots.innerHTML = '';
+  }
+  // store photos globally for lightbox
+  window._profPhotos = photos;
+
+  // ── Name / sub ─────────────────────────────────────────────────
+  document.getElementById('prof-name').textContent = u.name + (u.age ? ', ' + u.age : '');
+  document.getElementById('prof-sub').textContent  = (u.job||'') + (u.job && u.location ? ' · ' : '') + (u.location||'');
+
+  // ── Open toggle ────────────────────────────────────────────────
+  const isOpen = u.isOpen !== false;
+  const tog = document.getElementById('prof-open-toggle');
+  const lbl = document.getElementById('prof-open-label');
+  if (tog) { tog.checked = isOpen; }
+  if (lbl) { lbl.textContent = isOpen ? 'Open' : 'Paused'; lbl.style.color = isOpen ? 'var(--ok)' : 'var(--tx3)'; }
+
+  // ── Tags ───────────────────────────────────────────────────────
+  const tagsEl = document.getElementById('prof-tags');
+  if (tagsEl) tagsEl.innerHTML = (u.tags && u.tags.length)
+    ? '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px">' + u.tags.map(function(t){ return '<span class="pill pill-p">' + t + '</span>'; }).join('') + '</div>'
+    : '';
+
+  // ── Matchmaker status card ─────────────────────────────────────
+  const li = lvlInfo(u.points || 0);
+  const nextLvl = LEVELS[li.idx + 1];
+  const pts = u.points || 0;
+  const introsCount = DB.intros().filter(function(i){ return i.status !== 'pending'; }).length;
+  const matchesCount = DB.matches().filter(function(m){ return !m.isDirect; }).length;
+  const LEVEL_MOTTOS = [
+    'Every great story starts with an introduction',
+    'You know everyone worth knowing',
+    'Social magic runs in your veins',
+    'Making love happen, one intro at a time',
+    'Struck by your own arrows',
+    'Love is your legacy'
+  ];
+  const motto = LEVEL_MOTTOS[li.idx] || '';
+  const ACHIEVEMENTS = pts > 0 ? [{ icon: '✨', label: 'First Spark' }] : [];
+  const achHtml = ACHIEVEMENTS.length
+    ? '<div class="sec-hd" style="padding-top:14px;padding-bottom:8px">ACHIEVEMENTS</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:8px">'
+      + ACHIEVEMENTS.map(function(a){ return '<span class="pill" style="background:var(--p1);color:var(--p6);padding:8px 14px;font-size:13px">' + a.icon + ' ' + a.label + '</span>'; }).join('')
+      + '</div>'
+    : '';
+
+  const statusCard = document.getElementById('prof-status-card');
+  statusCard.innerHTML =
+    '<div class="micro mb14" style="color:var(--tx3)">MATCHMAKER STATUS</div>'
+    + '<div class="row mb14" style="gap:14px;align-items:center">'
+    +   '<div style="width:56px;height:56px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+    +     '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M8 17a4 4 0 018 0"/><path d="M12 12v2M10.5 14.5l1.5 1.5 1.5-1.5"/></svg>'
+    +   '</div>'
+    +   '<div><h2 style="font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:2px">' + li.name + '</h2>'
+    +   '<p class="cap" style="color:var(--tx2);line-height:1.4">' + motto + '</p></div>'
+    + '</div>'
+    + '<div class="between mb6">'
+    +   '<span style="font-size:15px;font-weight:500;color:var(--tx2)">' + pts + ' points</span>'
+    +   (nextLvl ? '<span class="row" style="gap:4px;font-size:13px;color:var(--tx2)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M1 10L4.5 6.5l2.5 2.5 5-6"/></svg>' + li.rem + ' to ' + nextLvl.n + '</span>' : '<span style="font-size:13px;color:var(--ok)">Max level 🏆</span>')
+    + '</div>'
+    + '<div class="lvlbar mb16"><div class="lvlfill" style="width:' + li.pct + '%"></div></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:4px">'
+    +   '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--tx);line-height:1">' + introsCount + '</div><div style="font-size:10px;color:var(--tx3);font-weight:600;margin-top:4px">Intros</div></div>'
+    +   '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--tx);line-height:1">' + matchesCount + '</div><div style="font-size:10px;color:var(--tx3);font-weight:600;margin-top:4px">Matches</div></div>'
+    +   '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--tx);line-height:1">0</div><div style="font-size:10px;color:var(--tx3);font-weight:600;margin-top:4px">Chats</div></div>'
+    +   '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 6px;text-align:center"><div style="font-size:20px;font-weight:700;color:var(--tx);line-height:1">👍</div><div style="font-size:10px;color:var(--tx3);font-weight:600;margin-top:4px">' + pts + '</div></div>'
+    + '</div>'
+    + achHtml
+    + '<button class="btn-ghost primary w100" style="margin-top:10px;font-size:14px;display:flex;align-items:center;justify-content:center;gap:4px" onclick="go(\'levels-rewards\')">'
+    +   'See levels &amp; rewards <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>'
+    + '</button>';
+}
 let epDob={d:15,m:6,y:1995},epHtVal=170,epHUnit='cm',epTags=[],epQs={},epPrefs={};
 function initEditProfile(){const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';if(u.dob){const p=u.dob.split('-');epDob={y:+p[0],m:+p[1],d:+p[2]}}else epDob={d:15,m:6,y:new Date().getFullYear()-28};buildEpPicker();epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');epSelOptById('ep-pref-pace','pref_pace',u.prefs?.pace||'');document.getElementById('ep-amin').value=u.prefs?.ageMin||22;document.getElementById('ep-amax').value=u.prefs?.ageMax||36;buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||''}
 function buildEpPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')),months=['January','February','March','April','May','June','July','August','September','October','November','December'],cy=new Date().getFullYear(),years=Array.from({length:65},(_,i)=>String(cy-18-i));fillEpPcol('ep-pc-day',days,epDob.d-1);fillEpPcol('ep-pc-month',months,epDob.m-1);fillEpPcol('ep-pc-year',years,Math.max(0,cy-18-epDob.y));updateEpDobPreview()}
 function fillEpPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function pickerScroll(el,type){clearTimeout(el._t);el._t=setTimeout(()=>{const idx=Math.round(el.scrollTop/48);el.scrollTop=idx*48;highlightPcol(el,idx);if(type==='day')S.dob.d=idx+1;else if(type==='month')S.dob.m=idx+1;else if(type==='year'){const cy=new Date().getFullYear();S.dob.y=cy-18-idx}else if(type==='ep-day')epDob.d=idx+1;else if(type==='ep-month')epDob.m=idx+1;else if(type==='ep-year'){const cy=new Date().getFullYear();epDob.y=cy-18-idx}if(type.startsWith('ep-'))updateEpDobPreview();else updateDobPreview()},100)}
-function updateEpDobPreview(){const mns=['January','February','March','April','May','June','July','August','September','October','November','December'],el=document.getElementById('ep-dob-preview');if(el)el.textContent=mns[epDob.m-1]+' '+epDob.d+', '+epDob.y+' — Age '+(new Date().getFullYear()-epDob.y)}
+function updateEpDobPreview(){const mns=['January','February','March','April','May','June','July','August','September','October','November','December'],el=document.getElementById('ep-dob-preview');if(el)el.textContent=mns[epDob.m-1]+' '+epDob.d+', '+epDob.y+' — Age '+calcAge(epDob.y,epDob.m,epDob.d)}
 function epDispHeight(){const v=epHtVal,ins=v/2.54,ft=Math.floor(ins/12),inch=Math.round(ins%12);document.getElementById('ep-ht-display').textContent=epHUnit==='cm'?`${v} cm`:`${ft}'${inch}"`}
 function epHtSlide(){epHtVal=parseInt(document.getElementById('ep-ht-slider').value);epDispHeight()}
 function epSetHUnit(u){epHUnit=u;document.getElementById('ep-ht-cm').classList.toggle('sel',u==='cm');document.getElementById('ep-ht-in').classList.toggle('sel',u==='in');epDispHeight()}
@@ -643,7 +1049,7 @@ function buildEpRelPrefs(selected){const w=document.getElementById('ep-pref-rel'
 function epToggleRel(btn){btn.classList.toggle('sel');epPrefs.religions=Array.from(document.querySelectorAll('#ep-pref-rel .opill.sel')).map(b=>b.textContent)}
 let locT2;
 function locInputEdit(el){clearTimeout(locT2);const q=el.value.trim();let sug=document.getElementById('ep-loc-sug');if(!sug){sug=document.createElement('div');sug.id='ep-loc-sug';sug.style.cssText='position:absolute;left:0;right:0;top:100%;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r);margin-top:4px;z-index:100;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.1);display:none';el.parentElement.style.position='relative';el.parentElement.appendChild(sug)}if(q.length<2){sug.style.display='none';return}locT2=setTimeout(()=>{fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&featuretype=city`,{headers:{'Accept-Language':'en'}}).then(r=>r.json()).then(results=>{if(!results.length){sug.style.display='none';return}sug.innerHTML=results.slice(0,5).map((r,i,arr)=>{const label=r.display_name.split(',').slice(0,3).map(s=>s.trim()).join(', ');const border=i<arr.length-1?'border-bottom:.5px solid var(--bd)':'';return `<div onclick="pickLoc('${label.replace(/'/g,"\'")}','ep-loc-sug','ep-loc')" style="padding:12px 14px;font-size:14px;cursor:pointer;${border}" onmouseover="this.style.background='var(--bg2)'" onmouseout="this.style.background=''">${label}</div>`}).join('');sug.style.display='block'}).catch(()=>{sug.style.display='none'})},350)}
-function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;u.dob=`${epDob.y}-${epDob.m}-${epDob.d}`;u.age=new Date().getFullYear()-epDob.y;u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.pace=epPrefs.pref_pace||u.prefs.pace;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
+function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;u.dob=`${epDob.y}-${epDob.m}-${epDob.d}`;u.age=calcAge(epDob.y,epDob.m,epDob.d);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.pace=epPrefs.pref_pace||u.prefs.pace;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
 function initNotifs(){const notifs=DB.notifs();notifs.forEach(n=>n.read=true);DB.s('notifs',notifs);document.getElementById('notif-dot').style.display='none';document.getElementById('notifs-list').innerHTML=notifs.length?notifs.map(n=>`<div class="tl-item px"><div class="tl-dot" style="background:${n.read?'var(--bg4)':'var(--p)'}"></div><div class="flex1"><p style="font-size:14px;color:${n.read?'var(--tx2)':'var(--tx)'};font-weight:${n.read?'400':'500'}">${n.text}</p><p class="tiny mt4">${ago(n.ts)}</p></div></div>`).join(''):`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">🔔</div><h3>No notifications yet</h3></div>`}
 function sendInvite(){const name=document.getElementById('inv-name').value.trim();if(!name){toast('Enter their name');return}const url=`${location.origin}${location.pathname}?invite=${encodeURIComponent(name)}`;closeModal('modal-invite');if(navigator.share)navigator.share({title:name+', join Circle!',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Invite link copied for '+name+'! 📋')}else toast('Invite: '+url);document.getElementById('inv-name').value=''}
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
@@ -655,6 +1061,357 @@ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(
 let deferredPrompt;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;setTimeout(()=>{if(S.screen==='home'){if(confirm('Add Circle to your home screen?'))deferredPrompt?.prompt()}},3000)});
 document.getElementById('screen-stack').querySelectorAll('.screen').forEach(scr=>{const tb=scr.querySelector('.topbar');if(tb)scr.addEventListener('scroll',()=>tb.classList.toggle('scroll-bd',scr.scrollTop>4),{passive:true})});
+
+// ── CONTEXT MENU ─────────────────────────────────────────────────
+let ctxActive = null;
+
+function openCtxMenu(items, anchorEl) {
+  const menu = document.getElementById('ctx-menu');
+  const overlay = document.getElementById('ctx-overlay');
+  menu.innerHTML = items.map(function(it) {
+    if (it === 'sep') return '<div class="ctx-sep"></div>';
+    return '<button class="ctx-item' + (it.danger ? ' danger' : '') + '" onclick="closeCtxMenu();(' + it.fn + '())">'
+      + '<svg viewBox="0 0 18 18">' + it.icon + '</svg>'
+      + it.label + '</button>';
+  }).join('');
+  // Position near anchor
+  const rect = anchorEl.getBoundingClientRect();
+  const appRect = document.getElementById('app').getBoundingClientRect();
+  let top = rect.bottom - appRect.top + 4;
+  let left = rect.left - appRect.left;
+  const menuW = 216;
+  if (left + menuW > appRect.width - 8) left = appRect.width - menuW - 8;
+  if (left < 8) left = 8;
+  menu.style.top = top + 'px';
+  menu.style.left = left + 'px';
+  menu.style.right = 'auto';
+  menu.classList.add('on');
+  overlay.style.display = 'block';
+  ctxActive = menu;
+}
+
+function closeCtxMenu() {
+  const menu = document.getElementById('ctx-menu');
+  const overlay = document.getElementById('ctx-overlay');
+  if (menu) menu.classList.remove('on');
+  if (overlay) overlay.style.display = 'none';
+}
+
+// ── ICON FRAGMENTS ───────────────────────────────────────────────
+const ICO_EYE    = '<path d="M1 9s3-5.5 8-5.5S17 9 17 9s-3 5.5-8 5.5S1 9 1 9z"/><circle cx="9" cy="9" r="2.5"/>';
+const ICO_DASH   = '<rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/>';
+const ICO_QR     = '<rect x="2" y="2" width="5" height="5" rx=".5"/><rect x="11" y="2" width="5" height="5" rx=".5"/><rect x="2" y="11" width="5" height="5" rx=".5"/><rect x="11" y="11" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/><rect x="11" y="14" width="2" height="2"/><rect x="14" y="14" width="2" height="2"/>';
+const ICO_SHARE  = '<circle cx="13" cy="4" r="2"/><circle cx="13" cy="14" r="2"/><circle cx="4" cy="9" r="2"/><path d="M6 8l5-3M6 10l5 3"/>';
+const ICO_MSG    = '<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>';
+const ICO_STOP   = '<circle cx="9" cy="9" r="7"/><path d="M6 9h6"/>';
+const ICO_PAUSE  = '<rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/>';
+const ICO_REMOVE = '<path d="M3 9a6 6 0 1012 0A6 6 0 003 9zM6 6l6 6M12 6l-6 6"/>';
+
+// ── SINGLES CONTEXT MENU ─────────────────────────────────────────
+let ctxSingleId = null;
+
+function openSingleMenu(sid, anchorEl) {
+  ctxSingleId = sid;
+  openCtxMenu([
+    {label:'View profile',    icon:ICO_EYE,   fn:'function(){viewSingleProfile("'+sid+'")}'},
+    {label:'Dashboard',       icon:ICO_DASH,  fn:'function(){openSingleDash("'+sid+'")}'},
+    {label:'Create introduction', icon:ICO_QR, fn:'function(){createIntroForSingle("'+sid+'")}'},
+    {label:'Share Intro Card',icon:ICO_SHARE, fn:'function(){openShareIntroCard("'+sid+'")}'},
+    {label:'Message',         icon:ICO_MSG,   fn:'function(){messageSingle("'+sid+'")}'},
+    'sep',
+    {label:'Stop helping',    icon:ICO_STOP,  fn:'function(){openStopHelping("'+sid+'")}', danger:true},
+  ], anchorEl);
+}
+
+function viewSingleProfile(sid) {
+  const s = DB.singles().find(function(x){return x.id===sid});
+  if (!s) return;
+  toast('Profile: ' + s.name + ' — full profile view coming soon');
+}
+
+function openSingleDash(sid) {
+  const s = DB.singles().find(function(x){return x.id===sid});
+  if (!s) { toast('Single not found'); return; }
+  const c = AVCOLS[s.ci % AVCOLS.length];
+  document.getElementById('dash-title').textContent = s.name + "'s Dashboard";
+  const now = Date.now();
+  const activities = [
+    {icon:'<path d="M9 1v8h6" stroke-linecap="round"/>  <circle cx="9" cy="9" r="7"/>', label:'Introduction expired', ts: now - 7*86400000},
+    {icon:'<path d="M9 1v8h6" stroke-linecap="round"/>  <circle cx="9" cy="9" r="7"/>', label:'Introduction expired', ts: now - 13*86400000},
+    {icon:'<path d="M1 9s3-5.5 8-5.5S17 9 17 9s-3 5.5-8 5.5S1 9 1 9z"/><circle cx="9" cy="9" r="2.5"/>', label:'Someone scanned the QR for ' + s.name, ts: now - 13*86400000},
+  ];
+  function fmtDate(ts){ return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+  let prevDate = '';
+  let actHtml = '';
+  activities.forEach(function(a) {
+    const d = fmtDate(a.ts);
+    if (d !== prevDate) { actHtml += '<div class="sec-hd" style="padding-top:12px">' + d + '</div>'; prevDate = d; }
+    actHtml += '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--bd)">'
+      + '<div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="var(--tx3)" stroke-width="1.6" stroke-linecap="round">' + a.icon + '</svg></div>'
+      + '<div><p style="font-size:14px;color:var(--tx)">' + a.label + '</p><p class="tiny">' + ago(a.ts) + '</p></div></div>';
+  });
+  const inner = s.photos && s.photos.length
+    ? '<img src="'+s.photos[0]+'" style="width:80px;height:80px;object-fit:cover;border-radius:50%">'
+    : '<div class="av" style="width:80px;height:80px;font-size:28px;background:'+c.bg+';color:'+c.tc+'">'+ini(s.name)+'</div>';
+  document.getElementById('dash-body').innerHTML =
+    '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
+    + inner
+    + '<div><h2 style="margin-bottom:2px">'+s.name+'</h2><p class="cap">'+s.loc+'</p></div></div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:24px">'
+    + '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--ok)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">0</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Matches</div></div>'
+    + '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#5B8EE6" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M16 2L10 9l-3-3-5 5"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">0</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Shared</div></div>'
+    + '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--tx3)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M3 3l12 12M15 3L3 15"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">0</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Passed</div></div>'
+    + '<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.4" style="display:block;margin:0 auto 4px"><rect x="2" y="2" width="5" height="5" rx=".5"/><rect x="11" y="2" width="5" height="5" rx=".5"/><rect x="2" y="11" width="5" height="5" rx=".5"/><rect x="11" y="11" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">3</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Scans</div></div>'
+    + '</div>'
+    + '<div class="sec-hd" style="padding-top:0">Activity</div>'
+    + actHtml;
+  go('single-dash');
+}
+
+function createIntroForSingle(sid) {
+  const idx = DB.singles().findIndex(function(x){return x.id===sid});
+  if (idx !== -1) { S.carIdx = idx; go('introduce'); }
+}
+
+function openShareIntroCard(sid) {
+  const s = DB.singles().find(function(x){return x.id===sid});
+  if (!s) return;
+  ctxSingleId = sid;
+  document.getElementById('share-intro-title').textContent = "Share " + s.name + "'s Intro Card";
+  document.getElementById('share-intro-sub').textContent = "Invite your circle to suggest someone great for " + s.name + ".";
+  document.getElementById('share-intro-name-lbl').textContent = s.name;
+  document.getElementById('share-intro-rel').value = '';
+  showModal('modal-share-intro');
+}
+
+function doShareIntroCard() {
+  const s = DB.singles().find(function(x){return x.id===ctxSingleId});
+  if (!s) return;
+  const rel = document.getElementById('share-intro-rel').value.trim();
+  const u = DB.user();
+  const byLine = rel ? u.name + " (" + s.name + "'s " + rel + ")" : u.name;
+  const url = location.origin + location.pathname + '#scan/share_' + ctxSingleId;
+  closeModal('modal-share-intro');
+  if (navigator.share) navigator.share({title: "Meet " + s.name + " — backed by " + byLine, url: url});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url); toast("Intro card link copied! 📋"); }
+  else toast("Link: " + url);
+}
+
+function messageSingle(sid) {
+  const s = DB.singles().find(function(x){return x.id===sid});
+  if (!s) return;
+  // Create or open a matchmaker↔single chat
+  const chatId = 'mm_chat_' + sid;
+  const existing = DB.matches().find(function(m){return m.id===chatId});
+  if (!existing) {
+    const matches = DB.matches();
+    matches.unshift({id:chatId, oName:s.name, oJob:s.job||'', oLoc:s.loc, mmName:'You', ctx:'Direct message', ts:Date.now(), ci:s.ci, unread:0, isDirect:true});
+    DB.setMatches(matches);
+  }
+  openChat(chatId);
+}
+
+let stopHelpingSid = null;
+function openStopHelping(sid) {
+  stopHelpingSid = sid;
+  const s = DB.singles().find(function(x){return x.id===sid});
+  document.getElementById('stop-helping-msg').textContent = s
+    ? 'Are you sure you want to stop helping ' + s.name + '? They will be removed from your circle.'
+    : 'Are you sure?';
+  showModal('modal-stop-helping');
+}
+function doStopHelping() {
+  closeModal('modal-stop-helping');
+  const singles = DB.singles().filter(function(x){return x.id!==stopHelpingSid});
+  DB.setSingles(singles);
+  toast('Removed from your circle');
+  initMyCircle();
+  initHome();
+}
+
+// ── MATCHMAKER CONTEXT MENU ──────────────────────────────────────
+let ctxMmIdx = null;
+
+function openMmMenu(idx, anchorEl) {
+  ctxMmIdx = idx;
+  const u = DB.user();
+  const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
+  if (!mm) return;
+  openCtxMenu([
+    {label:'View profile', icon:ICO_EYE,    fn:'function(){toast("' + mm.name + "'s profile — coming soon\")}" },
+    {label:'Message',      icon:ICO_MSG,    fn:'function(){messageMm(' + idx + ')}'},
+    'sep',
+    {label:'Pause',        icon:ICO_PAUSE,  fn:'function(){openPauseMm(' + idx + ')}'},
+    {label:'Remove',       icon:ICO_REMOVE, fn:'function(){openRemoveMm(' + idx + ')}', danger:true},
+  ], anchorEl);
+}
+
+function messageMm(idx) {
+  const u = DB.user();
+  const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
+  if (!mm) return;
+  const chatId = 'mm_direct_' + idx;
+  const existing = DB.matches().find(function(m){return m.id===chatId});
+  if (!existing) {
+    const matches = DB.matches();
+    matches.unshift({id:chatId, oName:mm.name, oJob:mm.rel||'', oLoc:mm.loc||'', mmName:'Direct', ctx:'', ts:Date.now(), ci:mm.ci||0, unread:0, isDirect:true});
+    DB.setMatches(matches);
+  }
+  openChat(chatId);
+}
+
+let pauseMmIdx = null, removeMmIdx = null;
+function openPauseMm(idx) {
+  pauseMmIdx = idx;
+  const u = DB.user(); const mm = u.matchmakers[idx];
+  document.getElementById('pause-mm-msg').textContent = mm
+    ? mm.name + " won't be able to send you new introductions while paused."
+    : 'This matchmaker will be paused.';
+  showModal('modal-pause-mm');
+}
+function doPauseMm() {
+  closeModal('modal-pause-mm');
+  toast('Matchmaker paused — they can\'t send intros for now');
+}
+
+function openRemoveMm(idx) {
+  removeMmIdx = idx;
+  const u = DB.user(); const mm = u.matchmakers[idx];
+  document.getElementById('remove-mm-msg').textContent = mm
+    ? 'Remove ' + mm.name + '? They will no longer be able to make introductions for you.'
+    : 'Remove this matchmaker?';
+  showModal('modal-remove-mm');
+}
+function doRemoveMm() {
+  closeModal('modal-remove-mm');
+  const u = DB.user();
+  if (removeMmIdx !== null && u.matchmakers) {
+    u.matchmakers.splice(removeMmIdx, 1);
+    DB.setUser(u);
+    S.user = u;
+  }
+  toast('Matchmaker removed');
+  initMyCircle();
+}
+
+
+// ── PROFILE: OPEN/CLOSE TOGGLE ───────────────────────────────────
+function toggleOpenStatus(isOpen) {
+  const u = DB.user(); if (!u) return;
+  u.isOpen = isOpen;
+  DB.setUser(u); S.user = u;
+  const lbl = document.getElementById('prof-open-label');
+  if (lbl) { lbl.textContent = isOpen ? 'Open' : 'Paused'; lbl.style.color = isOpen ? 'var(--ok)' : 'var(--tx3)'; }
+  toast(isOpen ? 'You are now open to introductions ✓' : 'Introductions paused');
+}
+
+// ── PHOTO LIGHTBOX ────────────────────────────────────────────────
+function openLightbox(idx) {
+  const photos = window._profPhotos || [];
+  if (!photos.length) return;
+  document.getElementById('lightbox-img').src = photos[idx];
+  document.getElementById('lightbox-counter').textContent = (idx+1) + ' / ' + photos.length;
+  showModal('modal-photo-view');
+}
+
+// ── PREVIEW AS OTHERS SEE YOU ─────────────────────────────────────
+function previewProfile() {
+  const u = DB.user(); if (!u) return;
+  const col = AVCOLS[0];
+  const photos = u.photos && u.photos.length ? u.photos : [];
+  const photoHtml = photos.length
+    ? '<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:280px;border-radius:var(--r3);overflow:hidden;margin-bottom:16px">'
+      + photos.map(function(p){ return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>'; }).join('')
+      + '</div>'
+    : '<div style="height:200px;background:'+col.bg+';display:flex;align-items:center;justify-content:center;border-radius:var(--r3);margin-bottom:16px">'
+      + '<div class="av" style="width:90px;height:90px;font-size:32px;background:'+col.bg+';color:'+col.tc+'">'+ini(u.name)+'</div></div>';
+  const tagsHtml = (u.tags||[]).map(function(t){ return '<span class="pill pill-p">'+t+'</span>'; }).join('');
+  const qList = Object.entries(u.qs||{}).map(function(kv){
+    const q = QS.find(function(x){return x.id===kv[0]});
+    return q ? '<div class="row mb8" style="gap:10px"><span class="tiny" style="min-width:90px;color:var(--tx3)">'+q.q+'</span><span style="font-size:14px;color:var(--tx)">'+kv[1]+'</span></div>' : '';
+  }).join('');
+  document.getElementById('preview-body').innerHTML =
+    '<div style="background:var(--p1);border-radius:var(--r2);padding:10px 14px;margin-bottom:20px;text-align:center"><p class="tiny" style="color:var(--p6)">👁 This is how your profile appears to others</p></div>'
+    + photoHtml
+    + '<h2 class="mb4">' + u.name + (u.age?', '+u.age:'') + '</h2>'
+    + '<p class="cap mb12">' + (u.job||'') + (u.job&&u.location?' · ':'') + (u.location||'') + '</p>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">' + tagsHtml + '</div>'
+    + (qList ? '<div class="card" style="margin-bottom:0">' + qList + '</div>' : '');
+  go('prof-preview');
+}
+
+// ── MY QR CODE ────────────────────────────────────────────────────
+function showMyQR() {
+  const u = DB.user(); if (!u) return;
+  const qrOut = document.getElementById('my-qr-out');
+  qrOut.innerHTML = '';
+  const url = location.origin + location.pathname + '#profile/' + (u.id || 'me');
+  try {
+    new QRCode(qrOut, {text:url, width:200, height:200, colorDark:'#1A1614', colorLight:'#FFFFFF', correctLevel:QRCode.CorrectLevel.H});
+  } catch(e) {
+    qrOut.innerHTML = '<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready</div>';
+  }
+  showModal('modal-my-qr');
+}
+
+function shareMyQR() {
+  const u = DB.user(); if (!u) return;
+  const url = location.origin + location.pathname + '#profile/' + (u.id||'me');
+  if (navigator.share) navigator.share({title: 'My Circle profile — ' + u.name, url: url});
+  else if (navigator.clipboard) { navigator.clipboard.writeText(url); toast('Profile link copied! 📋'); }
+  else toast(url);
+  closeModal('modal-my-qr');
+}
+
+// ── LEVELS & REWARDS SCREEN ───────────────────────────────────────
+function initLevelsRewards() {
+  const u = DB.user();
+  const pts = u ? (u.points||0) : 0;
+  const li = lvlInfo(pts);
+  const MOTTOS = [
+    'Every great story starts with an introduction',
+    'You know everyone worth knowing',
+    'Social magic runs in your veins',
+    'Making love happen, one intro at a time',
+    'Struck by your own arrows',
+    'Love is your legacy'
+  ];
+  const PERKS = [
+    ['Access the Circle community'],
+    ['Access the Circle community','Exclusive Insider badge'],
+    ['All Insider perks','Priority support'],
+    ['All Social Butterfly perks','Featured matchmaker badge'],
+    ['All Matchmaker perks','Cupid Hall of Fame'],
+    ['All Cupid perks','Luminary frame','Direct access to founders']
+  ];
+  let html = '<p class="cap mb20">Earn points by making introductions, getting matches, and receiving positive feedback.</p>';
+  LEVELS.forEach(function(lvl, i) {
+    const isActive = i === li.idx;
+    const isDone   = i < li.idx;
+    const pct = isActive ? li.pct : (isDone ? 100 : 0);
+    const nextPts  = LEVELS[i+1] ? LEVELS[i+1].p : lvl.p;
+    html += '<div style="border:.5px solid '+(isActive?'var(--p)':'var(--bd2)')+';border-radius:var(--r3);padding:16px;margin-bottom:12px;background:'+(isActive?'var(--p1)':'var(--bg)')+';">'
+      + '<div class="row mb6" style="gap:12px">'
+      +   '<div style="width:44px;height:44px;border-radius:50%;background:'+(isActive?'var(--p)':'var(--bg3)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +     '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="'+(isActive?'#fff':'var(--tx3)')+'" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M8 17a4 4 0 018 0"/></svg>'
+      +   '</div>'
+      +   '<div class="flex1">'
+      +     '<div class="row" style="gap:8px"><span style="font-size:16px;font-weight:700;color:var(--tx)">' + lvl.n + '</span>'
+      +       (isActive ? '<span class="pill pill-p" style="font-size:10px">Current</span>' : '')
+      +       (isDone   ? '<span class="pill pill-ok" style="font-size:10px">✓ Done</span>'  : '')
+      +     '</div>'
+      +     '<p class="tiny" style="color:var(--tx3);margin-top:2px">' + MOTTOS[i] + '</p>'
+      +   '</div>'
+      + '</div>'
+      + '<div class="between mb4" style="font-size:12px;color:var(--tx3)"><span>'+lvl.p+' pts</span>' + (LEVELS[i+1]?'<span>'+LEVELS[i+1].p+' pts</span>':'<span>Max</span>') + '</div>'
+      + '<div class="lvlbar mb10"><div class="lvlfill" style="width:'+pct+'%"></div></div>'
+      + '<div style="display:flex;flex-direction:column;gap:4px">'
+      + (PERKS[i]||[]).map(function(p){ return '<div class="row" style="gap:8px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="'+(isDone||isActive?'var(--ok)':'var(--tx3)')+'" stroke-width="2" stroke-linecap="round"><path d="M2 7l3.5 3.5 6.5-6"/></svg><span style="font-size:13px;color:var(--tx2)">'+p+'</span></div>'; }).join('')
+      + '</div></div>';
+  });
+  document.getElementById('levels-body').innerHTML = html;
+}
+
 </script>
 </body>
 </html>
