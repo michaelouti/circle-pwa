@@ -560,49 +560,35 @@ function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
 function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,pace:S.setup.pref_pace,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',ci:0},{name:'Paul',rel:'Colleague',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){DB.setSingles([{id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,bio:'Creative soul who loves design and the outdoors.'},{id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,bio:'Passionate about food and people.'},{id:'s3',name:'Camille',age:26,job:'Marketing',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,bio:'Marketing lead by day, world traveller by weekend.'}]);const now=Date.now(),i1='intro_'+now,i2='intro_'+(now+1),m1='match_'+now;DB.setIntros([{id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris',mmName:'Marie',mmRel:'Best friend',ctx:"You both love hiking and he's one of the most thoughtful people I know.",status:'pending',ts:now-7200000,exp:now+3600000*70,ci:2},{id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris',mmName:'Paul',mmRel:'Colleague',ctx:"She's brilliant, funny, and has the same dry humor as you.",status:'pending',ts:now-3600000*18,exp:now+3600000*54,ci:6}]);DB.setMatches([{id:m1,oName:'Sara',oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2}]);DB.setMsgs(m1,[{id:1,from:'them',text:'Hey! Marie introduced us 😊',ts:now-3600000*46},{id:2,from:'me',text:'Hi Sara! Great taste Marie has 😄 I am '+uname,ts:now-3600000*45},{id:3,from:'them',text:'So you work in design? I write about tech.',ts:now-3600000*44},{id:4,from:'me',text:"That's a small world!",ts:now-3600000*43},{id:5,from:'them',text:'I wrote about how dating apps are broken...',ts:now-3600000*42},{id:6,from:'me',text:'And yet here we are on one that might work 😄',ts:now-3600000*41}]);DB.addNotif({id:'n1',text:'Marie introduced you to Thomas!',ts:now-7200000,read:false});DB.addNotif({id:'n2',text:'Sara sent you a message',ts:now-3600000*40,read:false});DB.addNotif({id:'n3',text:'Paul introduced you to Lea',ts:now-3600000*18,read:true})}
-</script><script>
-function initHome(){const u=S.user||DB.user();if(!u)return;S.user=u;const now=Date.now(),weekAgo=now-7*24*3600000;const weekIntros=DB.intros().filter(i=>i.ts&&i.ts>weekAgo).length;const li=lvlInfo(u.points||0),nextLvl=LEVELS[li.idx+1];document.getElementById('h-week-intros').textContent=`${weekIntros} intro${weekIntros!==1?'s':''} made`;document.getElementById('h-level-info').innerHTML=`Matchmaker level: <strong style="color:var(--tx)">${li.name}</strong>${nextLvl?` — ${li.rem} points to reach ${nextLvl.n}`:'&nbsp;— Maximum level 🏆'}`;const singles=DB.singles(),scroll=document.getElementById('h-singles-scroll'),dotsEl=document.getElementById('h-scroll-dots');if(!singles.length){scroll.innerHTML=`<div class="sing-card sing-add-card" style="min-width:min(190px,54vw)" onclick="showModal('modal-invite')"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M4 11h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:600;color:var(--tx3)">Add a single friend</span></div>`;dotsEl.innerHTML=''}else{scroll.innerHTML=singles.map(s=>{const c=AVCOLS[s.ci%AVCOLS.length];const inner=s.photos&&s.photos.length?`<img src="${s.photos[0]}" style="width:100%;height:100%;object-fit:cover;display:block">`:`<div style="width:100%;height:100%;background:linear-gradient(145deg,${c.bg},${c.bg}cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:${c.tc};opacity:.45;letter-spacing:-4px">${ini(s.name)}</span></div>`;return `<div class="sing-card" onclick="singCardTap('${s.id}')">${inner}<button class="sing-card-menu" onclick="event.stopPropagation();singCardMenu('${s.id}')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">${s.name}</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">${s.loc}</div></div></div>`}).join('')+`<div class="sing-card sing-add-card" onclick="toast('Add single friend - coming soon!')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>`;const total=singles.length+1;dotsEl.innerHTML=Array.from({length:total},(_,i)=>`<div class="scroll-dot ${i===0?'on':''}" style="width:${i===0?'18px':'6px'}"></div>`).join('');scroll.onscroll=()=>{const cardW=(scroll.querySelector('.sing-card')?.offsetWidth||190)+12;const idx=Math.min(Math.round(scroll.scrollLeft/cardW),total-1);dotsEl.querySelectorAll('.scroll-dot').forEach((d,i)=>{d.classList.toggle('on',i===idx);d.style.width=i===idx?'18px':'6px'})}}const hasUnread=DB.notifs().some(n=>!n.read);document.getElementById('notif-dot').style.display=hasUnread?'block':'none'}
 
-function renderHomeScroll(singles, scroll, dotsEl) {
-  const total = singles.length + 1;
-  scroll.innerHTML = singles.map(s => {
-    const c = AVCOLS[s.ci % AVCOLS.length];
-    const inner = s.photos && s.photos.length
-      ? `<img src="${s.photos[0]}" style="width:100%;height:100%;object-fit:cover;display:block">`
-      : `<div style="width:100%;height:100%;background:linear-gradient(145deg,${c.bg},${c.bg}cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:${c.tc};opacity:.45;letter-spacing:-4px">${ini(s.name)}</span></div>`;
-    return `<div class="sing-card" onclick="singCardTap('${s.id}')">${inner}<button class="sing-card-menu" onclick="event.stopPropagation();singCardMenu('${s.id}')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff">${s.name}</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">${s.loc}</div></div></div>`;
-  }).join('') + `<div class="sing-card sing-add-card" onclick="toast('Add single friend - coming soon!')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>`;
-  dotsEl.innerHTML = Array.from({length: total}, (_, i) =>
-    `<div class="scroll-dot ${i===0?'on':''}" style="width:${i===0?'18px':'6px'}"></div>`
-  ).join('');
-  scroll.onscroll = () => {
-    const cardW = (scroll.querySelector('.sing-card')?.offsetWidth || 190) + 12;
-    const idx = Math.min(Math.round(scroll.scrollLeft / cardW), total - 1);
-    dotsEl.querySelectorAll('.scroll-dot').forEach((d, i) => {
-      d.classList.toggle('on', i === idx);
-      d.style.width = i === idx ? '18px' : '6px';
-    });
-  };
-}
-function initHomeFixed() {
-  const u = S.user || DB.user(); if (!u) return; S.user = u;
-  const now = Date.now(), weekAgo = now - 7*24*3600000;
-  const weekIntros = DB.intros().filter(i => i.ts && i.ts > weekAgo).length;
-  const li = lvlInfo(u.points || 0), nextLvl = LEVELS[li.idx + 1];
-  document.getElementById('h-week-intros').textContent = `${weekIntros} intro${weekIntros!==1?'s':''} made`;
-  document.getElementById('h-level-info').innerHTML = `Matchmaker level: <strong style="color:var(--tx)">${li.name}</strong>${nextLvl ? ` — ${li.rem} points to reach ${nextLvl.n}` : ' — Maximum level 🏆'}`;
-  const singles = DB.singles(), scroll = document.getElementById('h-singles-scroll'), dotsEl = document.getElementById('h-scroll-dots');
-  if (!singles.length) {
-    scroll.innerHTML = `<div class="sing-card sing-add-card" style="min-width:min(190px,54vw)" onclick="showModal('modal-invite')"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M4 11h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:600;color:var(--tx3)">Add a single friend</span></div>`;
-    dotsEl.innerHTML = '';
+function initHome(){
+  const u=S.user||DB.user();if(!u)return;S.user=u;
+  const now=Date.now(),weekAgo=now-7*24*3600000;
+  const weekIntros=DB.intros().filter(i=>i.ts&&i.ts>weekAgo).length;
+  const li=lvlInfo(u.points||0),nextLvl=LEVELS[li.idx+1];
+  document.getElementById('h-week-intros').textContent=weekIntros+' intro'+(weekIntros!==1?'s':'')+' made';
+  document.getElementById('h-level-info').innerHTML='Matchmaker level: <strong style="color:var(--tx)">'+li.name+'</strong>'+(nextLvl?' — '+li.rem+' points to reach '+nextLvl.n:' — Maximum level 🏆');
+  const singles=DB.singles(),scroll=document.getElementById('h-singles-scroll'),dotsEl=document.getElementById('h-scroll-dots');
+  if(!singles.length){
+    scroll.innerHTML='<div class="sing-card sing-add-card" style="min-width:min(190px,54vw)" onclick="showModal(\'modal-invite\')"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M4 11h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:600;color:var(--tx3)">Add a single friend</span></div>';
+    dotsEl.innerHTML='';
   } else {
-    renderHomeScroll(singles, scroll, dotsEl);
+    const total=singles.length+1;
+    scroll.innerHTML=singles.map(function(s){
+      const c=AVCOLS[s.ci%AVCOLS.length];
+      const inner=s.photos&&s.photos.length?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block">':'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+c.bg+','+c.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:'+c.tc+';opacity:.45;letter-spacing:-4px">'+ini(s.name)+'</span></div>';
+      return '<div class="sing-card" onclick="singCardTap(\''+s.id+'\')">'+inner+'<button class="sing-card-menu" onclick="event.stopPropagation();singCardMenu(\''+s.id+'\')"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">'+s.name+'</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">'+s.loc+'</div></div></div>';
+    }).join('')+'<div class="sing-card sing-add-card" onclick="toast(\'Add single friend — coming soon!\')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>';
+    dotsEl.innerHTML=Array.from({length:total},function(_,i){return '<div class="scroll-dot '+(i===0?'on':'')+'" style="width:'+(i===0?'18px':'6px')+'"></div>'}).join('');
+    scroll.onscroll=function(){
+      const cardW=(scroll.querySelector('.sing-card')?.offsetWidth||190)+12;
+      const idx=Math.min(Math.round(scroll.scrollLeft/cardW),total-1);
+      dotsEl.querySelectorAll('.scroll-dot').forEach(function(d,i){d.classList.toggle('on',i===idx);d.style.width=i===idx?'18px':'6px'});
+    };
   }
-  const hasUnread = DB.notifs().some(n => !n.read);
-  document.getElementById('notif-dot').style.display = hasUnread ? 'block' : 'none';
+  const hasUnread=DB.notifs().some(n=>!n.read);
+  document.getElementById('notif-dot').style.display=hasUnread?'block':'none';
 }
-// Override initHome with the fixed version
-const initHome = initHomeFixed;
 
 function singCardTap(id){const idx=DB.singles().findIndex(s=>s.id===id);if(idx!==-1){S.carIdx=idx;go('introduce')}}
 function singCardMenu(id){const s=DB.singles().find(x=>x.id===id);if(!s)return;S.introSingle=s;S.carIdx=DB.singles().findIndex(x=>x.id===id);toast(s.name+' — tap + to generate a QR')}
