@@ -415,34 +415,27 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- PROFILE -->
 <div id="s-profile" class="screen" style="padding-top:0">
-  <!-- FULL HERO PHOTO + OVERLAY -->
+  <!-- HALF-SCREEN PHOTO -->
   <div style="position:relative;background:#1a1614">
-    <!-- photo scroll -->
-    <div id="prof-photos-scroll" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:480px"></div>
-    <!-- pagination dots -->
-    <div id="prof-photo-dots" style="position:absolute;top:12px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:5"></div>
-    <!-- top buttons -->
-    <div style="position:absolute;top:max(14px,var(--sat));left:12px;z-index:10">
-      <button class="btn-icon" style="width:38px;height:38px;background:rgba(0,0,0,.38);backdrop-filter:blur(10px);border-radius:50%;" onclick="go('notifs')">
-        <svg width="18" height="18" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.8"><path d="M11 3A6 6 0 005 9v3.5L3 15h16l-2-2.5V9A6 6 0 0011 3z" stroke-linejoin="round"/><path d="M9.5 18a1.5 1.5 0 003 0" stroke-linecap="round"/></svg>
+    <div id="prof-photos-scroll" style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:50dvh;min-height:240px;max-height:340px"></div>
+    <div id="prof-photo-dots" style="position:absolute;top:10px;left:50%;transform:translateX(-50%);display:flex;gap:5px;z-index:5"></div>
+    <!-- settings button top-right only -->
+    <div style="position:absolute;top:max(12px,var(--sat));right:12px;z-index:10">
+      <button class="btn-icon" style="width:36px;height:36px;background:rgba(0,0,0,.38);backdrop-filter:blur(10px);border-radius:50%;" onclick="go('edit-profile')">
+        <svg width="17" height="17" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="3"/><path d="M11 2v2M11 18v2M2 11h2M18 11h2M4.9 4.9l1.4 1.4M15.7 15.7l1.4 1.4M4.9 17.1l1.4-1.4M15.7 6.3l1.4-1.4"/></svg>
       </button>
     </div>
-    <div style="position:absolute;top:max(14px,var(--sat));right:12px;z-index:10;display:flex;gap:8px">
-      <button class="btn-icon" style="width:38px;height:38px;background:rgba(0,0,0,.38);backdrop-filter:blur(10px);border-radius:50%;" onclick="go('settings')">
-        <svg width="18" height="18" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.8"><circle cx="11" cy="11" r="3"/><path d="M11 2v2M11 18v2M2 11h2M18 11h2M4.9 4.9l1.4 1.4M15.7 15.7l1.4 1.4M4.9 17.1l1.4-1.4M15.7 6.3l1.4-1.4" stroke-linecap="round"/></svg>
-      </button>
-    </div>
-    <!-- name overlay at bottom of photo -->
-    <div style="position:absolute;bottom:0;left:0;right:0;padding:40px 20px 18px;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,rgba(0,0,0,.2) 60%,transparent 100%);z-index:4">
-      <h1 id="prof-name" style="color:#fff;font-size:30px;font-weight:800;letter-spacing:-.5px;margin-bottom:8px"></h1>
-      <div id="prof-meta-row" style="display:flex;flex-wrap:wrap;gap:10px 18px"></div>
+    <!-- name + meta overlay -->
+    <div style="position:absolute;bottom:0;left:0;right:0;padding:32px 18px 16px;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.18) 65%,transparent 100%);z-index:4">
+      <h1 id="prof-name" style="color:#fff;font-size:28px;font-weight:800;letter-spacing:-.5px;margin-bottom:7px"></h1>
+      <div id="prof-meta-row" style="display:flex;flex-wrap:wrap;gap:8px 16px"></div>
     </div>
   </div>
 
   <!-- BODY -->
   <div class="p20" style="padding-bottom:36px">
     <!-- Preview + QR row -->
-    <div class="row mt4 mb16" style="gap:8px">
+    <div class="row mt12 mb16" style="gap:8px">
       <button class="btn btn-s flex1" style="gap:8px;font-size:14px;font-weight:600" onclick="previewProfile()">
         <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><ellipse cx="8" cy="8" rx="6" ry="4"/><circle cx="8" cy="8" r="2"/></svg>
         Preview as others see you
@@ -452,8 +445,8 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       </button>
     </div>
 
-    <!-- Open status row -->
-    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-radius:var(--r2);padding:12px 16px;margin-bottom:16px">
+    <!-- Open status -->
+    <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg2);border-radius:var(--r2);padding:12px 16px;margin-bottom:20px">
       <div>
         <div style="font-size:14px;font-weight:600;color:var(--tx)">Open to introductions</div>
         <p id="prof-open-sub" class="tiny mt4"></p>
@@ -461,18 +454,21 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <label class="tog"><input type="checkbox" id="prof-open-toggle" onchange="toggleOpenStatus(this.checked)"><span class="tog-sl"></span></label>
     </div>
 
-    <!-- Friend tags -->
-    <p class="micro mb10" style="color:var(--tx3);text-align:center">Friends describe you as</p>
-    <div id="prof-tags" class="mb20" style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center"></div>
-
-    <!-- Edit profile button -->
-    <button class="btn btn-s mb20" onclick="go('edit-profile')">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M11.5 2.5l2 2-8 8H3.5v-2l8-8z"/></svg>
-      Edit profile
-    </button>
-
     <!-- Matchmaker status card -->
     <div id="prof-status-card" class="card mb4" style="padding:18px 18px 14px"></div>
+
+    <!-- Settings list -->
+    <div class="card mt16" style="padding:0;overflow:hidden;margin-bottom:0">
+      <button class="li" onclick="go('settings')">
+        <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.3 3.3l.7.7M12 12l.7.7M3.3 12.7l.7-.7M12 4l.7-.7" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div>
+        <span class="flex1" style="font-size:15px">Settings</span>
+        <svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="li" style="color:var(--er)" onclick="confirmLogout()">
+        <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5H3a1 1 0 00-1 1v9a1 1 0 001 1h3.5M10.5 11.5l3-3.5-3-3.5M13.5 8H6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <span class="flex1" style="font-size:15px">Sign out</span>
+      </button>
+    </div>
   </div>
 </div>
 
@@ -960,7 +956,7 @@ function initProfile() {
   const photos = u.photos && u.photos.length ? u.photos : [];
   if (photos.length) {
     strip.innerHTML = photos.map(function(p, i) {
-      return '<div style="min-width:100%;height:480px;scroll-snap-align:start;flex-shrink:0;cursor:zoom-in" onclick="openLightbox('+i+')">'
+      return '<div style="min-width:100%;height:100%;scroll-snap-align:start;flex-shrink:0;cursor:zoom-in" onclick="openLightbox('+i+')">'
            + '<img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
     }).join('');
     dots.innerHTML = photos.map(function(_, i) {
@@ -974,7 +970,7 @@ function initProfile() {
     };
   } else {
     const col = AVCOLS[0];
-    strip.innerHTML = '<div style="min-width:100%;height:480px;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc)">'
+    strip.innerHTML = '<div style="min-width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc)">'
       + '<div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(u.name)+'</div></div>';
     dots.innerHTML = '';
   }
@@ -1012,11 +1008,7 @@ function initProfile() {
   if (tog) tog.checked = isOpen;
   if (sub) { sub.textContent = isOpen ? 'Your matchmakers can introduce you' : 'No new introductions for now'; sub.style.color = isOpen ? 'var(--ok)' : 'var(--tx3)'; }
 
-  // tags
-  const tagsEl = document.getElementById('prof-tags');
-  if (tagsEl) tagsEl.innerHTML = (u.tags||[]).map(function(t) {
-    return '<span class="pill" style="background:var(--p1);color:var(--p6);padding:9px 16px;font-size:14px;font-weight:600">'+t+'</span>';
-  }).join('');
+  // tags element removed from profile screen - no-op
 
   // status card
   const li = lvlInfo(u.points || 0);
@@ -1493,93 +1485,141 @@ function initLevelsRewards() {
   const pts = u ? (u.points||0) : 0;
   const li = lvlInfo(pts);
 
-  const EARN = [
-    {icon:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>', label:'QR code scanned (intro created)', pts:'+3'},
-    {icon:'<circle cx="9" cy="9" r="7"/><path d="M5.5 9l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/>', label:'Introduction accepted (profile sent)', pts:'+5'},
-    {icon:'<path d="M9 2l1.5 4.5H15L11 9.5l1.5 4.5L9 11l-3.5 3 1.5-4.5L3 6.5h4.5z" stroke-linejoin="round"/>', label:'Positive feedback from a single', pts:'+5'},
-    {icon:'<circle cx="7.5" cy="6" r="3"/><circle cx="14" cy="6" r="3"/><path d="M1 17c0-4 3-6 6.5-6s6.5 2 6.5 6" stroke-linecap="round"/>', label:'Match created', pts:'+10'},
-    {icon:'<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>', label:'Conversation started', pts:'+10'},
-    {icon:'<circle cx="9" cy="9" r="3"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.6 3.6l1.4 1.4M12 12l1.4 1.4M3.6 14.4l1.4-1.4M12 6l1.4-1.4"/>', label:'Real-life meeting confirmed', pts:'+20'},
+  const EARN_ITEMS = [
+    {path:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>', label:'QR code scanned (intro created)', pts:'+3'},
+    {path:'<circle cx="9" cy="9" r="7"/><path d="M5.5 9l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/>', label:'Introduction accepted (profile sent)', pts:'+5'},
+    {path:'<path d="M9 2l1.5 4.5H15L11 9.5l1.5 4.5L9 11l-3.5 3 1.5-4.5L3 6.5h4.5z" stroke-linejoin="round"/>', label:'Positive feedback from a single', pts:'+5'},
+    {path:'<circle cx="6" cy="6" r="2.5"/><circle cx="12" cy="6" r="2.5"/><path d="M1 16c0-3.3 2.2-5 5-5s5 2 5 5M9 16c0-3.3 2.2-5 5-5" stroke-linecap="round"/>', label:'Match created', pts:'+10'},
+    {path:'<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>', label:'Conversation started', pts:'+10'},
+    {path:'<circle cx="9" cy="9" r="3"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.6 3.6l1.4 1.4M12 12l1.4 1.4M3.6 14.4l1.4-1.4M12 6l1.4-1.4"/>', label:'Real-life meeting confirmed', pts:'+20'},
   ];
 
   let levelsHtml = '';
   LEVELS.forEach(function(lvl, i) {
     const isActive = i === li.idx;
     const isDone   = i < li.idx;
+    const dimmed   = !isActive && !isDone;
     levelsHtml +=
-      '<div style="display:flex;align-items:center;gap:14px;padding:16px;border-radius:var(--r3);border:.5px solid '+(isActive?'var(--p)':'var(--bd2)')+';background:'+(isActive?'var(--p1)':'var(--bg)')+';margin-bottom:8px">'
-      + '<div style="width:40px;height:40px;border-radius:50%;background:'+(isActive?'var(--p)':(isDone?'var(--bg3)':'var(--bg3)'))+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +   '<span style="font-size:15px;font-weight:800;color:'+(isActive?'#fff':'var(--tx3)')+'">'+( i+1)+'</span>'
+      '<div style="display:flex;align-items:center;gap:14px;padding:15px 16px;border-radius:var(--r3);'
+      + 'border:.5px solid '+(isActive?'var(--p)':'var(--bd2)')+';'
+      + 'background:'+(isActive?'var(--p1)':'var(--bg)')+';margin-bottom:8px">'
+      + '<div style="width:38px;height:38px;border-radius:50%;'
+      +   'background:'+(isActive?'var(--p)':dimmed?'var(--bg3)':'var(--bg4)')+';'
+      +   'display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +   '<span style="font-size:14px;font-weight:800;color:'+(isActive?'#fff':dimmed?'var(--tx3)':'var(--tx2)')+'">'+(i+1)+'</span>'
       + '</div>'
       + '<div class="flex1">'
-      +   '<div class="row" style="gap:8px;margin-bottom:2px">'
-      +     '<span style="font-size:16px;font-weight:700;color:'+(isActive||isDone?'var(--tx)':'var(--tx3)')+'">'+lvl.n+'</span>'
+      +   '<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">'
+      +     '<span style="font-size:15px;font-weight:700;color:'+(dimmed?'var(--tx3)':'var(--tx)')+'">'+lvl.n+'</span>'
       +     (isActive ? '<span style="font-size:10px;font-weight:700;color:var(--p);letter-spacing:.5px">YOU\'RE HERE</span>' : '')
       +   '</div>'
       +   '<p style="font-size:13px;color:var(--tx3);line-height:1.4">'+lvl.desc+'</p>'
       + '</div>'
-      + '<span style="font-size:13px;font-weight:600;color:var(--tx3);flex-shrink:0">'+(i===0?'0':lvl.p)+' pts</span>'
+      + '<span style="font-size:13px;font-weight:600;color:'+(dimmed?'var(--tx3)':'var(--tx2)')+';flex-shrink:0">'+(i===0?'0':lvl.p)+' pts</span>'
       + '</div>';
   });
 
-  const earnHtml = EARN.map(function(e) {
+  const earnHtml = EARN_ITEMS.map(function(e) {
     return '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);margin-bottom:8px">'
-      + '<div style="width:38px;height:38px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +   '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round">'+e.icon+'</svg>'
+      + '<div style="width:40px;height:40px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +   '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.5" stroke-linecap="round">'+e.path+'</svg>'
       + '</div>'
       + '<span style="font-size:14px;color:var(--tx);flex:1;line-height:1.4">'+e.label+'</span>'
-      + '<span style="font-size:14px;font-weight:700;color:var(--p);flex-shrink:0">'+e.pts+'</span>'
+      + '<span style="font-size:15px;font-weight:700;color:var(--p);flex-shrink:0">'+e.pts+'</span>'
       + '</div>';
   }).join('');
 
   document.getElementById('levels-body').innerHTML =
     '<div style="background:var(--p1);border-radius:var(--r3);padding:16px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px">'
-    + '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><path d="M11 2l2 5.5h5.5L14 11l2 5.5L11 13l-5 3.5 2-5.5-4.5-3.5H9z" stroke-linejoin="round"/></svg>'
+    + '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><path d="M11 2l2 5.5h5.5L14 11l2 5.5L11 13l-5 3.5 2-5.5L3.5 7.5H9z" stroke-linejoin="round"/></svg>'
     + '<div><div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px">Why levels?</div>'
-    + '<p style="font-size:14px;color:var(--tx2);line-height:1.55">Great matchmakers create meaningful connections. Your level reflects your impact — not competition, just recognition for the people you\'ve helped.</p></div>'
+    + '<p style="font-size:14px;color:var(--tx2);line-height:1.6">Great matchmakers create meaningful connections. Your level reflects your impact — not competition, just recognition for the people you\'ve helped.</p></div>'
     + '</div>'
     + '<div class="micro mb12" style="color:var(--tx3)">MATCHMAKER LEVELS</div>'
     + levelsHtml
     + '<div class="micro mb12 mt20" style="color:var(--tx3)">HOW TO EARN POINTS</div>'
     + earnHtml
-    + '<button class="btn btn-s mt12" style="gap:10px" onclick="go(\'how-circle-works\')">'
-    +   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2" y="2" width="5" height="6" rx="1"/><rect x="9" y="2" width="5" height="4" rx="1"/><rect x="2" y="10" width="5" height="4" rx="1"/><rect x="9" y="8" width="5" height="6" rx="1"/></svg>'
-    +   'How matchmaking works'
-    + '</button>'
-    + '<div style="height:20px"></div>';
+    + '<div style="margin-top:8px;padding:14px 16px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px" onclick="go(\'how-circle-works\')">'
+    +   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><rect x="1" y="2" width="6" height="8" rx="1"/><path d="M1 6h6M1 4h6M8 4h7M8 7h7M8 10h5"/></svg>'
+    +   '<span style="font-size:14px;color:var(--tx2);font-weight:500">How matchmaking works</span>'
+    + '</div>'
+    + '<div style="height:24px"></div>';
 }
 
 function initHowCircleWorks() {
-  function step(iconPath, title, desc) {
-    return '<div style="display:flex;gap:14px;padding:16px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);margin-bottom:10px">'
-      + '<div style="width:44px;height:44px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +   '<svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round">'+iconPath+'</svg>'
+  function stepCard(iconPath, title, desc, tint) {
+    return '<div style="display:flex;gap:14px;padding:18px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);margin-bottom:12px">'
+      + '<div style="width:46px;height:46px;border-radius:50%;background:'+(tint||'var(--p1)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +   '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.7" stroke-linecap="round">'+iconPath+'</svg>'
       + '</div>'
-      + '<div><div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px">'+title+'</div>'
-      +   '<p style="font-size:14px;color:var(--tx2);line-height:1.55">'+desc+'</p></div>'
+      + '<div>'
+      +   '<div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:5px">'+title+'</div>'
+      +   '<p style="font-size:14px;color:var(--tx2);line-height:1.6">'+desc+'</p>'
+      + '</div>'
       + '</div>';
   }
-  const SEEKING = [
-    {icon:'<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M12 13v4M10 15h4"/>',title:'Choose your matchmakers',desc:"Invite trusted friends who know you well. They'll be your eyes and ears in the real world."},
-    {icon:'<rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="12" y="3" width="5" height="5" rx=".5"/><rect x="3" y="12" width="5" height="5" rx=".5"/><rect x="12" y="12" width="2.5" height="2.5"/><rect x="14.5" y="12" width="2.5" height="2.5"/>',title:'They meet someone for you',desc:"When a matchmaker meets someone they think you'd click with, they create an introduction via a QR code."},
-    {icon:'<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>',title:'You decide',desc:"You see the profile and choose whether to connect. No pressure, no awkwardness — your matchmaker handles the intro."},
-    {icon:'<path d="M10 17s-7-4.3-7-8.5C3 5.1 5.3 3 10 6.5c4.7-3.5 7-1.4 7 2C17 12.7 10 17 10 17z"/>',title:'Connect & chat',desc:"If both sides are interested, you're matched and can start chatting. Real connections, through real people."},
-  ];
-  const HELPING = [
-    {icon:'<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/>',title:'Your friend trusts you',desc:"A friend added you as their matchmaker — they're counting on you to help them meet someone special."},
-    {icon:'<path d="M11 2l2 5.5h5.5L14 11l2 5.5L11 13l-5 3.5 2-5.5L4 8.5h5.5z" stroke-linejoin="round"/>',title:'Meet someone in real life',desc:"At a party, at work, at the gym — whenever you meet someone who'd be great for your friend."},
-    {icon:'<rect x="3" y="3" width="5" height="5" rx=".5"/><rect x="12" y="3" width="5" height="5" rx=".5"/><rect x="3" y="12" width="5" height="5" rx=".5"/><rect x="12" y="12" width="2.5" height="2.5"/><rect x="14.5" y="12" width="2.5" height="2.5"/>',title:'Make the introduction',desc:"Show them your friend's profile via a QR code. It takes 10 seconds and feels natural."},
-    {icon:'<path d="M10 17s-7-4.3-7-8.5C3 5.1 5.3 3 10 6.5c4.7-3.5 7-1.4 7 2C17 12.7 10 17 10 17z"/>',title:'Watch the magic happen',desc:"If they're both interested, they match. You just made something beautiful happen."},
-  ];
+
+  const sectionHead = function(iconPath, title) {
+    return '<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;margin-top:4px">'
+      + '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round">'+iconPath+'</svg>'
+      + '<h2 style="font-size:20px;font-weight:800;letter-spacing:-.3px">'+title+'</h2>'
+      + '</div>';
+  };
+
   document.getElementById('how-circle-body').innerHTML =
-    '<p style="font-size:15px;color:var(--tx2);text-align:center;line-height:1.6;margin-bottom:24px">Circle replaces swiping with real-life introductions made by people you trust.</p>'
-    + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><path d="M10 17s-7-4.3-7-8.5C3 5.1 5.3 3 10 6.5c4.7-3.5 7-1.4 7 2C17 12.7 10 17 10 17z"/></svg><h2 style="font-size:19px">Looking for someone?</h2></div>'
-    + SEEKING.map(function(s){ return step(s.icon,s.title,s.desc); }).join('')
-    + '<div style="height:20px"></div>'
-    + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M12 13v4M10 15h4"/></svg><h2 style="font-size:19px">Want to help a friend?</h2></div>'
-    + HELPING.map(function(s){ return step(s.icon,s.title,s.desc); }).join('')
-    + '<button class="btn btn-p mt20" onclick="back()" style="border-radius:100px">Got it, let\'s go!</button>';
+    '<p style="font-size:15px;color:var(--tx2);text-align:center;line-height:1.65;margin-bottom:28px">Circle replaces swiping with real-life introductions made by people you trust.</p>'
+
+    // Looking for someone
+    + sectionHead('<path d="M11 17s-7-4.3-7-8.5C4 5.1 6.3 3 11 6.5c4.7-3.5 7-1.4 7 2C18 12.7 11 17 11 17z"/>', 'Looking for someone?')
+    + stepCard(
+        '<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M14 13v4M12 15h4"/>',
+        'Choose your matchmakers',
+        "Invite trusted friends who know you well. They'll be your eyes and ears in the real world."
+      )
+    + stepCard(
+        '<rect x="3" y="3" width="5" height="5" rx=".6"/><rect x="14" y="3" width="5" height="5" rx=".6"/><rect x="3" y="14" width="5" height="5" rx=".6"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="17" y="14" width="2.5" height="2.5"/><rect x="14" y="17" width="2.5" height="2.5"/>',
+        'They meet someone for you',
+        "When a matchmaker meets someone they think you'd click with, they create an introduction via a QR code."
+      )
+    + stepCard(
+        '<path d="M2 5h18a1 1 0 011 1v8a1 1 0 01-1 1H6l-5 3.5V6a1 1 0 011-1z" stroke-linejoin="round"/>',
+        'You decide',
+        "You see the profile and choose whether to connect. No pressure, no awkwardness — your matchmaker handles the intro."
+      )
+    + stepCard(
+        '<path d="M11 17s-7-4.3-7-8.5C4 5.1 6.3 3 11 6.5c4.7-3.5 7-1.4 7 2C18 12.7 11 17 11 17z"/>',
+        'Connect &amp; chat',
+        "If both sides are interested, you're matched and can start chatting. Real connections, through real people."
+      )
+
+    + '<div style="height:24px"></div>'
+
+    // Want to help a friend
+    + sectionHead('<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M14 13v4M12 15h4"/>', 'Want to help a friend?')
+    + stepCard(
+        '<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/>',
+        'Your friend trusts you',
+        "A friend added you as their matchmaker — they're counting on you to help them meet someone special."
+      )
+    + stepCard(
+        '<path d="M11 2l2.5 6H19L14 11.5l2 6L11 14l-5 3.5 2-6L3 8h5.5z" stroke-linejoin="round"/>',
+        'Meet someone in real life',
+        "At a party, at work, at the gym — whenever you meet someone who'd be great for your friend."
+      )
+    + stepCard(
+        '<rect x="3" y="3" width="5" height="5" rx=".6"/><rect x="14" y="3" width="5" height="5" rx=".6"/><rect x="3" y="14" width="5" height="5" rx=".6"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="17" y="14" width="2.5" height="2.5"/>',
+        'Make the introduction',
+        "Show them your friend's profile via a QR code. It takes 10 seconds and feels natural."
+      )
+    + stepCard(
+        '<path d="M11 17s-7-4.3-7-8.5C4 5.1 6.3 3 11 6.5c4.7-3.5 7-1.4 7 2C18 12.7 11 17 11 17z"/>',
+        'Watch the magic happen',
+        "If they're both interested, they match. You just made something beautiful happen."
+      )
+    + '<button class="btn btn-p mt20 mb8" onclick="back()" style="border-radius:100px;font-size:16px;font-weight:700">Got it, let\'s go!</button>'
+    + '<div style="height:16px"></div>';
 }
+
 </script>
 </body>
 </html>
