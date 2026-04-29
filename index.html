@@ -71,7 +71,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .mc-card:active{transform:scale(.97)}.mc-card-overlay{position:absolute;bottom:0;left:0;right:0;padding:10px 12px 14px;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%)}
 .mc-add{background:transparent;border:2px dashed rgba(216,90,48,.35);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border-radius:var(--r3)}
 .mc-menu{position:absolute;top:8px;left:8px;width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.88);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);z-index:5;flex-shrink:0}
-.ctx-menu{position:fixed;z-index:800;background:var(--bg);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.1);padding:6px 0;min-width:210px;opacity:0;transform:scale(.93) translateY(-4px);transition:opacity .18s,transform .18s;pointer-events:none}
+.ctx-menu{position:fixed;z-index:900;background:var(--bg);border-radius:var(--r2);box-shadow:0 8px 32px rgba(0,0,0,.18),0 2px 8px rgba(0,0,0,.1);padding:6px 0;min-width:210px;opacity:0;transform:scale(.93) translateY(-4px);transition:opacity .18s,transform .18s;pointer-events:none}
 .ctx-menu.on{opacity:1;transform:none;pointer-events:all}
 .ctx-item{display:flex;align-items:center;gap:12px;padding:11px 16px;font-size:15px;font-weight:500;color:var(--tx);cursor:pointer;transition:background .12s;border:none;background:none;width:100%;text-align:left;font-family:inherit}
 .ctx-item:hover,.ctx-item:active{background:var(--bg2)}
@@ -326,7 +326,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <p id="h-level-info" class="tiny" style="color:var(--tx2);line-height:1.5;margin-left:23px"></p>
   </div>
   <div style="padding:0 16px 20px">
-    <button class="btn btn-p" style="font-size:16px;font-weight:700;padding:16px;border-radius:100px;gap:10px;box-shadow:0 6px 22px rgba(216,90,48,.32)" onclick="go('introduce')">
+    <button class="btn btn-p" style="font-size:16px;font-weight:700;padding:16px;border-radius:100px;gap:10px;box-shadow:0 6px 22px rgba(216,90,48,.32)" onclick="openIntroducePicker()">
       <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 17s-7-4.3-7-8.5C3 5.1 5.3 3 10 6.5c4.7-3.5 7-1.4 7 2C17 12.7 10 17 10 17z" stroke="white" stroke-width="1.8" fill="rgba(255,255,255,.2)"/></svg>
       Introduce a single friend
     </button>
@@ -441,7 +441,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <p class="cap mb4" style="max-width:240px" id="sent-msg"></p>
     <p class="tiny mb28" id="sent-pts" style="color:var(--p);font-weight:600"></p>
     <button class="btn btn-p" style="max-width:240px;width:100%" onclick="go('intros');switchTab('activity')">See activity</button>
-    <button class="btn-ghost primary mt8" onclick="go('introduce')">Introduce another friend</button>
+    <button class="btn-ghost primary mt8" onclick="openIntroducePicker()">Introduce another friend</button>
   </div>
 </div>
 
@@ -504,13 +504,8 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <!-- Matchmaker status card -->
     <div id="prof-status-card" class="card mb4" style="padding:18px 18px 14px"></div>
 
-    <!-- Settings list -->
+    <!-- Sign out only (settings accessible via top-right gear) -->
     <div class="card mt16" style="padding:0;overflow:hidden;margin-bottom:0">
-      <button class="li" onclick="go('settings')">
-        <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2" stroke="var(--tx3)" stroke-width="1.4"/><path d="M8 1.5v1M8 13.5v1M1.5 8h1M13.5 8h1M3.3 3.3l.7.7M12 12l.7.7M3.3 12.7l.7-.7M12 4l.7-.7" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"/></svg></div>
-        <span class="flex1" style="font-size:15px">Settings</span>
-        <svg class="li-arrow" viewBox="0 0 16 16"><path d="M6 4l4 4-4 4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
       <button class="li" style="color:var(--er)" onclick="confirmLogout()">
         <div class="li-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6.5 2.5H3a1 1 0 00-1 1v9a1 1 0 001 1h3.5M10.5 11.5l3-3.5-3-3.5M13.5 8H6.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
         <span class="flex1" style="font-size:15px">Sign out</span>
@@ -736,9 +731,6 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   </div>
 </div>
 
-<!-- CONTEXT MENU (shared floating panel) -->
-<div id="ctx-menu" class="ctx-menu"></div>
-<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none" onclick="closeCtxMenu()"></div>
 
 
 <!-- LEVELS & REWARDS SCREEN -->
@@ -755,7 +747,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-prof-preview" class="screen no-nav">
   <div class="topbar between">
     <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <span style="font-weight:600;color:var(--tx3);font-size:13px">Preview mode</span>
+    <span id="prof-preview-title" style="font-weight:600;color:var(--tx3);font-size:13px">Preview mode</span>
     <span style="min-width:56px"></span>
   </div>
   <div id="preview-body" class="p20"></div>
@@ -796,6 +788,25 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div id="how-circle-body" class="p20" style="padding-bottom:36px"></div>
 </div>
 
+
+<!-- MODAL: INTRODUCE PICKER -->
+<div class="modal-ov" id="modal-intro-picker">
+  <div class="modal-sheet" style="padding-bottom:max(24px,var(--safe))">
+    <div class="mhandle"></div>
+    <div class="between mb4" style="align-items:flex-start">
+      <div>
+        <h3 style="font-size:18px;font-weight:800;letter-spacing:-.3px">Who do you want to introduce?</h3>
+        <p class="cap mt4">Select a single friend to create a QR code for</p>
+      </div>
+      <button class="btn-icon" onclick="closeModal('modal-intro-picker')" style="color:var(--tx3);flex-shrink:0;margin-top:-4px">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 3l12 12M15 3L3 15"/></svg>
+      </button>
+    </div>
+    <div id="intro-picker-list" style="margin:12px 0 4px;display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn-ghost primary w100" style="text-align:center;margin-top:8px" onclick="closeModal('modal-intro-picker')">Cancel</button>
+  </div>
+</div>
+
 <div id="toast"></div>
 </div><!-- screen-stack -->
 
@@ -807,7 +818,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <button class="nbt" id="nb-circle" onclick="navTo('my-circle')">
     <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="8" cy="7.5" r="3.5" stroke-linejoin="round"/><path d="M2 19c0-3.3 2.7-5.5 6-5.5M16 13v4M14 15h4" stroke-linecap="round" stroke-linejoin="round"/></svg>My Circle
   </button>
-  <button class="nbt nbt-center" id="nb-add" onclick="navTo('introduce')">
+  <button class="nbt nbt-center" id="nb-add" onclick="openIntroducePicker()">
     <div class="nbt-ring"><svg class="nbt-svg" viewBox="0 0 22 22"><path d="M11 4v14M4 11h14" stroke-linecap="round"/></svg></div>
   </button>
   <button class="nbt" id="nb-intros" onclick="navTo('intros')">
@@ -818,6 +829,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <svg class="nbt-svg" viewBox="0 0 22 22"><circle cx="11" cy="7" r="4"/><path d="M3 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>Profile
   </button>
 </nav>
+
+<!-- CONTEXT MENU — outside screen-stack so position:fixed is not clipped -->
+<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none" onclick="closeCtxMenu()"></div>
+<div id="ctx-menu" class="ctx-menu"></div>
 </div><!-- app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -970,7 +985,7 @@ function renderMcCounter() {
 }
 
 function mcFabAction() {
-  if (mcTab === 'singles') go('introduce');
+  if (mcTab === 'singles') openIntroducePicker();
   else showModal('modal-invite');
 }
 
@@ -1126,7 +1141,7 @@ function initProfile() {
     metaItems.push({icon: META_ICONS.height, text: ft+"'"+inch+'" ('+u.height+' cm)'});
   }
   if (u.religion && u.religion !== 'Prefer not to say') {
-    metaItems.push({icon: META_ICONS.religion, text: u.religion});
+    metaItems.push({icon: getReligionIconWhite(u.religion), text: u.religion});
   }
   const metaEl = document.getElementById('prof-meta-row');
   if (metaEl) metaEl.innerHTML = metaItems.map(function(m) {
@@ -1153,8 +1168,8 @@ function initProfile() {
       + '</div>' : '';
   const card = document.getElementById('prof-status-card');
   card.innerHTML =
-    '<div class="micro mb14" style="color:var(--tx3)">MATCHMAKER STATUS</div>'
-    + '<div class="row mb14" style="gap:14px;align-items:center">'
+    '<div class="micro mb16" style="color:var(--tx3);letter-spacing:.8px">MATCHMAKER STATUS</div>'
+    + '<div class="row mt4 mb16" style="gap:14px;align-items:center">'
     +   '<div style="width:52px;height:52px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
     +     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M8 18a4 4 0 018 0"/><path d="M12 12v1.5"/><path d="M10.5 14.5l1.5 1 1.5-1"/></svg>'
     +   '</div>'
@@ -1248,14 +1263,18 @@ function openCtxMenu(items, anchorEl) {
       + '<svg viewBox="0 0 18 18">' + it.icon + '</svg>'
       + it.label + '</button>';
   }).join('');
-  // Position near anchor
+  // Position near anchor — fixed within viewport
   const rect = anchorEl.getBoundingClientRect();
   const appRect = document.getElementById('app').getBoundingClientRect();
-  let top = rect.bottom - appRect.top + 4;
-  let left = rect.left - appRect.left;
-  const menuW = 216;
-  if (left + menuW > appRect.width - 8) left = appRect.width - menuW - 8;
-  if (left < 8) left = 8;
+  const menuW = 220;
+  let top = rect.bottom + 6;
+  let left = rect.left;
+  // keep inside app bounds
+  if (left + menuW > appRect.right - 8) left = appRect.right - menuW - 8;
+  if (left < appRect.left + 8) left = appRect.left + 8;
+  // if menu would go off bottom, show above anchor
+  const menuH = 300;
+  if (top + menuH > window.innerHeight - 20) top = rect.top - menuH - 6;
   menu.style.top = top + 'px';
   menu.style.left = left + 'px';
   menu.style.right = 'auto';
@@ -1300,7 +1319,26 @@ function openSingleMenu(sid, anchorEl) {
 function viewSingleProfile(sid) {
   const s = DB.singles().find(function(x){return x.id===sid});
   if (!s) return;
-  toast('Profile: ' + s.name + ' — full profile view coming soon');
+  // Render in the preview screen
+  const col = AVCOLS[s.ci % AVCOLS.length];
+  const photos = s.photos && s.photos.length ? s.photos : [];
+  const photoHtml = photos.length
+    ? '<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:340px">'
+      + photos.map(function(p){ return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover"></div>'; }).join('')
+      + '</div>'
+    : '<div style="height:300px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px">'
+      + '<div class="av" style="width:90px;height:90px;font-size:32px;background:'+col.bg+';color:'+col.tc+'">'+ini(s.name)+'</div></div>';
+  const tagsHtml = (s.tags||[]).map(function(t){ return '<span class="pill pill-p">'+t+'</span>'; }).join('');
+  document.getElementById('preview-body').innerHTML =
+    '<div style="margin:-20px -20px 0">' + photoHtml
+    + '<div style="padding:20px 20px 0;background:var(--bg)">'
+    + '<h2 class="mb2">'+s.name+(s.age?', '+s.age:'')+'</h2>'
+    + '<p class="cap mb12">'+(s.job||'')+(s.job&&s.loc?' · ':'')+s.loc+'</p>'
+    + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">'+tagsHtml+'</div>'
+    + '</div></div>'
+    + (s.bio ? '<div class="card-warm mt4"><p style="font-size:15px;line-height:1.65;color:var(--tx2)">'+s.bio+'</p></div>' : '');
+  const titleEl=document.getElementById('prof-preview-title');if(titleEl)titleEl.textContent=s.name+"'s profile";
+  go('prof-preview');
 }
 
 function openSingleDash(sid) {
@@ -1412,7 +1450,7 @@ function openMmMenu(idx, anchorEl) {
   const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
   if (!mm) return;
   openCtxMenu([
-    {label:'View profile', icon:ICO_EYE,    fn:'function(){toast("' + mm.name + "'s profile — coming soon\")}" },
+    {label:'View profile', icon:ICO_EYE,    fn:'function(){viewMmProfile('+idx+')}'},
     {label:'Message',      icon:ICO_MSG,    fn:'function(){messageMm(' + idx + ')}'},
     'sep',
     {label:'Pause',        icon:ICO_PAUSE,  fn:'function(){openPauseMm(' + idx + ')}'},
@@ -1647,16 +1685,10 @@ function initLevelsRewards() {
   const u = DB.user();
   const pts = u ? (u.points||0) : 0;
   const li = lvlInfo(pts);
+  const introsCount = DB.intros().filter(function(i){ return i.status !== 'pending'; }).length;
+  const matchesCount = DB.matches().filter(function(m){ return !m.isDirect; }).length;
 
-  const EARN_ITEMS = [
-    {path:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>', label:'QR code scanned (intro created)', pts:'+3'},
-    {path:'<circle cx="9" cy="9" r="7"/><path d="M5.5 9l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/>', label:'Introduction accepted (profile sent)', pts:'+5'},
-    {path:'<path d="M9 2l1.5 4.5H15L11 9.5l1.5 4.5L9 11l-3.5 3 1.5-4.5L3 6.5h4.5z" stroke-linejoin="round"/>', label:'Positive feedback from a single', pts:'+5'},
-    {path:'<circle cx="6" cy="6" r="2.5"/><circle cx="12" cy="6" r="2.5"/><path d="M1 16c0-3.3 2.2-5 5-5s5 2 5 5M9 16c0-3.3 2.2-5 5-5" stroke-linecap="round"/>', label:'Match created', pts:'+10'},
-    {path:'<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>', label:'Conversation started', pts:'+10'},
-    {path:'<circle cx="9" cy="9" r="3"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.6 3.6l1.4 1.4M12 12l1.4 1.4M3.6 14.4l1.4-1.4M12 6l1.4-1.4"/>', label:'Real-life meeting confirmed', pts:'+20'},
-  ];
-
+  // ── Levels ────────────────────────────────────────────────────────────────
   let levelsHtml = '';
   LEVELS.forEach(function(lvl, i) {
     const isActive = i === li.idx;
@@ -1669,7 +1701,7 @@ function initLevelsRewards() {
       + '<div style="width:38px;height:38px;border-radius:50%;'
       +   'background:'+(isActive?'var(--p)':dimmed?'var(--bg3)':'var(--bg4)')+';'
       +   'display:flex;align-items:center;justify-content:center;flex-shrink:0">'
-      +   '<span style="font-size:14px;font-weight:800;color:'+(isActive?'#fff':dimmed?'var(--tx3)':'var(--tx2)')+'">'+(i+1)+'</span>'
+      +   '<span style="font-size:14px;font-weight:800;color:'+(isActive?'#fff':dimmed?'var(--tx3)':'var(--tx2)')+'">'+( i+1)+'</span>'
       + '</div>'
       + '<div class="flex1">'
       +   '<div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">'
@@ -1682,6 +1714,15 @@ function initLevelsRewards() {
       + '</div>';
   });
 
+  // ── How to earn points ────────────────────────────────────────────────────
+  const EARN_ITEMS = [
+    {path:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>', label:'QR code scanned (intro created)', pts:'+3'},
+    {path:'<circle cx="9" cy="9" r="7"/><path d="M5.5 9l2.5 2.5 4.5-4.5" stroke-linecap="round" stroke-linejoin="round"/>', label:'Introduction accepted (profile sent)', pts:'+5'},
+    {path:'<path d="M9 2l1.5 4.5H15L11 9.5l1.5 4.5L9 11l-3.5 3 1.5-4.5L3 6.5h4.5z" stroke-linejoin="round"/>', label:'Positive feedback from a single', pts:'+5'},
+    {path:'<circle cx="6" cy="6" r="2.5"/><circle cx="12" cy="6" r="2.5"/><path d="M1 16c0-3.3 2.2-5 5-5s5 2 5 5M9 16c0-3.3 2.2-5 5-5" stroke-linecap="round"/>', label:'Match created', pts:'+10'},
+    {path:'<path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/>', label:'Conversation started', pts:'+10'},
+    {path:'<circle cx="9" cy="9" r="3"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.6 3.6l1.4 1.4M12 12l1.4 1.4M3.6 14.4l1.4-1.4M12 6l1.4-1.4"/>', label:'Real-life meeting confirmed', pts:'+20'},
+  ];
   const earnHtml = EARN_ITEMS.map(function(e) {
     return '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);margin-bottom:8px">'
       + '<div style="width:40px;height:40px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
@@ -1692,16 +1733,75 @@ function initLevelsRewards() {
       + '</div>';
   }).join('');
 
+  // ── Achievements (badges) ─────────────────────────────────────────────────
+  const ACHIEVEMENTS = [
+    {emoji:'✨', name:'First Spark',        desc:'Make your first introduction',                    earned: introsCount >= 1},
+    {emoji:'💘', name:'Matchmaker',          desc:'Your intro leads to a real match',                earned: matchesCount >= 1},
+    {emoji:'🎯', name:'Closer',             desc:'A couple actually meets because of you',           earned: false},
+    {emoji:'🤝', name:'Trusted Five',       desc:'5 people say yes to your intros',                  earned: introsCount >= 5},
+    {emoji:'🔥', name:'Consistent',         desc:'Show up regularly for the people you care about', earned: false},
+    {emoji:'⚡', name:'Highly Responsive',  desc:'Always there when it matters (fast replies)',      earned: false},
+  ];
+  const achHtml = ACHIEVEMENTS.map(function(a) {
+    return '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:'+(a.earned?'var(--p1)':'var(--bg)')+';border:.5px solid '+(a.earned?'rgba(216,90,48,.2)':'var(--bd2)')+';margin-bottom:8px;opacity:'+(a.earned?'1':'.5')+'">'
+      + '<div style="width:42px;height:42px;border-radius:50%;background:'+(a.earned?'var(--p1)':'var(--bg3)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px">'+a.emoji+'</div>'
+      + '<div class="flex1">'
+      +   '<div style="font-size:15px;font-weight:700;color:'+(a.earned?'var(--tx)':'var(--tx3)')+'">'+a.name+(a.earned?' <span style="font-size:11px;color:var(--p);font-weight:700;vertical-align:middle">✓ Earned</span>':'')+'</div>'
+      +   '<p style="font-size:13px;color:var(--tx3);line-height:1.4;margin-top:2px">'+a.desc+'</p>'
+      + '</div>'
+      + '</div>';
+  }).join('');
+
+  // ── Profile badges (public) ───────────────────────────────────────────────
+  const isTrustedMM = li.idx >= 3;   // Level 4+ (Circle Keeper)
+  const isGreatAtIntros = false;       // would need real rating data
+  const isHighlyResponsive = false;    // same
+  const PBADGES = [
+    {emoji:'🛡️', name:'Trusted Matchmaker',    desc:'Unlocked at Level 4 — Circle Keeper',               unlocked: isTrustedMM},
+    {emoji:'⭐', name:'Great at Introductions', desc:'70%+ positive feedback from your singles (min 3 ratings)', unlocked: isGreatAtIntros},
+    {emoji:'⚡', name:'Highly Responsive',       desc:'Consistently fast replies to your singles',          unlocked: isHighlyResponsive},
+  ];
+  const pbHtml = PBADGES.map(function(b) {
+    return '<div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:'+(b.unlocked?'var(--p1)':'var(--bg)')+';border:.5px solid '+(b.unlocked?'rgba(216,90,48,.2)':'var(--bd2)')+';margin-bottom:8px;opacity:'+(b.unlocked?'1':'.5')+'">'
+      + '<div style="width:42px;height:42px;border-radius:50%;background:'+(b.unlocked?'var(--p1)':'var(--bg3)')+';display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:22px">'+b.emoji+'</div>'
+      + '<div class="flex1">'
+      +   '<div style="font-size:15px;font-weight:700;color:'+(b.unlocked?'var(--tx)':'var(--tx3)')+'">'+b.name+(b.unlocked?' <span style="font-size:11px;color:var(--p);font-weight:700;vertical-align:middle">✓ Active</span>':'')+'</div>'
+      +   '<p style="font-size:13px;color:var(--tx3);line-height:1.4;margin-top:2px">'+b.desc+'</p>'
+      + '</div>'
+      + (b.unlocked
+          ? '<div style="width:32px;height:32px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"><path d="M2 7l3 3 7-6"/></svg></div>'
+          : '<div style="width:32px;height:32px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="6" width="8" height="6" rx="1"/><path d="M5 6V4.5a2 2 0 014 0V6"/></svg></div>')
+      + '</div>';
+  }).join('');
+
+  // ── Assemble ──────────────────────────────────────────────────────────────
   document.getElementById('levels-body').innerHTML =
+    // Why levels card
     '<div style="background:var(--p1);border-radius:var(--r3);padding:16px 18px;margin-bottom:24px;display:flex;align-items:flex-start;gap:12px">'
     + '<svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" style="flex-shrink:0;margin-top:2px"><path d="M11 2l2 5.5h5.5L14 11l2 5.5L11 13l-5 3.5 2-5.5L3.5 7.5H9z" stroke-linejoin="round"/></svg>'
     + '<div><div style="font-size:15px;font-weight:700;color:var(--tx);margin-bottom:4px">Why levels?</div>'
     + '<p style="font-size:14px;color:var(--tx2);line-height:1.6">Great matchmakers create meaningful connections. Your level reflects your impact — not competition, just recognition for the people you\'ve helped.</p></div>'
     + '</div>'
+
+    // Matchmaker Levels
     + '<div class="micro mb12" style="color:var(--tx3)">MATCHMAKER LEVELS</div>'
     + levelsHtml
+
+    // How to earn points
     + '<div class="micro mb12 mt20" style="color:var(--tx3)">HOW TO EARN POINTS</div>'
     + earnHtml
+
+    // Achievements
+    + '<div class="micro mb8 mt20" style="color:var(--tx3)">🏆 ACHIEVEMENTS</div>'
+    + '<p style="font-size:13px;color:var(--tx3);margin-bottom:12px;line-height:1.5">Earn badges for your matchmaking milestones. Locked badges show what\'s still ahead.</p>'
+    + achHtml
+
+    // Profile badges
+    + '<div class="micro mb8 mt20" style="color:var(--tx3)">🎖️ PROFILE BADGES</div>'
+    + '<p style="font-size:13px;color:var(--tx3);margin-bottom:12px;line-height:1.5">These badges appear publicly on your profile to build trust with your singles.</p>'
+    + pbHtml
+
+    // How matchmaking works link
     + '<div style="margin-top:8px;padding:14px 16px;border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px" onclick="go(\'how-circle-works\')">'
     +   '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><rect x="1" y="2" width="6" height="8" rx="1"/><path d="M1 6h6M1 4h6M8 4h7M8 7h7M8 10h5"/></svg>'
     +   '<span style="font-size:14px;color:var(--tx2);font-weight:500">How matchmaking works</span>'
@@ -1841,6 +1941,69 @@ function saveTagsAndNext() {
 function saveQsAndNext() {
   if (Object.keys(S.setup.qs).length < QS.length) { toast('Answer all questions'); return; }
   suSwitchTab('prefs');
+}
+
+// Alias — same SVG icons, white strokes, used on dark photo overlays
+function getReligionIconWhite(rel) {
+  return getReligionIcon(rel);  // getReligionIcon already uses rgba(255,255,255,.9)
+}
+
+function viewMmProfile(idx) {
+  const u = DB.user();
+  const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
+  if (!mm) return;
+  const col = AVCOLS[(mm.ci||0) % AVCOLS.length];
+  document.getElementById('preview-body').innerHTML =
+    '<div style="height:200px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center;border-radius:var(--r3);margin-bottom:20px">'
+    + '<div class="av" style="width:80px;height:80px;font-size:28px;background:'+col.bg+';color:'+col.tc+'">'+ini(mm.name)+'</div></div>'
+    + '<h2 class="mb4">'+mm.name+'</h2>'
+    + '<p class="cap mb4">'+(mm.rel||'')+(mm.loc?' · '+mm.loc:'')+'</p>'
+    + '<span class="pill pill-ok mt4">Active matchmaker</span>';
+  const titleEl=document.getElementById('prof-preview-title');if(titleEl)titleEl.textContent=mm.name+"'s profile";
+  go('prof-preview');
+}
+
+// ── INTRODUCE PICKER ──────────────────────────────────────────────────────────
+function openIntroducePicker() {
+  const singles = DB.singles();
+  const list = document.getElementById('intro-picker-list');
+  if (!list) return;
+
+  if (!singles.length) {
+    list.innerHTML =
+      '<div style="text-align:center;padding:20px 0">'
+      + '<div style="font-size:40px;margin-bottom:10px">👥</div>'
+      + '<p class="cap">No singles yet. Add someone to your circle first.</p>'
+      + '<button class="btn btn-p mt16" onclick="closeModal(\'modal-intro-picker\');mcSwitchTab(\'singles\');navTo(\'my-circle\')">Go to My Circle</button>'
+      + '</div>';
+    showModal('modal-intro-picker');
+    return;
+  }
+
+  list.innerHTML = singles.map(function(s) {
+    const col = AVCOLS[s.ci % AVCOLS.length];
+    const avatar = (s.photos && s.photos.length)
+      ? '<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%">'
+      : '<div class="av" style="width:54px;height:54px;font-size:18px;font-weight:700;background:'+col.bg+';color:'+col.tc+';border-radius:50%">'+ini(s.name)+'</div>';
+    return '<button onclick="closeModal(\'modal-intro-picker\');pickAndIntroduce(\''+s.id+'\')" '
+      + 'style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:var(--p1);border:.5px solid rgba(216,90,48,.15);text-align:left;width:100%;cursor:pointer;font-family:inherit;transition:background .15s" '
+      + 'onmouseover="this.style.background=\'var(--bg3)\'" onmouseout="this.style.background=\'var(--p1)\'">'
+      + '<div style="width:54px;height:54px;border-radius:50%;overflow:hidden;flex-shrink:0">' + avatar + '</div>'
+      + '<div>'
+      + '<div style="font-size:16px;font-weight:700;color:var(--tx)">'+s.name+'</div>'
+      + '<div style="font-size:14px;color:var(--tx2);margin-top:2px">'+s.loc+(s.age?' &bull; '+s.age:'')+'</div>'
+      + '</div>'
+      + '</button>';
+  }).join('');
+
+  showModal('modal-intro-picker');
+}
+
+function pickAndIntroduce(sid) {
+  const idx = DB.singles().findIndex(function(s){ return s.id === sid; });
+  if (idx === -1) return;
+  S.carIdx = idx;
+  startIntroFlow();
 }
 
 </script>
