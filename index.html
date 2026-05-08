@@ -119,6 +119,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 .sec-hd{font-size:12px;font-weight:700;color:var(--tx3);letter-spacing:.8px;text-transform:uppercase;padding:16px 0 8px}.unread{width:9px;height:9px;border-radius:50%;background:var(--p);flex-shrink:0}.mpair{display:flex;align-items:center;justify-content:center;gap:16px;padding:20px 0}
 .iu{position:relative}.iu input{padding-right:48px}.iu-unit{position:absolute;right:13px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--tx3);font-weight:600;pointer-events:none}
 .li{display:flex;align-items:center;gap:12px;padding:14px 16px;background:none;border:none;cursor:pointer;width:100%;text-align:left;font-family:inherit;border-bottom:.5px solid var(--bd);transition:background .15s}.li:last-child{border:none}.li:hover{background:var(--bg2)}.li-arrow{width:16px;height:16px;stroke:var(--tx3);stroke-width:1.5;fill:none;flex-shrink:0}.li-ic{width:36px;height:36px;border-radius:var(--r);background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dual-range{position:absolute;width:100%;height:4px;background:transparent;-webkit-appearance:none;appearance:none;pointer-events:none;outline:none;top:50%;transform:translateY(-50%);margin:0;padding:0}
+.dual-range::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--p);cursor:pointer;box-shadow:0 2px 8px rgba(216,90,48,.35);border:3px solid #fff;pointer-events:all}
+.dual-range::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--p);border:3px solid #fff;cursor:pointer;pointer-events:all;box-shadow:0 2px 8px rgba(216,90,48,.35)}
+.photo-drag-over{outline:2.5px dashed var(--p);outline-offset:-2px;opacity:.6}
 </style></head><body>
 <div id="app">
 <div id="screen-stack">
@@ -283,21 +287,20 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
           <button class="opill" onclick="selOpt(this,'pref_gender','Everyone')">Everyone</button>
         </div>
       </div>
-      <div class="igrp"><label class="lbl">Relationship pace</label>
-        <div class="opills" id="pref-pace">
-          <button class="opill" onclick="selOpt(this,'pref_pace','Slow &amp; steady')">Slow &amp; steady</button>
-          <button class="opill" onclick="selOpt(this,'pref_pace','Balanced')">Balanced</button>
-          <button class="opill" onclick="selOpt(this,'pref_pace','Fast-paced')">Fast-paced</button>
-        </div>
-      </div>
       <div class="igrp"><label class="lbl">Age range</label>
-        <div class="irow">
-          <div class="iu"><input type="number" id="pref-amin" value="22" min="18" max="70"><span class="iu-unit">min</span></div>
-          <div class="iu"><input type="number" id="pref-amax" value="36" min="18" max="70"><span class="iu-unit">max</span></div>
+        <div style="text-align:center;font-size:20px;font-weight:700;color:var(--p);margin-bottom:10px" id="su-age-display">22 – 36</div>
+        <div style="position:relative;height:36px;padding:0 13px">
+          <div style="position:absolute;left:13px;right:13px;height:4px;background:var(--bg4);border-radius:2px;top:50%;transform:translateY(-50%);pointer-events:none"></div>
+          <div id="su-age-fill" style="position:absolute;height:4px;background:var(--p);border-radius:2px;top:50%;transform:translateY(-50%);pointer-events:none;left:13px;width:0"></div>
+          <input type="range" class="dual-range" id="pref-amin" min="18" max="70" value="22" step="1" oninput="suAgeSlide()">
+          <input type="range" class="dual-range" id="pref-amax" min="18" max="70" value="36" step="1" oninput="suAgeSlide()">
         </div>
+        <div class="between mt8"><span class="tiny">18</span><span class="tiny">70</span></div>
       </div>
       <div class="igrp"><label class="lbl">Religion preference</label><div class="opills" id="pref-rel-wrap"></div></div>
-      <div class="igrp mt8"><label class="lbl">Anything else? <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+      <div class="igrp mt8">
+        <label class="lbl">Notes for your matchmaker <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+        <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Anything else to help your matchmaker find a great match for you</p>
         <textarea id="pref-note" rows="3" placeholder="e.g. I love the outdoors..."></textarea>
       </div>
       <button class="btn btn-p mt8" onclick="savePrefs()">Complete my profile 🎉</button>
@@ -627,21 +630,20 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
           <button class="opill" onclick="epSelOpt(this,'pref_gender','Everyone')">Everyone</button>
         </div>
       </div>
-      <div class="igrp"><label class="lbl">Relationship pace</label>
-        <div class="opills" id="ep-pref-pace">
-          <button class="opill" onclick="epSelOpt(this,'pref_pace','Slow &amp; steady')">Slow &amp; steady</button>
-          <button class="opill" onclick="epSelOpt(this,'pref_pace','Balanced')">Balanced</button>
-          <button class="opill" onclick="epSelOpt(this,'pref_pace','Fast-paced')">Fast-paced</button>
-        </div>
-      </div>
       <div class="igrp"><label class="lbl">Age range</label>
-        <div class="irow">
-          <div class="iu"><input type="number" id="ep-amin" min="18" max="70" placeholder="Min"><span class="iu-unit">min</span></div>
-          <div class="iu"><input type="number" id="ep-amax" min="18" max="70" placeholder="Max"><span class="iu-unit">max</span></div>
+        <div style="text-align:center;font-size:20px;font-weight:700;color:var(--p);margin-bottom:10px" id="ep-age-display">22 – 36</div>
+        <div style="position:relative;height:36px;padding:0 13px">
+          <div style="position:absolute;left:13px;right:13px;height:4px;background:var(--bg4);border-radius:2px;top:50%;transform:translateY(-50%);pointer-events:none"></div>
+          <div id="ep-age-fill" style="position:absolute;height:4px;background:var(--p);border-radius:2px;top:50%;transform:translateY(-50%);pointer-events:none;left:13px;width:0"></div>
+          <input type="range" class="dual-range" id="ep-amin" min="18" max="70" value="22" step="1" oninput="epAgeSlide()">
+          <input type="range" class="dual-range" id="ep-amax" min="18" max="70" value="36" step="1" oninput="epAgeSlide()">
         </div>
+        <div class="between mt8"><span class="tiny">18</span><span class="tiny">70</span></div>
       </div>
       <div class="igrp"><label class="lbl">Religion preference</label><div class="opills" id="ep-pref-rel"></div></div>
-      <div class="igrp"><label class="lbl">Private note <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+      <div class="igrp">
+        <label class="lbl">Notes for your matchmaker <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
+        <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Anything else to help your matchmaker find a great match for you</p>
         <textarea id="ep-note" rows="3" placeholder="Anything to help your matchmaker?"></textarea>
       </div>
       <button class="btn btn-p mt8" onclick="saveEditProfile()">Save all changes ✓</button>
@@ -850,7 +852,7 @@ function calcAge(y,m,d){
 }
 const LEVELS=[{n:'Connector',p:0,desc:'Every great story starts with an introduction'},{n:'Insider',p:25,desc:"You're building something meaningful"},{n:'Curator',p:75,desc:'Your taste in people is showing'},{n:'Circle Keeper',p:150,desc:'People trust your instincts'},{n:'Confidant',p:300,desc:'You bring the right people together'},{n:'Luminary',p:500,desc:'Your introductions create real connections'}];
 const TAGS=['Adventurous','Creative','Ambitious','Romantic','Intellectual','Funny','Caring','Spontaneous','Reliable','Passionate','Authentic','Optimistic','Independent','Thoughtful','Foodie','Traveler','Homebody','Social butterfly','Deep thinker','Athletic'];
-const QS=[{id:'intent',q:'Relationship intent',a:['Looking for something serious','Open to casual dating','Just exploring','Open to anything']},{id:'location',q:'Location flexibility',a:["I'd relocate for the right person","Maybe, depends","I prefer staying local"]},{id:'family',q:'Family vision',a:["I want kids","I don't want kids","Open to it","I already have kids"]},{id:'sport',q:'Physical activity',a:['Very active (daily)','Moderately active','Occasionally active','Not really my thing']},{id:'travel',q:'Travel lifestyle',a:['Every chance I get','A couple times a year','Rarely','Not my thing']},{id:'food',q:'Food lifestyle',a:['Vegan','Vegetarian','Omnivore','Halal','Kosher','No preference']}];
+const QS=[{id:'intent',q:'Relationship intent',a:['A serious relationship','Something casual','Seeing where things go']},{id:'location',q:'Location flexibility',a:['Prefer someone in my city','Open within my country','Open to international']},{id:'family',q:'Family vision',a:["I want children","I'm open to children","I don't want children","I already have children","I have children and want more","I don't know yet"]},{id:'sport',q:'Physical activity',a:["It's a big part of my life","I stay active but keep it casual","I move when I feel like it","Not really my thing"]},{id:'travel',q:'Travel lifestyle',a:['Every chance I get','A couple times a year','Rarely','Not my thing']},{id:'food',q:'Food lifestyle',a:['Vegan','Vegetarian','Pescatarian','Halal','Kosher','No preference']}];
 const RELIGIONS=['Christian','Catholic','Muslim','Jewish','Buddhist','Hindu','Sikh','Agnostic','Atheist','Spiritual','Other','No preference'];
 const AVCOLS=[{bg:'#FDF0EB',tc:'#993C1D'},{bg:'#E3F2E8',tc:'#1B5E20'},{bg:'#EDE7F6',tc:'#4527A0'},{bg:'#E3F4FD',tc:'#0D47A1'},{bg:'#FFF8E1',tc:'#E65100'},{bg:'#FCE4EC',tc:'#880E4F'},{bg:'#E8F5E9',tc:'#2E7D32'},{bg:'#E0F7FA',tc:'#006064'}];
 let S={screen:'splash',stack:[],user:null,setup:{photos:[],tags:[],qs:{},prefs:{}},dob:{d:15,m:6,y:1995},hUnit:'cm',htVal:170,carIdx:0,introSingle:null,introId:null,currentIntro:null,currentMatch:null,scanId:null,obPage:0,fbIntroId:null};
@@ -911,13 +913,156 @@ function pickLoc(val,sugId,inputId){const el=document.getElementById(inputId);if
 function saveBasic(){const name=document.getElementById('f-name').value.trim();if(!name){toast('Please enter your name');return}if(!S.setup.gender){toast('Please select your gender');return}const loc=document.getElementById('f-loc').value.trim();if(!loc){toast('Please enter your location');return}S.setup.name=name;S.setup.location=loc;S.setup.dob=`${S.dob.y}-${S.dob.m}-${S.dob.d}`;S.setup.age=calcAge(S.dob.y,S.dob.m,S.dob.d);go('setup')}
 let editPhotos=[];
 function initSetupPhotos(){renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup')}
-function renderPhotoGrid(gridId,photos,inputId,mode){const g=document.getElementById(gridId);if(!g)return;let html='';for(let i=0;i<6;i++){const p=photos[i];if(p){html+=`<div class="pslot filled"><img src="${p}"><span class="pnum">${i+1}</span><button class="prm" onclick="rmPhoto(${i},'${mode}')">x</button></div>`}else{const req=i<3;html+=`<div class="pslot ${req?'req':''}" onclick="document.getElementById('${inputId}').click()"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="${req?'rgba(216,90,48,.6)':'var(--bd3)'}" stroke-width="2" stroke-linecap="round"/></svg><span class="plbl">${req?'Required':'Optional'}</span></div>`}}g.innerHTML=html;const cnt=document.getElementById('ph-count');if(cnt)cnt.textContent=`${photos.length}/6 added${photos.length>=3?' ✓':' (3 required)'}`;const btn=document.getElementById('ph-next');if(btn)btn.disabled=photos.length<3}
+function renderPhotoGrid(gridId,photos,inputId,mode){
+  const g=document.getElementById(gridId);if(!g)return;
+  let html='';
+  for(let i=0;i<6;i++){
+    const p=photos[i];
+    if(p){
+      const mainBadge=i===0?'<span style="position:absolute;top:4px;left:4px;background:var(--p);color:#fff;font-size:9px;font-weight:700;border-radius:4px;padding:2px 5px;z-index:3">Main</span>':'';
+      html+='<div class="pslot filled" draggable="true" data-idx="'+i+'" data-mode="'+mode+'" ondragstart="photoDragStart(event)" ondragover="photoDragOver(event)" ondrop="photoDrop(event)" ondragend="photoDragEnd(event)">'
+        +mainBadge
+        +'<img src="'+p+'">'
+        +'<span class="pnum">'+( i+1)+'</span>'
+                +'<button class="prm" onclick="rmPhoto('+i+',\''+mode+'\')">x</button>'
+        +'<div style="position:absolute;bottom:4px;right:4px;width:18px;height:18px;background:rgba(0,0,0,.35);border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:grab;z-index:3" title="Drag to reorder">'
+        +'<svg width="10" height="10" viewBox="0 0 10 10" fill="rgba(255,255,255,.8)"><circle cx="3" cy="2" r="1"/><circle cx="7" cy="2" r="1"/><circle cx="3" cy="5" r="1"/><circle cx="7" cy="5" r="1"/><circle cx="3" cy="8" r="1"/><circle cx="7" cy="8" r="1"/></svg>'
+        +'</div>'
+        +'</div>';
+    }else{
+      const req=i<3;
+      html+='<div class="pslot '+(req?'req':'')+'" ondragover="photoDragOver(event)" ondrop="photoDrop(event)" data-idx="'+i+'" data-mode="'+mode+'" data-input-id="'+inputId+'" onclick="photoSlotClick(this)">'
+        +'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="'+(req?'rgba(216,90,48,.6)':'var(--bd3)')+'" stroke-width="2" stroke-linecap="round"/></svg>'
+        +'<span class="plbl">'+(req?'Required':'Optional')+'</span>'
+        +'</div>';
+    }
+  }
+  g.innerHTML=html;
+  const cnt=document.getElementById('ph-count');
+  if(cnt)cnt.textContent=photos.length+'/6 added'+(photos.length>=3?' ✓':' (3 required)');
+  const btn=document.getElementById('ph-next');
+  if(btn)btn.disabled=photos.length<3;
+  _bindPhotoTouch(g, photos, mode);
+}
+
+function photoSlotClick(el){ var id=el.getAttribute('data-input-id'); if(id)document.getElementById(id).click(); }
+var _photoDragSrcIdx = -1;
+function photoDragStart(e){
+  _photoDragSrcIdx = parseInt(e.currentTarget.dataset.idx);
+  e.dataTransfer.effectAllowed='move';
+  e.currentTarget.style.opacity='0.5';
+}
+function photoDragOver(e){
+  e.preventDefault();
+  e.dataTransfer.dropEffect='move';
+  e.currentTarget.classList.add('photo-drag-over');
+}
+function photoDrop(e){
+  e.preventDefault();
+  const toIdx = parseInt(e.currentTarget.dataset.idx);
+  const mode  = e.currentTarget.dataset.mode;
+  const arr   = mode==='setup' ? S.setup.photos : editPhotos;
+  if(_photoDragSrcIdx < 0 || _photoDragSrcIdx === toIdx) return;
+  if(_photoDragSrcIdx < arr.length && toIdx < arr.length){
+    const tmp = arr[_photoDragSrcIdx];
+    arr.splice(_photoDragSrcIdx,1);
+    arr.splice(toIdx,0,tmp);
+    const gridId = mode==='setup' ? 'pg-setup' : 'pg-edit';
+    const inputId= mode==='setup' ? 'ph-input-setup' : 'ph-input-edit';
+    renderPhotoGrid(gridId, arr, inputId, mode);
+  }
+}
+function photoDragEnd(e){
+  e.currentTarget.style.opacity='';
+  document.querySelectorAll('.pslot').forEach(function(s){s.classList.remove('photo-drag-over');});
+  _photoDragSrcIdx=-1;
+}
+
+function _bindPhotoTouch(grid, photos, mode){
+  var slots = Array.from(grid.querySelectorAll('.pslot.filled'));
+  slots.forEach(function(slot){
+    var startX,startY,dragging=false,clone=null,srcIdx=-1;
+    slot.addEventListener('touchstart',function(e){
+      srcIdx=parseInt(slot.dataset.idx);
+      startX=e.touches[0].clientX; startY=e.touches[0].clientY;
+      dragging=false;
+    },{passive:true});
+    slot.addEventListener('touchmove',function(e){
+      var dx=e.touches[0].clientX-startX, dy=e.touches[0].clientY-startY;
+      if(!dragging && Math.sqrt(dx*dx+dy*dy)>8){
+        dragging=true;
+        clone=slot.cloneNode(true);
+        clone.style.cssText='position:fixed;z-index:9999;width:'+slot.offsetWidth+'px;height:'+slot.offsetHeight+'px;opacity:.75;pointer-events:none;border-radius:var(--r2);overflow:hidden;';
+        document.body.appendChild(clone);
+        slot.style.opacity='0.3';
+      }
+      if(dragging && clone){
+        e.preventDefault();
+        clone.style.left=(e.touches[0].clientX - slot.offsetWidth/2)+'px';
+        clone.style.top =(e.touches[0].clientY - slot.offsetHeight/2)+'px';
+        // highlight target
+        document.querySelectorAll('.pslot').forEach(function(s){s.classList.remove('photo-drag-over');});
+        var el=document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
+        var target=el&&el.closest('.pslot');
+        if(target&&target!==slot) target.classList.add('photo-drag-over');
+      }
+    },{passive:false});
+    slot.addEventListener('touchend',function(e){
+      if(clone){clone.remove();clone=null;}
+      slot.style.opacity='';
+      var el=document.elementFromPoint(e.changedTouches[0].clientX,e.changedTouches[0].clientY);
+      var target=el&&el.closest('.pslot');
+      document.querySelectorAll('.pslot').forEach(function(s){s.classList.remove('photo-drag-over');});
+      if(dragging && target && target!==slot){
+        var toIdx=parseInt(target.dataset.idx);
+        var arr=mode==='setup'?S.setup.photos:editPhotos;
+        if(srcIdx<arr.length && toIdx<arr.length){
+          var tmp=arr[srcIdx]; arr.splice(srcIdx,1); arr.splice(toIdx,0,tmp);
+          var gridId=mode==='setup'?'pg-setup':'pg-edit';
+          var inputId=mode==='setup'?'ph-input-setup':'ph-input-edit';
+          renderPhotoGrid(gridId,arr,inputId,mode);
+        }
+      }
+      dragging=false;
+    },{passive:true});
+  });
+}
 function photosAdded(e,mode){const files=Array.from(e.target.files),arr=mode==='setup'?S.setup.photos:editPhotos,rem=6-arr.length,toAdd=files.slice(0,rem);let done=0;if(!toAdd.length){toast('Maximum 6 photos');return}toAdd.forEach(f=>{const r=new FileReader();r.onload=ev=>{arr.push(ev.target.result);done++;if(done===toAdd.length){if(mode==='setup')renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');else renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit')}};r.readAsDataURL(f)});e.target.value=''}
 function rmPhoto(idx,mode){const arr=mode==='setup'?S.setup.photos:editPhotos;arr.splice(idx,1);if(mode==='setup')renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');else renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit')}
 function savePhotos(){if(S.setup.photos.length<3){toast('Add at least 3 photos');return}go('setup')}
 function htSlide(){S.htVal=parseInt(document.getElementById('ht-slider').value);dispHeight()}
 function setHUnit(u){S.hUnit=u;document.getElementById('ht-cm').classList.toggle('sel',u==='cm');document.getElementById('ht-in').classList.toggle('sel',u==='in');dispHeight()}
 function dispHeight(){const v=S.htVal||170,ins=v/2.54,ft=Math.floor(ins/12),inch=Math.round(ins%12);document.getElementById('ht-display').textContent=S.hUnit==='cm'?`${v} cm`:`${ft}'${inch}"`}
+function _ageSlideUpdate(minId, maxId, fillId, displayId) {
+  var minEl = document.getElementById(minId);
+  var maxEl = document.getElementById(maxId);
+  var fill  = document.getElementById(fillId);
+  var disp  = document.getElementById(displayId);
+  if (!minEl || !maxEl) return;
+  var lo = parseInt(minEl.value), hi = parseInt(maxEl.value);
+  if (lo >= hi) { if (minEl === document.activeElement) { lo = hi - 1; minEl.value = lo; } else { hi = lo + 1; maxEl.value = hi; } }
+  if (disp) disp.textContent = lo + ' – ' + hi;
+  if (fill) {
+    var pctLo = (lo - 18) / 52 * 100, pctHi = (hi - 18) / 52 * 100;
+    var wrap = fill.parentElement;
+    var pad = 13;
+    var w = wrap ? wrap.offsetWidth - pad * 2 : 200;
+    fill.style.left  = (pad + w * pctLo / 100) + 'px';
+    fill.style.width = (w * (pctHi - pctLo) / 100) + 'px';
+  }
+}
+function suAgeSlide() { _ageSlideUpdate('pref-amin','pref-amax','su-age-fill','su-age-display'); }
+function epAgeSlide() { _ageSlideUpdate('ep-amin','ep-amax','ep-age-fill','ep-age-display'); }
+function initAgeSlider(minId, maxId, fillId, displayId, minVal, maxVal) {
+  var minEl = document.getElementById(minId);
+  var maxEl = document.getElementById(maxId);
+  if (minEl) minEl.value = minVal || 22;
+  if (maxEl) maxEl.value = maxVal || 36;
+  requestAnimationFrame(function() {
+    if (minId === 'pref-amin') suAgeSlide(); else epAgeSlide();
+  });
+}
+
 function saveDetails(){const job=document.getElementById('f-job').value.trim(),rel=document.getElementById('f-rel').value;if(!job){toast('Please enter your occupation');return}if(!rel){toast('Please select religion');return}S.setup.job=job;S.setup.religion=rel;S.setup.height=S.htVal||170;go('setup')}
 function initTags(){const w=document.getElementById('tags-wrap');if(!w)return;w.innerHTML=TAGS.map(t=>`<button class="tag-pill ${S.setup.tags.includes(t)?'sel':''}" onclick="toggleTag(this,'${t}')">${t}</button>`).join('');updTagCount()}
 function toggleTag(btn,t){if(S.setup.tags.includes(t)){S.setup.tags=S.setup.tags.filter(x=>x!==t);btn.classList.remove('sel')}else if(S.setup.tags.length<3){S.setup.tags.push(t);btn.classList.add('sel')}else{toast('Choose exactly 3 tags');return}updTagCount()}
@@ -929,7 +1074,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('')}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,pace:S.setup.pref_pace,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){DB.setSingles([{id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,bio:'Creative soul who loves design and the outdoors.'},{id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,bio:'Passionate about food and people.'},{id:'s3',name:'Camille',age:26,job:'Marketing',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,bio:'Marketing lead by day, world traveller by weekend.'}]);const now=Date.now(),i1='intro_'+now,i2='intro_'+(now+1),m1='match_'+now;DB.setIntros([{id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris',mmName:'Marie',mmRel:'Best friend',ctx:"You both love hiking and he's one of the most thoughtful people I know.",status:'pending',ts:now-7200000,exp:now+3600000*70,ci:2},{id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris',mmName:'Paul',mmRel:'Colleague',ctx:"She's brilliant, funny, and has the same dry humor as you.",status:'pending',ts:now-3600000*18,exp:now+3600000*54,ci:6}]);DB.setMatches([{id:m1,oName:'Sara',oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2}]);DB.setMsgs(m1,[{id:1,from:'them',text:'Hey! Marie introduced us 😊',ts:now-3600000*46},{id:2,from:'me',text:'Hi Sara! Great taste Marie has 😄 I am '+uname,ts:now-3600000*45},{id:3,from:'them',text:'So you work in design? I write about tech.',ts:now-3600000*44},{id:4,from:'me',text:"That's a small world!",ts:now-3600000*43},{id:5,from:'them',text:'I wrote about how dating apps are broken...',ts:now-3600000*42},{id:6,from:'me',text:'And yet here we are on one that might work 😄',ts:now-3600000*41}]);DB.addNotif({id:'n1',text:'Marie introduced you to Thomas!',ts:now-7200000,read:false});DB.addNotif({id:'n2',text:'Sara sent you a message',ts:now-3600000*40,read:false});DB.addNotif({id:'n3',text:'Paul introduced you to Lea',ts:now-3600000*18,read:true})}
 
 function initHome(){
@@ -1259,7 +1404,7 @@ function statBox(val, label, iconPath, iconColor, isEmoji) {
 }
 
 let epDob={d:15,m:6,y:1995},epHtVal=170,epHUnit='cm',epTags=[],epQs={},epPrefs={};
-function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';if(u.dob){const p=u.dob.split('-');epDob={y:+p[0],m:+p[1],d:+p[2]}}else epDob={d:15,m:6,y:new Date().getFullYear()-28};buildEpPicker();epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');epSelOptById('ep-pref-pace','pref_pace',u.prefs?.pace||'');document.getElementById('ep-amin').value=u.prefs?.ageMin||22;document.getElementById('ep-amax').value=u.prefs?.ageMax||36;buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||''}
+function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';if(u.dob){const p=u.dob.split('-');epDob={y:+p[0],m:+p[1],d:+p[2]}}else epDob={d:15,m:6,y:new Date().getFullYear()-28};buildEpPicker();epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');initAgeSlider('ep-amin','ep-amax','ep-age-fill','ep-age-display',u.prefs?.ageMin||22,u.prefs?.ageMax||36);buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||''}
 function buildEpPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')),months=['January','February','March','April','May','June','July','August','September','October','November','December'],cy=new Date().getFullYear(),years=Array.from({length:65},(_,i)=>String(cy-18-i));fillEpPcol('ep-pc-day',days,epDob.d-1);fillEpPcol('ep-pc-month',months,epDob.m-1);fillEpPcol('ep-pc-year',years,Math.max(0,cy-18-epDob.y));updateEpDobPreview()}
 function fillEpPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function pickerScroll(el,type){clearTimeout(el._t);el._t=setTimeout(()=>{const idx=Math.round(el.scrollTop/48);el.scrollTop=idx*48;highlightPcol(el,idx);if(type==='day')S.dob.d=idx+1;else if(type==='month')S.dob.m=idx+1;else if(type==='year'){const cy=new Date().getFullYear();S.dob.y=cy-18-idx}else if(type==='ep-day')epDob.d=idx+1;else if(type==='ep-month')epDob.m=idx+1;else if(type==='ep-year'){const cy=new Date().getFullYear();epDob.y=cy-18-idx}if(type.startsWith('ep-'))updateEpDobPreview();else updateDobPreview()},100)}
@@ -1291,7 +1436,7 @@ function epSwitchTab(tab) {
   if (scroller) scroller.scrollTop = 0;
 }
 
-function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;u.dob=`${epDob.y}-${epDob.m}-${epDob.d}`;u.age=calcAge(epDob.y,epDob.m,epDob.d);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.pace=epPrefs.pref_pace||u.prefs.pace;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
+function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;u.dob=`${epDob.y}-${epDob.m}-${epDob.d}`;u.age=calcAge(epDob.y,epDob.m,epDob.d);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
 function initNotifs(){const notifs=DB.notifs();notifs.forEach(n=>n.read=true);DB.s('notifs',notifs);document.getElementById('notif-dot').style.display='none';document.getElementById('notifs-list').innerHTML=notifs.length?notifs.map(n=>`<div class="tl-item px"><div class="tl-dot" style="background:${n.read?'var(--bg4)':'var(--p)'}"></div><div class="flex1"><p style="font-size:14px;color:${n.read?'var(--tx2)':'var(--tx)'};font-weight:${n.read?'400':'500'}">${n.text}</p><p class="tiny mt4">${ago(n.ts)}</p></div></div>`).join(''):`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">🔔</div><h3>No notifications yet</h3></div>`}
 function sendInvite(){const name=document.getElementById('inv-name').value.trim();if(!name){toast('Enter their name');return}const url=`${location.origin}${location.pathname}?invite=${encodeURIComponent(name)}`;closeModal('modal-invite');if(navigator.share)navigator.share({title:name+', join Circle!',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Invite link copied for '+name+'! 📋')}else toast('Invite: '+url);document.getElementById('inv-name').value=''}
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
@@ -2052,6 +2197,7 @@ function initSetup() {
   initQs();
   initPrefsScreen();
   renderPhotoGrid('pg-setup', S.setup.photos, 'ph-input-setup', 'setup');
+  requestAnimationFrame(function(){ initAgeSlider('pref-amin','pref-amax','su-age-fill','su-age-display',22,36); });
 }
 
 function saveBasicAndNext() {
