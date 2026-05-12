@@ -1261,7 +1261,7 @@ function renderMcMmsGrid() {
 
 function mcCardTap(id) {
   const idx = DB.singles().findIndex(s => s.id === id);
-  if (idx !== -1) { S.carIdx = idx; startIntroFlow(); }
+  if (idx !== -1) { S.carIdx = idx; go('introduce'); }
 }
 
 function initIntros(){const _u=DB.user();if(_u)S.user=_u;renderPending();renderMatches();renderActivity()}
@@ -1591,7 +1591,7 @@ function openSingleDash(sid) {
 
 function createIntroForSingle(sid) {
   const idx = DB.singles().findIndex(function(x){return x.id===sid});
-  if (idx !== -1) { S.carIdx = idx; go('introduce'); }
+  if (idx !== -1) { S.carIdx = idx; startIntroFlow(); }
 }
 
 function openShareIntroCard(sid) {
