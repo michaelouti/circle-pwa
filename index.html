@@ -1125,12 +1125,15 @@ function initHome(){
     scroll.innerHTML='<div class="sing-card sing-add-card" style="min-width:min(190px,54vw)" onclick="showModal(\'modal-invite\')"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M4 11h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:600;color:var(--tx3)">Add a single friend</span></div>';
     dotsEl.innerHTML='';
   } else {
-    const total=singles.length+1;
-    scroll.innerHTML=singles.map(function(s){
+    // Center on middle single (index Math.floor(N/2)), Add friend tiles on both ends
+    const total=singles.length+2;
+    const centerIdx=1+Math.floor(singles.length/2);
+    const addFriendCard='<div class="sing-card sing-add-card" onclick="toast(\'Add single friend — coming soon!\')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>';
+    scroll.innerHTML=addFriendCard+singles.map(function(s){
       const c=AVCOLS[s.ci%AVCOLS.length];
       const inner=s.photos&&s.photos.length?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block">':'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+c.bg+','+c.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:'+c.tc+';opacity:.45;letter-spacing:-4px">'+ini(s.name)+'</span></div>';
       return '<div class="sing-card" onclick="singCardTap(\''+s.id+'\')">'+inner+'<button class="sing-card-menu" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">'+s.name+'</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">'+s.loc+'</div></div></div>';
-    }).join('')+'<div class="sing-card sing-add-card" onclick="toast(\'Add single friend — coming soon!\')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>';
+    }).join('')+addFriendCard;
     // Coverflow spacers: pad first/last so center card can align to center
     const spStyle='flex-shrink:0;scroll-snap-align:none;pointer-events:none;display:block';
     scroll.innerHTML='<div class="sing-spacer" style="'+spStyle+'"></div>'+scroll.innerHTML+'<div class="sing-spacer" style="'+spStyle+'"></div>';
@@ -1139,9 +1142,13 @@ function initHome(){
       if(!firstCard) return;
       const sp=Math.max(0,(scroll.offsetWidth-firstCard.offsetWidth)/2);
       scroll.querySelectorAll('.sing-spacer').forEach(function(s){s.style.minWidth=sp+'px';});
-      requestAnimationFrame(function(){ updateCoverflow && updateCoverflow(); });
+      requestAnimationFrame(function(){
+        var cards=Array.from(scroll.querySelectorAll('.sing-card'));
+        if(cards[centerIdx]){scroll.scrollLeft=cards[centerIdx].offsetLeft+cards[centerIdx].offsetWidth/2-scroll.offsetWidth/2;}
+        updateCoverflow&&updateCoverflow();
+      });
     });
-    dotsEl.innerHTML=Array.from({length:total},function(_,i){return '<div class="scroll-dot '+(i===0?'on':'')+'" style="width:'+(i===0?'18px':'6px')+'"></div>'}).join('');
+    dotsEl.innerHTML=Array.from({length:total},function(_,i){return '<div class="scroll-dot '+(i===centerIdx?'on':'')+'" style="width:'+(i===centerIdx?'18px':'6px')+'"></div>'}).join('');
     function updateCoverflow() {
       const cards = Array.from(scroll.querySelectorAll('.sing-card'));
       if (!cards.length) return;
@@ -1172,6 +1179,8 @@ function initHome(){
       const firstCard = scroll.querySelector('.sing-card');
       const sp = firstCard ? Math.max(0,(scroll.offsetWidth-firstCard.offsetWidth)/2) : 60;
       scroll.querySelectorAll('.sing-spacer').forEach(function(s){ s.style.minWidth=sp+'px'; });
+      var cards=Array.from(scroll.querySelectorAll('.sing-card'));
+      if(cards[centerIdx]){scroll.scrollLeft=cards[centerIdx].offsetLeft+cards[centerIdx].offsetWidth/2-scroll.offsetWidth/2;}
       updateCoverflow();
     }, 80);
   }
