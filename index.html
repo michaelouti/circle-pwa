@@ -1156,7 +1156,7 @@ function initHome(){
   document.getElementById('notif-dot').style.display=hasUnread?'block':'none';
 }
 
-function singCardTap(id){const idx=DB.singles().findIndex(s=>s.id===id);if(idx!==-1){S.carIdx=idx;go('introduce')}}
+function singCardTap(id){viewSingleProfile(id);}
 function singCardMenu(id){const s=DB.singles().find(x=>x.id===id);if(!s)return;S.introSingle=s;S.carIdx=DB.singles().findIndex(x=>x.id===id);toast(s.name+' — tap + to generate a QR')}
 // My Circle tab state
 let mcTab = 'singles';
@@ -1272,10 +1272,7 @@ function renderMcMmsGrid() {
   grid.innerHTML = html;
 }
 
-function mcCardTap(id) {
-  const idx = DB.singles().findIndex(s => s.id === id);
-  if (idx !== -1) { S.carIdx = idx; go('introduce'); }
-}
+function mcCardTap(id) {viewSingleProfile(id);}
 
 function initIntros(){const _u=DB.user();if(_u)S.user=_u;renderPending();renderMatches();renderActivity()}
 function switchTab(t){['pending','matches','activity'].forEach(x=>{document.getElementById('t-'+x)?.classList.toggle('on',x===t);document.getElementById('tp-'+x)?.classList.toggle('on',x===t)});if(t==='pending')renderPending();if(t==='matches')renderMatches();if(t==='activity')renderActivity()}
