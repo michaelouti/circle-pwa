@@ -1331,6 +1331,59 @@ function renderMcSinglesGrid() {
   grid.innerHTML = html;
 }
 
+function openMmProfile(idx) {
+  const u = DB.user();
+  const mms = (u && u.matchmakers) ? u.matchmakers : [];
+  const mm = mms[idx];
+  if (!mm) return;
+  const col = AVCOLS[mm.ci % AVCOLS.length];
+  const allIntros = DB.intros().filter(function(i){ return i.mmName === mm.name; });
+  const allMatches = DB.matches().filter(function(m){ return m.mmName === mm.name; });
+  const total = allIntros.length + allMatches.length;
+  var pendingHtml = '';
+  if (allIntros.length) {
+    pendingHtml = `<div class="micro mb8">PENDING INTROS FROM ${mm.name.toUpperCase()}</div>`
+      + allIntros.map(function(i){
+          const ic = AVCOLS[i.ci % AVCOLS.length];
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">
+            <div class="av" style="width:36px;height:36px;font-size:12px;background:${ic.bg};color:${ic.tc}">${ini(i.sName)}</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--tx)">${i.sName}, ${i.sAge}</div><div style="font-size:11px;color:var(--tx3)">${i.sJob} · ${i.sLoc}</div></div>
+            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--p1);color:var(--p)">Pending</div>
+          </div>`;
+        }).join('');
+  }
+  var matchesHtml = '';
+  if (allMatches.length) {
+    matchesHtml = `<div class="micro mb8" style="margin-top:${allIntros.length?10:0}px">MATCHES FROM ${mm.name.toUpperCase()}</div>`
+      + allMatches.map(function(m){
+          const mc = AVCOLS[m.ci % AVCOLS.length];
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">
+            <div class="av" style="width:36px;height:36px;font-size:12px;background:${mc.bg};color:${mc.tc}">${ini(m.oName)}</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--tx)">${m.oName}</div><div style="font-size:11px;color:var(--tx3)">${m.oJob || ''}</div></div>
+            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:#E8F5E9;color:#2E7D32">Matched ✓</div>
+          </div>`;
+        }).join('');
+  }
+  document.getElementById('preview-body').innerHTML =
+    `<div style="position:relative;margin:-20px -20px 16px">
+      <div style="height:220px;background:linear-gradient(145deg,${col.bg},${col.bg}bb);display:flex;align-items:center;justify-content:center">
+        <div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:${col.tc};border:2.5px solid rgba(255,255,255,.3)">${ini(mm.name)}</div>
+      </div>
+      <div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent)">
+        <div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${mm.name}</div>
+        <div style="font-size:12px;color:rgba(255,255,255,.9)">${[mm.rel, mm.loc].filter(Boolean).join(' · ')}</div>
+      </div>
+    </div>
+    <div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px">
+      <div style="font-size:28px;font-weight:800;color:var(--p)">${total}</div>
+      <div style="font-size:13px;color:var(--tx2);margin-top:3px">introduction${total!==1?'s':''} made for you</div>
+    </div>
+    ${pendingHtml}${matchesHtml}
+    ${!total ? '<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No intros yet — maybe nudge them! 😄</p>' : ''}`;
+  const titleEl = document.getElementById('prof-preview-title');
+  if (titleEl) titleEl.textContent = mm.name + "\u2019s profile";
+  go('prof-preview');
+}
 function renderMcMmsGrid() {
   const u = DB.user();
   const mms = (u && u.matchmakers) ? u.matchmakers : [];
@@ -1342,7 +1395,7 @@ function renderMcMmsGrid() {
     const mm = mms[i];
     if (mm) {
       const c = AVCOLS[mm.ci % AVCOLS.length];
-      html += '<div class="mc-card" style="cursor:default;background:' + c.bg + '">'
+      html += '<div class="mc-card" style="cursor:pointer;background:' + c.bg + '\" onclick="openMmProfile(' + i + ')">'
             + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
             + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity=".45"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
             + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + (mm.loc || mm.rel || '') + '</div></div>'
@@ -1803,7 +1856,7 @@ function openMmMenu(idx, anchorEl) {
   const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
   if (!mm) return;
   openCtxMenu([
-    {label:'View profile', icon:ICO_EYE,    action:function(){ viewMmProfile(idx); }},
+    {label:'View profile', icon:ICO_EYE,    action:function(){ openMmProfile(idx); }},
     {label:'Message',      icon:ICO_MSG,    action:function(){ messageMm(idx); }},
     'sep',
     {label:'Pause',        icon:ICO_PAUSE,  action:function(){ openPauseMm(idx); }},
