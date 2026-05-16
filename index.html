@@ -1084,23 +1084,23 @@ function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(d
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
-    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,
+    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',gender:'Woman',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,
      bio:'Creative soul who loves design and the outdoors. Splits weekends between gallery openings and hiking trails.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Looking for someone who loves the outdoors and has a creative spirit. Bonus points for architecture or design background.'}},
-    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,
+    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',gender:'Man',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,
      bio:'Head chef at a Lyon bistro. Believes the best conversations happen around a good table. Serious about food, even more serious about people.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:25,ageMax:35,religions:['No preference'],note:'Someone who appreciates good food and is not afraid of a flour-covered apron. Warmth matters more than ambition.'}},
-    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,
+    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',gender:'Woman',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,
      bio:'Marketing lead by day, world traveller by weekend. Has a passport that is almost full and a bucket list that is nowhere near empty.',
      qs:{intent:'Seeing where things go',location:'Open within my country',family:"I don't know yet",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'Vegetarian'},
      prefs:{gender:'Man',ageMin:26,ageMax:36,religions:['No preference'],note:'Open-minded and curious about the world. An adventurous spirit is a must. No couch potatoes please.'}},
-    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',tags:['Thoughtful','Funny','Calm'],photos:[],ci:4,
+    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',gender:'Man',tags:['Thoughtful','Funny','Calm'],photos:[],ci:4,
      bio:'Engineer by training, philosopher by nature. Loves long bike rides, sci-fi novels, and cooking elaborate Sunday dinners for friends.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Looking for someone kind and curious. Doesn\'t need to love tech but should at least tolerate my book collection.'}},
-    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',tags:['Caring','Grounded','Witty'],photos:[],ci:8,
+    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',gender:'Woman',tags:['Caring','Grounded','Witty'],photos:[],ci:8,
      bio:'Pediatric nurse with a dark sense of humour (occupational hazard). Off-duty she paints, runs half-marathons, and talks too much about her cat.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Someone emotionally available and not afraid of vulnerability. Sense of humour is non-negotiable.'}}
@@ -1731,13 +1731,28 @@ function viewSingleProfile(sid) {
   var tags=s.tags||[];
   var tagsSentence='';
   if(tags.length){
-    var tagStr=tags.length===1?tags[0]:tags.slice(0,-1).join(', ')+' and '+tags[tags.length-1];
-    tagsSentence=`<div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.65;color:var(--tx)">Friends describe <strong style="color:var(--p)">${s.name}</strong> as a <strong style="color:var(--p)">${tagStr}</strong> person.</div>`;
+    var tagStr=tags.length===1
+      ?'<strong style="color:var(--p)">'+tags[0]+'</strong>'
+      :tags.slice(0,-1).map(function(t){return '<strong style="color:var(--p)">'+t+'</strong>';}).join(', ')+' and '+('<strong style="color:var(--p)">'+tags[tags.length-1]+'</strong>');
+    tagsSentence=`<div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.65;color:var(--tx)">Friends describe <strong style="color:var(--p)">${s.name}</strong> as a ${tagStr} person.</div>`;
   }
   var qaHtml='';
   if(s.qs&&Object.keys(s.qs).length){
+    var _sg=s.gender||'';
+    var _vsQC={intent:{label:'Looking for',icon:'heart',color:'#E07060'},location:{label:'Location flexibility',icon:'location',color:'#E07060'},family:{label:'Family',icon:'family',color:'#E07060'},sport:{label:'Physical activity',icon:'sport',color:'#E07060'},travel:{label:'Travel',icon:'travel',color:'#E07060'},food:{label:'Food lifestyle',icon:'food',color:'#E07060'}};
+    var _vsQP={heart:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',family:'<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',sport:'<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',travel:'<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',food:'<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>'};
     var entries=Object.entries(s.qs);
-    qaHtml=`<div class="micro mb8">ABOUT ${s.name.toUpperCase()}</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px">${entries.map((kv,idx)=>{var cfg=QS.find(q=>q.id===kv[0]);var label=cfg?cfg.q:kv[0];var span=entries.length%2!==0&&idx===entries.length-1?'grid-column:span 2':'';return `<div style="background:var(--bg2);border-radius:var(--r);padding:10px 11px;${span}"><div style="font-size:9px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px">${label}</div><div style="font-size:12px;font-weight:600;color:var(--tx);line-height:1.3">${kv[1]}</div></div>`;}).join('')}</div>`;
+    qaHtml='<div class="micro mb8">ABOUT '+s.name.toUpperCase()+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:18px">'
+      +entries.map(function(kv,idx){
+        var cfg=_vsQC[kv[0]]||{label:kv[0],icon:'heart',color:'#E07060'};
+        var icon='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="'+cfg.color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+_vsQP[cfg.icon]+'</svg>';
+        var span=entries.length%2!==0&&idx===entries.length-1?'grid-column:span 2':'';
+        return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'">'
+          +'<div class="row mb6" style="gap:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div>'
+          +'<span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div>'
+          +'<div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(kv[1],_sg)+'</div></div>';
+      }).join('')+'</div>';
   }
   var prefsHtml='';
   if(s.prefs){
@@ -1745,7 +1760,7 @@ function viewSingleProfile(sid) {
     if(p.gender) rows+=`<div style="background:rgba(255,255,255,.7);border-radius:var(--r);padding:9px 11px;margin-bottom:6px"><div style="font-size:9px;font-weight:700;color:var(--p6);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">I want to meet a&#x2026;</div><div style="font-size:13px;font-weight:600;color:var(--p8)">${p.gender}</div></div>`;
     if(p.ageMin&&p.ageMax) rows+=`<div style="background:rgba(255,255,255,.7);border-radius:var(--r);padding:9px 11px;margin-bottom:6px"><div style="font-size:9px;font-weight:700;color:var(--p6);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">Age range</div><div style="font-size:13px;font-weight:600;color:var(--p8)">${p.ageMin} &#x2013; ${p.ageMax} years old</div></div>`;
     if(p.religions&&p.religions.length) rows+=`<div style="background:rgba(255,255,255,.7);border-radius:var(--r);padding:9px 11px;margin-bottom:6px"><div style="font-size:9px;font-weight:700;color:var(--p6);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">Religion preference</div><div style="font-size:13px;font-weight:600;color:var(--p8)">${p.religions.join(', ')}</div></div>`;
-    if(p.note) rows+=`<div style="background:rgba(255,255,255,.7);border-radius:var(--r);padding:9px 11px"><div style="font-size:9px;font-weight:700;color:var(--p6);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">Notes for matchmakers</div><div style="font-size:12px;color:var(--p8);line-height:1.55;font-style:italic">&#x201C;${p.note}&#x201D;</div></div>`;
+    if(p.note) rows+=`<div style="background:rgba(255,255,255,.7);border-radius:var(--r);padding:9px 11px"><div style="font-size:9px;font-weight:700;color:var(--p6);letter-spacing:.4px;text-transform:uppercase;margin-bottom:2px">Notes for matchmakers</div><div style="font-size:12px;color:var(--p8);line-height:1.55;font-style:italic">&#x201C;${_p3(p.note,s.gender||'')}&#x201D;</div></div>`;
     prefsHtml=`<div style="background:var(--p1);border:0.5px solid rgba(216,90,48,.15);border-radius:var(--r2);padding:14px;margin-bottom:16px"><div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:3px">${s.name}&#x2019;s partner preferences</div><div style="font-size:12px;color:var(--p);font-weight:500;margin-bottom:12px">&#x1F512; Only visible to matchmakers &#x2013; use this to find great matches</div>${rows}</div>`;
   }
   var stopBtn=`<button onclick="openStopHelping(window._viewSid)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">&#x26D4; Stop helping ${s.name}</button>`;
