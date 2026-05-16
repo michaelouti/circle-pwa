@@ -1113,19 +1113,19 @@ function seedDemo(uname){
   DB.setIntros([
     {id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',mmName:'Marie',mmRel:'Best friend',
      ctx:"You both love hiking and he's one of the most thoughtful people I know. I think you'd really get along.",
-     status:'pending',ts:now-3600000*14,exp:now+3600000*58,ci:2,
+     status:'pending',ts:now-3600000*14,exp:now+3600000*58,ci:2,gender:'Man',
      tags:['Adventurous','Thoughtful','Creative'],
      bio:'Photographer splitting time between Paris and the mountains. Passionate about visual storytelling and slow travel.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'}},
     {id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',mmName:'Paul',mmRel:'Colleague',
      ctx:"She's brilliant, funny, and has the same dry humor as you. You'll either become best friends or fall in love — probably both.",
-     status:'pending',ts:now-3600000*6,exp:now+3600000*66,ci:6,
+     status:'pending',ts:now-3600000*6,exp:now+3600000*66,ci:6,gender:'Woman',
      tags:['Ambitious','Funny','Authentic'],
      bio:'UX designer who believes great design should feel invisible. Bookworm, amateur cook, and always planning the next trip.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'}},
     {id:i3,sName:'Hugo',sAge:32,sJob:'Lawyer',sLoc:'Lyon, France',mmName:'Julie',mmRel:'Childhood friend',
      ctx:"Hugo is one of the most genuine people I know. Successful but never arrogant, great listener, and he cooks better than any chef I know.",
-     status:'pending',ts:now-3600000*2,exp:now+3600000*70,ci:3,
+     status:'pending',ts:now-3600000*2,exp:now+3600000*70,ci:3,gender:'Man',
      tags:['Reliable','Genuine','Cultured'],
      bio:'Corporate lawyer who unwinds through cooking, classical piano, and long runs along the Rhône. Prefers depth over small talk.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'}}
@@ -1380,11 +1380,11 @@ function openMmProfile(idx) {
         <div style="font-size:12px;color:rgba(255,255,255,.9)">${[mm.rel, mm.loc].filter(Boolean).join(' · ')}</div>
       </div>
     </div>
+    ${mmActionsHtml}
     <div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px">
       <div style="font-size:28px;font-weight:800;color:var(--p)">${total}</div>
       <div style="font-size:13px;color:var(--tx2);margin-top:3px">introduction${total!==1?'s':''} made for you</div>
-    </div>
-    ${mmActionsHtml}${pendingHtml}${matchesHtml}
+    </div>${pendingHtml}${matchesHtml}
     ${!total ? '<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No intros yet — maybe nudge them! 😄</p>' : ''}
     ${removeBtn}`;
   const titleEl = document.getElementById('prof-preview-title');
@@ -1450,13 +1450,33 @@ function openIntroDetail(id){
   var heroHtml=(i.photos&&i.photos.length)
     ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${i.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`).join('')}</div>`
     :`<div style="position:absolute;inset:0;background:linear-gradient(145deg,${col.bg},${col.bg}bb)"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:${col.tc}">${ini(i.sName)}</div></div>`;
-  var tagsHtml=(i.tags&&i.tags.length)
-    ?`<div class="micro mb8">FRIEND TAGS</div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">${i.tags.map(t=>`<span class="pill pill-p">${t}</span>`).join('')}</div>`:'';
-  var bioHtml=i.bio?`<p style="font-size:14px;color:var(--tx2);line-height:1.65;margin-bottom:14px">${i.bio}</p>`:'';
+  var _ig=i.gender||'';
+  var tagsHtml='';
+  if(i.tags&&i.tags.length){
+    var _it=i.tags.map(function(x){return '<strong style="color:var(--p)">'+x+'</strong>';});
+    var _iTagStr=_it.slice(0,-1).join(', ')+(i.tags.length>1?' and ':'')+_it[_it.length-1];
+    var _iArt=/^[AEIOUaeiou]/.test(i.tags[0])?'an':'a';
+    tagsHtml='<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px">'
+      +'<p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe '
+      +'<strong style="color:var(--p)">'+i.sName+'</strong> as '+_iArt+' '+_iTagStr+' person.</p></div>';
+  }
+  var bioHtml='';
   var qaHtml='';
   if(i.qs&&Object.keys(i.qs).length){
+    var _idQC={intent:{label:'Looking for',icon:'heart',color:'#E07060'},location:{label:'Location flexibility',icon:'location',color:'#E07060'},family:{label:'Family',icon:'family',color:'#E07060'},sport:{label:'Physical activity',icon:'sport',color:'#E07060'},travel:{label:'Travel',icon:'travel',color:'#E07060'},food:{label:'Food lifestyle',icon:'food',color:'#E07060'}};
+    var _idQP={heart:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',family:'<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',sport:'<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',travel:'<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',food:'<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>'};
     var qE=Object.entries(i.qs);
-    qaHtml=`<div class="micro mb8">PERSONALITY</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:16px">${qE.map((kv,idx)=>{var cfg=QS.find(q=>q.id===kv[0]);var label=cfg?cfg.q:kv[0];var span=qE.length%2!==0&&idx===qE.length-1?'grid-column:span 2':'';return `<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;${span}"><div style="font-size:9px;font-weight:600;color:var(--tx3);letter-spacing:.3px;text-transform:uppercase;margin-bottom:3px">${label}</div><div style="font-size:12px;font-weight:600;color:var(--tx);line-height:1.3">${kv[1]}</div></div>`;}).join('')}</div>`;
+    qaHtml='<div class="micro mb8">ABOUT '+i.sName.toUpperCase()+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+      +qE.map(function(kv,idx){
+        var cfg=_idQC[kv[0]]||{label:kv[0],icon:'heart',color:'#E07060'};
+        var icon='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="'+cfg.color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+_idQP[cfg.icon]+'</svg>';
+        var span=qE.length%2!==0&&idx===qE.length-1?'grid-column:span 2':'';
+        return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'">'
+          +'<div class="row mb6" style="gap:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div>'
+          +'<span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div>'
+          +'<div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(kv[1],_ig)+'</div></div>';
+      }).join('')+'</div>';
   }
   document.getElementById('id-body').innerHTML=`<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tx)">&#x23F1; ${hoursLeft}h left</div><div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${i.sName}, ${i.sAge}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${i.sJob?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${i.sJob}</span>`:''}${i.sLoc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${i.sLoc}</span>`:''}</div></div></div><div class="card-warm mb14"><div class="row mb8" style="gap:8px">${av(ini(i.mmName),0,28)}<div><div style="font-size:13px;font-weight:700;color:var(--p8)">${i.mmName} thinks you should meet</div><div class="tiny" style="color:var(--p6)">${i.mmRel}</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;${i.ctx||'No context note yet.'}&#x201D;</p></div>${tagsHtml}${bioHtml}${qaHtml}<div class="row mb8" style="gap:8px"><button class="btn btn-s flex1" onclick="declineIntro(this.dataset.id)" data-id="${i.id}">Decline</button><button class="btn btn-p flex1" onclick="acceptIntro(this.dataset.id)" data-id="${i.id}">Accept &#x2713;</button></div><button class="btn-ghost primary w100 center" onclick="openFeedback(this.dataset.id)" data-id="${i.id}">Rate this intro</button>`;
   go('intro-detail');
