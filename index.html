@@ -1337,6 +1337,7 @@ function openMmProfile(idx) {
   const mm = mms[idx];
   if (!mm) return;
   const col = AVCOLS[mm.ci % AVCOLS.length];
+  window._viewMmIdx = idx;
   const allIntros = DB.intros().filter(function(i){ return i.mmName === mm.name; });
   const allMatches = DB.matches().filter(function(m){ return m.mmName === mm.name; });
   const total = allIntros.length + allMatches.length;
@@ -1345,10 +1346,10 @@ function openMmProfile(idx) {
     pendingHtml = `<div class="micro mb8">PENDING INTROS FROM ${mm.name.toUpperCase()}</div>`
       + allIntros.map(function(i){
           const ic = AVCOLS[i.ci % AVCOLS.length];
-          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px;cursor:pointer" onclick="openIntroDetail('${i.id}')">
             <div class="av" style="width:36px;height:36px;font-size:12px;background:${ic.bg};color:${ic.tc}">${ini(i.sName)}</div>
             <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--tx)">${i.sName}, ${i.sAge}</div><div style="font-size:11px;color:var(--tx3)">${i.sJob} · ${i.sLoc}</div></div>
-            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--p1);color:var(--p)">Pending</div>
+            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:var(--p1);color:var(--p)">Pending ›</div>
           </div>`;
         }).join('');
   }
@@ -1357,13 +1358,18 @@ function openMmProfile(idx) {
     matchesHtml = `<div class="micro mb8" style="margin-top:${allIntros.length?10:0}px">MATCHES FROM ${mm.name.toUpperCase()}</div>`
       + allMatches.map(function(m){
           const mc = AVCOLS[m.ci % AVCOLS.length];
-          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px">
+          return `<div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--bg2);border-radius:var(--r);margin-bottom:6px;cursor:pointer" onclick="openChat('${m.id}')">
             <div class="av" style="width:36px;height:36px;font-size:12px;background:${mc.bg};color:${mc.tc}">${ini(m.oName)}</div>
             <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--tx)">${m.oName}</div><div style="font-size:11px;color:var(--tx3)">${m.oJob || ''}</div></div>
-            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:#E8F5E9;color:#2E7D32">Matched ✓</div>
+            <div style="font-size:9px;font-weight:600;padding:2px 8px;border-radius:100px;background:#E8F5E9;color:#2E7D32">Matched ✓ ›</div>
           </div>`;
         }).join('');
   }
+  const bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
+  const ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
+  const ss='width:20px;height:20px;stroke:var(--tx);stroke-width:1.6;fill:none;display:block;margin:0 auto';
+  const mmActionsHtml=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px"><button style="${bs}" onclick="openMmDash(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="${ls}">Dashboard</span></button><button style="${bs}" onclick="messageMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="${ls}">Message</span></button><button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="${ls}">Pause</span></button></div>`;
+  const removeBtn=`<button onclick="openRemoveMm(window._viewMmIdx)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px">Remove ${mm.name}</button>`;
   document.getElementById('preview-body').innerHTML =
     `<div style="position:relative;margin:-20px -20px 16px">
       <div style="height:220px;background:linear-gradient(145deg,${col.bg},${col.bg}bb);display:flex;align-items:center;justify-content:center">
@@ -1378,8 +1384,9 @@ function openMmProfile(idx) {
       <div style="font-size:28px;font-weight:800;color:var(--p)">${total}</div>
       <div style="font-size:13px;color:var(--tx2);margin-top:3px">introduction${total!==1?'s':''} made for you</div>
     </div>
-    ${pendingHtml}${matchesHtml}
-    ${!total ? '<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No intros yet — maybe nudge them! 😄</p>' : ''}`;
+    ${mmActionsHtml}${pendingHtml}${matchesHtml}
+    ${!total ? '<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No intros yet — maybe nudge them! 😄</p>' : ''}
+    ${removeBtn}`;
   const titleEl = document.getElementById('prof-preview-title');
   if (titleEl) titleEl.textContent = mm.name + "\u2019s profile";
   go('prof-preview');
@@ -1850,6 +1857,48 @@ function doStopHelping() {
 // ── MATCHMAKER CONTEXT MENU ──────────────────────────────────────
 let ctxMmIdx = null;
 
+function openMmDash(idx) {
+  const u = DB.user();
+  const mms = (u && u.matchmakers) ? u.matchmakers : [];
+  const mm = mms[idx];
+  if (!mm) { toast('Matchmaker not found'); return; }
+  const col = AVCOLS[(mm.ci||0) % AVCOLS.length];
+  const allIntros   = DB.intros().filter(function(i){ return i.mmName === mm.name; });
+  const allMatches  = DB.matches().filter(function(m){ return m.mmName === mm.name; });
+  const pending     = allIntros.filter(function(i){ return i.status === 'pending'; });
+  const totalIntros = allIntros.length + allMatches.length;
+  document.getElementById('dash-title').textContent = mm.name + "'s Dashboard";
+  function fmtDate(ts){ return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+  let actHtml = '';
+  const acts = [
+    ...allIntros.map(function(i){ return {label:'Introduced you to '+i.sName, ts:i.ts}; }),
+    ...allMatches.map(function(m){ return {label:'You matched with '+m.oName+' \u2013 thanks to '+mm.name+'!', ts:m.ts}; }),
+  ].sort(function(a,b){ return b.ts-a.ts; });
+  let prevDate='';
+  acts.forEach(function(a){
+    const d=fmtDate(a.ts);
+    if(d!==prevDate){ actHtml+='<div class="sec-hd" style="padding-top:12px">'+d+'</div>'; prevDate=d; }
+    actHtml+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--bd)">'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +'<svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round"><path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/></svg></div>'
+      +'<div><p style="font-size:14px;color:var(--tx)">'+a.label+'</p><p class="tiny">'+ago(a.ts)+'</p></div></div>';
+  });
+  if(!acts.length) actHtml='<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No activity yet \u2014 nudge '+mm.name+'! \uD83D\uDE04</p>';
+  document.getElementById('dash-body').innerHTML =
+    '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
+    +'<div class="av" style="width:72px;height:72px;font-size:24px;background:'+col.bg+';color:'+col.tc+'">'+ini(mm.name)+'</div>'
+    +'<div><h2 style="margin-bottom:2px">'+mm.name+'</h2>'
+    +'<p class="cap">'+(mm.rel||'')+(mm.loc?' \xb7 '+mm.loc:'')+'</p></div></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;margin-bottom:24px">'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><circle cx="7.5" cy="7" r="3"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+totalIntros+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Intros</div></div>'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--ok)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+allMatches.length+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Matches</div></div>'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#5B8EE6" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M16 2L10 9l-3-3-5 5"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+pending.length+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Pending</div></div>'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.4" style="display:block;margin:0 auto 4px"><rect x="2" y="2" width="5" height="5" rx=".5"/><rect x="11" y="2" width="5" height="5" rx=".5"/><rect x="2" y="11" width="5" height="5" rx=".5"/><rect x="11" y="11" width="2" height="2"/><rect x="14" y="11" width="2" height="2"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">0</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Scans</div></div>'
+    +'</div>'
+    +'<div class="sec-hd" style="padding-top:0">Activity</div>'
+    +actHtml;
+  go('single-dash');
+}
 function openMmMenu(idx, anchorEl) {
   ctxMmIdx = idx;
   const u = DB.user();
@@ -1857,6 +1906,7 @@ function openMmMenu(idx, anchorEl) {
   if (!mm) return;
   openCtxMenu([
     {label:'View profile', icon:ICO_EYE,    action:function(){ openMmProfile(idx); }},
+    {label:'Dashboard',    icon:ICO_DASH,   action:function(){ openMmDash(idx); }},
     {label:'Message',      icon:ICO_MSG,    action:function(){ messageMm(idx); }},
     'sep',
     {label:'Pause',        icon:ICO_PAUSE,  action:function(){ openPauseMm(idx); }},
