@@ -2042,7 +2042,7 @@ function previewProfile() {
   var _firstTag = (u.tags||[])[0] || '';
   var _article  = /^[AEIOUaeiou]/.test(_firstTag) ? 'an' : 'a';
   const tagsSentence = (u.tags||[]).length
-    ? '<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px"><p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+u.name+'</strong> as '+_article+' '+(u.tags||[]).slice(0,-1).join(', ')+(u.tags.length>1?' and ':'')+u.tags[u.tags.length-1]+' person.</p></div>'
+    ? '<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px"><p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+u.name+'</strong> as '+_article+' '+(function(){var t=(u.tags||[]).map(function(x){return '<strong style="color:var(--p)">'+x+'</strong>';});return t.length?t.slice(0,-1).join(', ')+(t.length>1?' and ':'')+t[t.length-1]:'';})()+' person.</p></div>'
     : '';
 
   // Q&A tiles with religion-aware icons + category icons
