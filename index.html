@@ -1081,8 +1081,96 @@ function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('')}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
 function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
-function seedDemo(uname){DB.setSingles([{id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,bio:'Creative soul who loves design and the outdoors.',qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Looking for someone who loves the outdoors and has a creative spirit.'}},{id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,bio:'Passionate about food and people.',qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},prefs:{gender:'Woman',ageMin:25,ageMax:35,religions:['No preference'],note:'Ideally someone who appreciates good food and loves to travel.'}},{id:'s3',name:'Camille',age:26,job:'Marketing',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,bio:'Marketing lead by day, world traveller by weekend.',qs:{intent:'Seeing where things go',location:'Open within my country',family:"I don't know yet",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'Vegetarian'},prefs:{gender:'Man',ageMin:26,ageMax:36,religions:['No preference'],note:'Open-minded, adventurous spirit is a must.'}}]);const now=Date.now(),i1='intro_'+now,i2='intro_'+(now+1),m1='match_'+now;DB.setIntros([{id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',mmName:'Marie',mmRel:'Best friend',ctx:"You both love hiking and he's one of the most thoughtful people I know.",status:'pending',ts:now-7200000,exp:now+3600000*70,ci:2,tags:['Adventurous','Thoughtful','Creative'],bio:'Photographer splitting time between Paris and the mountains. Passionate about storytelling.',qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'}},{id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',mmName:'Paul',mmRel:'Colleague',ctx:"She's brilliant, funny, and has the same dry humor as you.",status:'pending',ts:now-3600000*18,exp:now+3600000*54,ci:6,tags:['Ambitious','Funny','Authentic'],bio:'UX designer who believes great design should feel invisible. Bookworm and amateur cook.',qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'}}]);DB.setMatches([{id:m1,oName:'Sara',oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2}]);DB.setMsgs(m1,[{id:1,from:'them',text:'Hey! Marie introduced us 😊',ts:now-3600000*46},{id:2,from:'me',text:'Hi Sara! Great taste Marie has 😄 I am '+uname,ts:now-3600000*45},{id:3,from:'them',text:'So you work in design? I write about tech.',ts:now-3600000*44},{id:4,from:'me',text:"That's a small world!",ts:now-3600000*43},{id:5,from:'them',text:'I wrote about how dating apps are broken...',ts:now-3600000*42},{id:6,from:'me',text:'And yet here we are on one that might work 😄',ts:now-3600000*41}]);DB.addNotif({id:'n1',text:'Marie introduced you to Thomas!',ts:now-7200000,read:false});DB.addNotif({id:'n2',text:'Sara sent you a message',ts:now-3600000*40,read:false});DB.addNotif({id:'n3',text:'Paul introduced you to Lea',ts:now-3600000*18,read:true})}
+function seedDemo(uname){
+  /* ── Singles (My Circle) ── */
+  DB.setSingles([
+    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,
+     bio:'Creative soul who loves design and the outdoors. Splits weekends between gallery openings and hiking trails.',
+     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},
+     prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Looking for someone who loves the outdoors and has a creative spirit. Bonus points for architecture or design background.'}},
+    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,
+     bio:'Head chef at a Lyon bistro. Believes the best conversations happen around a good table. Serious about food, even more serious about people.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
+     prefs:{gender:'Woman',ageMin:25,ageMax:35,religions:['No preference'],note:'Someone who appreciates good food and is not afraid of a flour-covered apron. Warmth matters more than ambition.'}},
+    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,
+     bio:'Marketing lead by day, world traveller by weekend. Has a passport that is almost full and a bucket list that is nowhere near empty.',
+     qs:{intent:'Seeing where things go',location:'Open within my country',family:"I don't know yet",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'Vegetarian'},
+     prefs:{gender:'Man',ageMin:26,ageMax:36,religions:['No preference'],note:'Open-minded and curious about the world. An adventurous spirit is a must. No couch potatoes please.'}},
+    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',tags:['Thoughtful','Funny','Calm'],photos:[],ci:4,
+     bio:'Engineer by training, philosopher by nature. Loves long bike rides, sci-fi novels, and cooking elaborate Sunday dinners for friends.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
+     prefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Looking for someone kind and curious. Doesn\'t need to love tech but should at least tolerate my book collection.'}},
+    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',tags:['Caring','Grounded','Witty'],photos:[],ci:8,
+     bio:'Pediatric nurse with a dark sense of humour (occupational hazard). Off-duty she paints, runs half-marathons, and talks too much about her cat.',
+     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
+     prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Someone emotionally available and not afraid of vulnerability. Sense of humour is non-negotiable.'}}
+  ]);
 
+  /* ── Pending intros ── */
+  const now=Date.now();
+  const i1='intro_1',i2='intro_2',i3='intro_3';
+  const m1='match_1',m2='match_2',m3='match_3';
+  DB.setIntros([
+    {id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',mmName:'Marie',mmRel:'Best friend',
+     ctx:"You both love hiking and he's one of the most thoughtful people I know. I think you'd really get along.",
+     status:'pending',ts:now-3600000*14,exp:now+3600000*58,ci:2,
+     tags:['Adventurous','Thoughtful','Creative'],
+     bio:'Photographer splitting time between Paris and the mountains. Passionate about visual storytelling and slow travel.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'}},
+    {id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',mmName:'Paul',mmRel:'Colleague',
+     ctx:"She's brilliant, funny, and has the same dry humor as you. You'll either become best friends or fall in love — probably both.",
+     status:'pending',ts:now-3600000*6,exp:now+3600000*66,ci:6,
+     tags:['Ambitious','Funny','Authentic'],
+     bio:'UX designer who believes great design should feel invisible. Bookworm, amateur cook, and always planning the next trip.',
+     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'}},
+    {id:i3,sName:'Hugo',sAge:32,sJob:'Lawyer',sLoc:'Lyon, France',mmName:'Julie',mmRel:'Childhood friend',
+     ctx:"Hugo is one of the most genuine people I know. Successful but never arrogant, great listener, and he cooks better than any chef I know.",
+     status:'pending',ts:now-3600000*2,exp:now+3600000*70,ci:3,
+     tags:['Reliable','Genuine','Cultured'],
+     bio:'Corporate lawyer who unwinds through cooking, classical piano, and long runs along the Rhône. Prefers depth over small talk.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'}}
+  ]);
+
+  /* ── Matches + conversations ── */
+  DB.setMatches([
+    {id:m1,oName:'Sara',oAge:29,oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2},
+    {id:m2,oName:'Alice',oAge:27,oJob:'Teacher',oLoc:'Nantes, France',mmName:'Marc',ctx:"Two people who make everyone around them better.",ts:now-3600000*96,ci:1,unread:0},
+    {id:m3,oName:'Julien',oAge:33,oJob:'Strategy Consultant',oLoc:'Paris',mmName:'Sophie',ctx:"Sharp minds who both secretly want a simple life.",ts:now-3600000*120,ci:9,unread:1}
+  ]);
+
+  DB.setMsgs(m1,[
+    {id:1,from:'them',text:'Hey! Marie introduced us 😊 I loved your profile.',ts:now-3600000*46},
+    {id:2,from:'me',text:'Hi Sara! Great taste Marie has 😄 I am '+uname+'. What are you working on these days?',ts:now-3600000*45},
+    {id:3,from:'them',text:'I write about tech and society — just finished a piece on how cities are changing post-pandemic.',ts:now-3600000*44},
+    {id:4,from:'me',text:'That sounds fascinating. Did the piece change how you see where you live?',ts:now-3600000*43},
+    {id:5,from:'them',text:'Completely. I moved apartments because of it actually 😂',ts:now-3600000*42},
+    {id:6,from:'me',text:'Now that is commitment to the research 😄',ts:now-3600000*41},
+    {id:7,from:'them',text:'Would you want to grab a coffee this week?',ts:now-3600000*2},
+    {id:8,from:'them',text:'I know a great spot near the Marais 🎯',ts:now-3600000*1}
+  ]);
+
+  DB.setMsgs(m2,[
+    {id:1,from:'them',text:'Hi! Marc speaks very highly of you 🌸',ts:now-3600000*94},
+    {id:2,from:'me',text:'Hello Alice! Lovely to meet you — he told me you teach literature?',ts:now-3600000*93},
+    {id:3,from:'them',text:'Secondary school, yes! Trying to get teenagers excited about Camus. Mostly failing 😅',ts:now-3600000*92},
+    {id:4,from:'me',text:'Existentialism at 15 is a hard sell. What book actually lands with them?',ts:now-3600000*91},
+    {id:5,from:'them',text:"The Stranger ironically. Once I frame it as 'guy who doesn't care about anything' they're hooked 😂",ts:now-3600000*90}
+  ]);
+
+  DB.setMsgs(m3,[
+    {id:1,from:'them',text:'Hey! Sophie connected us — she said you have great energy.',ts:now-3600000*118},
+    {id:2,from:'me',text:"Hi Julien! That's kind of her. What does a strategy consultant actually do all day? 😄",ts:now-3600000*117},
+    {id:3,from:'them',text:'Mostly Powerpoint and existential dread. But the problems are genuinely interesting.',ts:now-3600000*116},
+    {id:4,from:'them',text:'Sophie also mentioned you work in design — what kind?',ts:now-3600000*10}
+  ]);
+
+  /* ── Notifications ── */
+  DB.addNotif({id:'n1',text:'Marie introduced you to Thomas — respond before time runs out!',ts:now-3600000*14,read:false});
+  DB.addNotif({id:'n2',text:'Sara sent you 2 new messages 💬',ts:now-3600000*1,read:false});
+  DB.addNotif({id:'n3',text:'Paul introduced you to Lea',ts:now-3600000*6,read:false});
+  DB.addNotif({id:'n4',text:'You matched with Alice! Say hello 👋',ts:now-3600000*94,read:true});
+  DB.addNotif({id:'n5',text:'Julie introduced you to Hugo — 3 new intros this week!',ts:now-3600000*2,read:false});
+}
 function initHome(){
   const u=S.user||DB.user();if(!u)return;S.user=u;
   const now=Date.now(),weekAgo=now-7*24*3600000;
@@ -1278,7 +1366,22 @@ function initIntros(){const _u=DB.user();if(_u)S.user=_u;renderPending();renderM
 function switchTab(t){['pending','matches','activity'].forEach(x=>{document.getElementById('t-'+x)?.classList.toggle('on',x===t);document.getElementById('tp-'+x)?.classList.toggle('on',x===t)});if(t==='pending')renderPending();if(t==='matches')renderMatches();if(t==='activity')renderActivity()}
 function renderPending(){const list=document.getElementById('pending-list');if(!list)return;const intros=DB.intros().filter(i=>i.status==='pending');if(!intros.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;return}list.innerHTML=intros.map(i=>`<div class="ic" onclick="openIntroDetail('${i.id}')"><div class="ic-accent"></div><div class="ic-body"><div class="between mb10"><span class="pill pill-new">New intro</span><span class="tiny">${ago(i.ts)}</span></div><div class="row gap8 mb10">${av(ini(i.sName),i.ci,50)}<div class="flex1"><div style="font-size:17px;font-weight:700">${i.sName}, ${i.sAge}</div><p class="tiny">${i.sJob} · ${i.sLoc}</p></div></div><div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From ${i.mmName} (${i.mmRel})</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${i.ctx||'No context yet'}"</p></div><div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro('${i.id}')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro('${i.id}')">Accept ✓</button></div></div></div>`).join('')}
 function renderMatches(){const list=document.getElementById('matches-list');if(!list)return;const ms=DB.matches();if(!ms.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💬</div><h3>No matches yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Accept an intro to start a conversation</p></div>`;return}list.innerHTML=ms.map(m=>{const msgs=DB.msgs(m.id),last=msgs[msgs.length-1];return `<div class="card card-tap" style="padding:12px 14px" onclick="openChat('${m.id}')"><div class="row" style="gap:12px">${av(ini(m.oName),m.ci,50)}<div class="flex1" style="min-width:0"><div class="between"><div style="font-size:16px;font-weight:700">${m.oName}</div><div class="tiny">${last?ago(last.ts):''}</div></div><div class="row mt4" style="gap:6px">${m.unread?'<div class="unread"></div>':''}<p style="font-size:14px;color:${m.unread?'var(--tx)':'var(--tx3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:${m.unread?'600':'400'}">${last?last.text:'Matched via '+m.mmName}</p></div><p class="tiny mt4">Intro by ${m.mmName}</p></div></div></div>`}).join('')}
-function renderActivity(){const list=document.getElementById('activity-list');if(!list)return;const acts=[{ic:'💌',t:'Marie introduced you to Thomas',ts:Date.now()-7200000},{ic:'✨',t:'You matched with Sara!',ts:Date.now()-3600000*48},{ic:'🔍',t:'Paul scanned a QR for Sophie',ts:Date.now()-3600000*36},{ic:'📩',t:'Paul introduced you to Lea',ts:Date.now()-3600000*18},{ic:'👋',t:'Sophie received 3 new QR scans',ts:Date.now()-3600000*72}];list.innerHTML=acts.map(a=>`<div class="tl-item"><div style="font-size:20px;flex-shrink:0">${a.ic}</div><div class="flex1"><p style="font-size:14px;color:var(--tx)">${a.t}</p><p class="tiny">${ago(a.ts)}</p></div></div>`).join('')}
+function renderActivity(){
+  const list=document.getElementById('activity-list');
+  if(!list)return;
+  const now=Date.now();
+  const acts=[
+    {ic:'💌',t:'Marie introduced you to Thomas — 58h left to respond',ts:now-3600000*14},
+    {ic:'📩',t:'Paul introduced you to Lea — 66h left to respond',ts:now-3600000*6},
+    {ic:'🤝',t:'Julie introduced you to Hugo — new today!',ts:now-3600000*2},
+    {ic:'✨',t:'You matched with Sara! Start the conversation',ts:now-3600000*48},
+    {ic:'💬',t:'Sara sent you 2 new messages',ts:now-3600000*1},
+    {ic:'✨',t:'You matched with Alice from Nantes',ts:now-3600000*96},
+    {ic:'✨',t:'You matched with Julien — 3 matches total!',ts:now-3600000*120},
+    {ic:'🔍',t:'Paul scanned a QR code for Sophie — 3 potential intros',ts:now-3600000*72}
+  ];
+  list.innerHTML=acts.map(a=>`<div class="tl-item"><div style="font-size:20px;flex-shrink:0">${a.ic}</div><div class="flex1"><p style="font-size:14px;color:var(--tx)">${a.t}</p><p class="tiny">${ago(a.ts)}</p></div></div>`).join('');
+}
 function openIntroDetail(id){
   S.currentIntro=DB.intros().find(function(x){return x.id===id});
   if(!S.currentIntro)return;
