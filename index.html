@@ -2506,64 +2506,34 @@ function renderGuideTab(tab) {
       + '<div style="height:16px"></div>';
 
   } else {
-    body.innerHTML =
-      '<p style="font-size:14px;color:var(--tx2);text-align:center;line-height:1.65;margin-bottom:16px">Most dating apps optimize for engagement. Circle optimizes for introductions. That changes everything.</p>'
-
-      + sectionPill('The problem with dating apps', '#E53935')
-
-      + problemCard(
-          '<circle cx="9" cy="9" r="7"/><path d="M9 5v4l2.5 2.5"/>',
-          'Swiping is exhausting \u2014 and it doesn\u2019t work',
-          'Hours of scrolling through strangers, with little emotional return. Dating becomes addictive and repetitive, yet rarely leads anywhere meaningful.'
-        )
-      + problemCard(
-          '<path d="M9 2a7 7 0 100 14A7 7 0 009 2zM9 6v4M9 12v.5"/>',
-          'Strangers feel like strangers',
-          'No shared context, no mutual trust. You\u2019re left wondering: is this person real? Are they serious? Can I trust them?'
-        )
-      + problemCard(
-          '<rect x="2" y="3" width="14" height="10" rx="1"/><path d="M7 17h4M9 13v4"/>',
-          'Algorithms can\u2019t replace human intuition',
-          'Apps match data points \u2014 not energy, personality, or chemistry. They miss everything a good friend picks up instantly.'
-        )
-      + problemCard(
-          '<circle cx="9" cy="7" r="3"/><path d="M3 17c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/>',
-          'Making introductions feels awkward',
-          'Even when someone thinks \u201cthese two would be perfect\u201d \u2014 they do nothing. Fear of being wrong, or making it weird, stops potential relationships before they start.'
-        )
-
-      + sectionPill('How Circle fixes it', '#2E7D32')
-
-      + solutionCard(
-          '<path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',
-          'Every intro comes through someone you trust',
-          'No cold contacts, no strangers. Every introduction is made by a friend, sibling, or colleague \u2014 someone who knows both of you and genuinely wants it to work.'
-        )
-      + solutionCard(
-          '<path d="M11 2l2.5 6H19L14 11.5l2 6L11 14l-5 3.5 2-6L3 8h5.5z"/>',
-          'Quality over quantity \u2014 always',
-          'You won\u2019t receive hundreds of matches. You\u2019ll receive a few, carefully chosen introductions from people who know you. That\u2019s the difference between browsing and being introduced.'
-        )
-      + solutionCard(
-          '<circle cx="9" cy="7" r="3"/><path d="M3 17c0-3.5 2.7-5.5 6-5.5s6 2 6 5.5"/>',
-          'Humans are the algorithm',
-          'Your Matchmakers use intuition, lived experience, and emotional intelligence \u2014 everything a machine can\u2019t replicate. Social insight replaces machine scoring.'
-        )
-      + solutionCard(
-          '<rect x="3" y="3" width="5" height="5" rx=".6"/><rect x="10" y="3" width="5" height="5" rx=".6"/><rect x="3" y="10" width="5" height="5" rx=".6"/><rect x="10" y="10" width="2.5" height="2.5"/>',
-          'Introducing someone becomes effortless',
-          'No awkward pitch. No uncomfortable conversation. Just open the QR, let the person scan if curious, and let Circle do the rest. Natural, lightweight, and socially safe.'
-        )
-      + solutionCard(
-          '<path d="M9 2a7 7 0 100 14A7 7 0 009 2z"/><path d="M9 6v3l2 2"/>',
-          'Built for relationships, not screen time',
-          'Most apps make money when you stay single. Circle is designed around successful introductions \u2014 not endless usage. Our incentives are aligned with yours.'
-        )
-
-      + '<div style="margin:20px 0 8px;padding:16px;background:var(--p1);border-radius:var(--r3);text-align:center">'
-      + '<p style="font-size:14px;font-style:italic;color:var(--p8);line-height:1.65">\u201cCircle doesn\u2019t just change how you meet people. It changes who introduces you \u2014 and that changes everything.\u201d</p>'
-      + '</div>'
-      + '<div style="height:16px"></div>';
+    var rows=[
+      ['Endless swiping, no real results',       'Curated intros from people you trust'],
+      ['Strangers \u2014 no context, no trust', 'Every intro comes via a friend'],
+      ['Algorithms miss real chemistry',         'Humans use intuition \u0026 empathy'],
+      ['Introducing people feels awkward',       'QR makes it instant \u0026 natural'],
+      ['No accountability \u2014 ghosting',     'Friends create mutual accountability'],
+      ['Low-intent users wasting your time',     'Only trusted, intentional intros'],
+      ['High friction \u2014 download, signup\u2026', 'Scan a QR, see a profile instantly'],
+      ['Nobody helps you find love',             'Your whole network works for you'],
+    ];
+    var tRows=rows.map(function(r,i){
+      var last=i===rows.length-1;
+      var bBot=last?'none':'0.5px solid';
+      return '<tr>'
+        +'<td style="padding:11px 13px;font-size:13px;color:#7f1d1d;background:#FFFAFA;border-bottom:'+bBot+' #FEE2E2;border-right:1px solid #F0EDE9;vertical-align:top;line-height:1.45;font-weight:500">'+r[0]+'</td>'
+        +'<td style="padding:11px 13px;font-size:13px;color:#1B5E20;background:#FAFFF9;border-bottom:'+bBot+' #DCFCE7;vertical-align:top;line-height:1.45;font-weight:500">'+r[1]+'</td>'
+        +'</tr>';
+    }).join('');
+    body.innerHTML=
+      '<div style="overflow:hidden;border-radius:var(--r2);border:.5px solid var(--bd2)">'
+      +'<table style="width:100%;border-collapse:collapse">'
+      +'<thead><tr>'
+      +'<th style="background:#FFF0F0;padding:10px 13px;font-size:11px;font-weight:700;color:#B71C1C;text-align:left;border-bottom:1px solid #FECDD3;border-right:1px solid #F0EDE9">\u2717\u2002Dating apps</th>'
+      +'<th style="background:#F0FAF4;padding:10px 13px;font-size:11px;font-weight:700;color:#1B5E20;text-align:left;border-bottom:1px solid #BBF7D0">\u2713\u2002Circle</th>'
+      +'</tr></thead>'
+      +'<tbody>'+tRows+'</tbody>'
+      +'</table></div>'
+      +'<div style="height:20px"></div>';
   }
   body.scrollTop = 0;
 }
