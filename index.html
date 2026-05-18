@@ -797,7 +797,115 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <button id="gtab-how" onclick="switchGuideTab('how')" style="flex:1;padding:11px 4px;font-size:14px;font-weight:700;background:none;border:none;border-bottom:2px solid var(--p);color:var(--p);cursor:pointer;font-family:inherit">How Circle works</button>
     <button id="gtab-why" onclick="switchGuideTab('why')" style="flex:1;padding:11px 4px;font-size:14px;font-weight:600;background:none;border:none;border-bottom:2px solid transparent;color:var(--tx3);cursor:pointer;font-family:inherit">Why Circle?</button>
   </div>
-  <div id="how-circle-body" class="p20" style="padding-bottom:36px"></div>
+  <div id="g-guide" style="display:none;flex-direction:column;padding:20px 20px 36px">
+
+    <!-- PICKER -->
+    <div id="g-picker" style="display:flex;flex-direction:column">
+      <h3 style="font-size:17px;font-weight:800;color:var(--tx);text-align:center;margin-bottom:22px;line-height:1.3;letter-spacing:-.3px">Try both paths to understand how it works</h3>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div onclick="gGoSteps('love')" style="border-radius:var(--r3);border:1.5px solid var(--bd2);padding:16px 14px;cursor:pointer;display:flex;align-items:center;gap:13px;background:var(--bg)">
+          <div style="width:50px;height:50px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">💕</div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:3px">Looking for love</div><div style="font-size:11px;color:var(--tx2);line-height:1.4">Discover how introductions arrive through people you trust.</div></div>
+          <div style="font-size:20px;color:var(--p);font-weight:700">›</div>
+        </div>
+        <div onclick="gGoSteps('mm')" style="border-radius:var(--r3);border:1.5px solid var(--bd2);padding:16px 14px;cursor:pointer;display:flex;align-items:center;gap:13px;background:var(--bg)">
+          <div style="width:50px;height:50px;border-radius:50%;background:#E3F2E8;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0">🤝</div>
+          <div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:3px">Helping a friend</div><div style="font-size:11px;color:var(--tx2);line-height:1.4">See how easy it is to introduce someone you care about.</div></div>
+          <div style="font-size:20px;color:var(--p);font-weight:700">›</div>
+        </div>
+      </div>
+      <p style="text-align:center;font-size:11px;color:var(--tx3);margin-top:22px;line-height:1.5">In Circle, you can play <strong style="color:var(--p)">both roles</strong> — try both paths!</p>
+    </div>
+
+    <!-- STEPS -->
+    <div id="g-steps" style="display:none;flex-direction:column">
+      <div style="display:flex;align-items:center;margin-bottom:14px">
+        <span onclick="gGoView('picker')" style="font-size:12px;font-weight:600;color:var(--p);cursor:pointer;flex-shrink:0">‹ Back</span>
+        <span id="g-path-lbl" style="flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--tx)"></span>
+        <span id="g-s-num" style="font-size:11px;font-weight:700;color:var(--tx3);flex-shrink:0">1 / 3</span>
+      </div>
+      <div style="border-radius:var(--r3);background:linear-gradient(145deg,var(--p1),#FAE2CE);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px 16px;text-align:center;position:relative;min-height:250px">
+        <div id="g-s-badge" style="position:absolute;top:12px;left:13px;font-size:9px;font-weight:700;color:var(--p);background:#fff;border-radius:100px;padding:3px 10px">Step 1 of 3</div>
+        <div id="g-s-ico" style="font-size:52px;margin-bottom:14px">👥</div>
+        <div id="g-s-title" style="font-size:16px;font-weight:800;color:var(--tx);margin-bottom:10px;letter-spacing:-.2px"></div>
+        <div id="g-s-desc" style="font-size:13px;color:var(--tx2);line-height:1.6;max-width:220px"></div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px">
+        <button id="g-btn-prev" onclick="gStepNav(-1)" style="padding:10px 20px;border-radius:100px;font-size:12px;font-weight:600;background:var(--bg2);color:var(--tx2);border:none;cursor:pointer;font-family:inherit;visibility:hidden">← Back</button>
+        <div id="g-dots" style="display:flex;gap:5px"></div>
+        <button id="g-btn-next" onclick="gStepNav(1)" style="padding:10px 20px;border-radius:100px;font-size:12px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;font-family:inherit">Next →</button>
+      </div>
+    </div>
+
+    <!-- SIMULATION -->
+    <div id="g-sim" style="display:none;flex-direction:column">
+      <div style="display:flex;align-items:center;margin-bottom:8px">
+        <span onclick="gGoView('steps')" style="font-size:12px;font-weight:600;color:var(--p);cursor:pointer;flex-shrink:0">‹ Steps</span>
+        <span id="g-sim-title" style="flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--tx)"></span>
+        <span id="g-sim-num" style="font-size:11px;font-weight:700;color:var(--tx3);flex-shrink:0">1 / 4</span>
+      </div>
+      <div style="height:3px;background:var(--bg2);border-radius:2px;margin-bottom:12px;overflow:hidden">
+        <div id="g-prog" style="height:100%;background:var(--p);border-radius:2px;transition:width .35s;width:25%"></div>
+      </div>
+      <div style="margin-bottom:10px">
+        <div id="g-cap-t" style="font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px"></div>
+        <div id="g-cap-s" style="font-size:12px;color:var(--tx2);line-height:1.45"></div>
+      </div>
+      <div style="background:#1A1614;border-radius:16px;padding:4px;overflow:hidden;height:240px;flex-shrink:0">
+        <div style="background:#fff;border-radius:13px;height:100%;position:relative;overflow:hidden">
+          <div class="g-scene vis" id="g-sc-l1" style="position:absolute;inset:0;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">💌</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Marie introduced you to Thomas! He&#39;s seen your profile and is interested.</div></div>
+            <div style="margin:0 7px;border-radius:10px;overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0">
+              <div style="background:linear-gradient(145deg,#EDE7F6,#B39DDB);height:55%;position:relative;display:flex;align-items:center;justify-content:center"><div style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#4527A0;background:rgba(255,255,255,.2);margin-bottom:14px">TH</div><div style="position:absolute;bottom:0;left:0;right:0;padding:8px 7px 5px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:9px;font-weight:800;color:#fff">Thomas, 30</div><div style="font-size:7px;color:rgba(255,255,255,.85)">Photographer · Paris</div></div></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px 8px;flex:1;align-content:center"><button style="padding:7px 4px;border-radius:7px;font-size:8.5px;font-weight:700;background:var(--p);color:#fff;border:none;font-family:inherit">✓ Accept</button><button style="padding:7px 4px;border-radius:7px;font-size:8.5px;font-weight:700;background:var(--bg2);color:var(--tx2);border:none;font-family:inherit">✕ Decline</button></div>
+            </div>
+          </div>
+          <div class="g-scene" id="g-sc-l2" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">THOMAS&#39;S PROFILE</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">👀</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Thomas, 30 — Photographer. Marie says you&#39;d get along perfectly.</div></div>
+            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💕</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Looking for a serious relationship</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🏃</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sport is a big part of his life</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">✈️</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Travels every chance he gets</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🌿</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Adventurous, Thoughtful, Creative</span></div></div>
+          </div>
+          <div class="g-scene" id="g-sc-l3" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">✅</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">You accepted! Thomas has been notified — you&#39;ll both be connected.</div></div>
+            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💬</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Chat with Thomas is now open</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🙏</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Thanks to Marie for the intro</span></div><div style="background:var(--p);border-radius:7px;padding:8px;text-align:center;font-size:9px;font-weight:700;color:#fff;margin-top:4px">Say hello to Thomas →</div></div>
+          </div>
+          <div class="g-scene" id="g-sc-l4" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px">
+            <div style="font-size:44px;margin-bottom:9px">✨</div>
+            <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px">You matched with Thomas!</div>
+            <div style="font-size:11px;color:var(--tx2);line-height:1.55;padding:0 4px">All it took was one person who knew you both. That&#39;s the power of Circle.</div>
+          </div>
+          <div class="g-scene" id="g-sc-m1" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — MY CIRCLE</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">🤝</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Sophie added you as her Matchmaker. She&#39;s counting on you!</div></div>
+            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">👤</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sophie, 28 · Architect · Paris</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💕</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Looking for a man, 28–38</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🌿</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Creative, Adventurous, Authentic</span></div><div style="background:var(--p);border-radius:7px;padding:8px;text-align:center;font-size:9px;font-weight:700;color:#fff;margin-top:4px">Open Sophie&#39;s QR card →</div></div>
+          </div>
+          <div class="g-scene" id="g-sc-m2" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — QR CODE</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">🎯</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">You just met someone who could be perfect for Sophie. Show them this QR!</div></div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px"><svg width="80" height="80" viewBox="0 0 70 70" fill="none"><rect x="5" y="5" width="20" height="20" rx="2" fill="#1A1614"/><rect x="8" y="8" width="14" height="14" rx="1" fill="white"/><rect x="11" y="11" width="8" height="8" rx="1" fill="#1A1614"/><rect x="45" y="5" width="20" height="20" rx="2" fill="#1A1614"/><rect x="48" y="8" width="14" height="14" rx="1" fill="white"/><rect x="51" y="11" width="8" height="8" rx="1" fill="#1A1614"/><rect x="5" y="45" width="20" height="20" rx="2" fill="#1A1614"/><rect x="8" y="48" width="14" height="14" rx="1" fill="white"/><rect x="11" y="51" width="8" height="8" rx="1" fill="#1A1614"/><rect x="30" y="5" width="5" height="5" rx="1" fill="#1A1614"/><rect x="38" y="5" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="12" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="38" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="45" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="52" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="38" width="5" height="5" rx="1" fill="#1A1614"/><rect x="52" y="38" width="5" height="5" rx="1" fill="#1A1614"/><rect x="45" y="60" width="5" height="5" rx="1" fill="#1A1614"/></svg><div style="font-size:9px;color:#A8A39E;text-align:center;line-height:1.4">They scan this in 10 seconds<br>and see Sophie&#39;s profile instantly</div></div>
+          </div>
+          <div class="g-scene" id="g-sc-m3" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
+            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — INTRO SENT</div>
+            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">✅</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Introduction sent! Thomas is interested in Sophie. Waiting for her reply.</div></div>
+            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">📊</span><span style="font-size:8px;font-weight:600;color:var(--tx)">1 introduction made for Sophie</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">⏳</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sophie is reviewing Thomas&#39;s profile</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🔔</span><span style="font-size:8px;font-weight:600;color:var(--tx)">You&#39;ll be notified if they match</span></div></div>
+          </div>
+          <div class="g-scene" id="g-sc-m4" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px">
+            <div style="font-size:44px;margin-bottom:9px">🎊</div>
+            <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px">Sophie &amp; Thomas matched!</div>
+            <div style="font-size:11px;color:var(--tx2);line-height:1.55;padding:0 4px">You made it happen. Your friend will thank you forever — that&#39;s what being a Matchmaker feels like.</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
+        <button id="g-sf-back" onclick="gSimNav(-1)" style="padding:9px 16px;border-radius:100px;font-size:11px;font-weight:600;background:var(--bg2);color:var(--tx2);border:none;cursor:pointer;font-family:inherit">‹ Back to steps</button>
+        <button id="g-sf-next" onclick="gSimNav(1)" style="padding:9px 16px;border-radius:100px;font-size:11px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;font-family:inherit">Next →</button>
+      </div>
+    </div>
+
+  </div>
+  <div id="how-circle-body" class="p20" style="padding-bottom:36px;display:none"></div>
 </div>
 
 
@@ -2403,6 +2511,99 @@ function initLevelsRewards() {
     + '<div style="height:24px"></div>';
 }
 
+var _gPath='love',_gStep=0,_gSimStep=0;
+var _gStepsData={
+  love:[
+    {ico:'\uD83D\uDC65',t:'Choose your Matchmakers',d:'Invite friends who know you well and want to see you happy. They become your ambassadors \u2014 your eyes and ears for a great match.'},
+    {ico:'\uD83D\uDCF1',t:'They find someone for you',d:'When a Matchmaker meets a great fit, they share your profile via QR code. The other person can send their profile back if interested.'},
+    {ico:'\uD83D\uDCAC',t:'You decide',d:'You receive the intro and can see their full profile. Accept, decline, or take your time \u2014 no pressure, no awkwardness.'}
+  ],
+  mm:[
+    {ico:'\uD83D\uDC40',t:'Your friend is counting on you',d:'Someone you care about has added you as their Matchmaker. Your mission: keep your eyes open for someone who could be right for them.'},
+    {ico:'\uD83D\uDD32',t:'Make the introduction',d:'When you meet someone promising, show your friend\u2019s QR code. They scan it and see your friend\u2019s profile in seconds.'},
+    {ico:'\u2728',t:'Watch the magic happen',d:'Your friend receives the intro and decides. If they both say yes, they match. You just made something beautiful happen.'}
+  ]
+};
+var _gSimData={
+  love:{
+    title:'Your journey as a Single',
+    scenes:['g-sc-l1','g-sc-l2','g-sc-l3','g-sc-l4'],
+    caps:[
+      {t:'You receive an introduction',s:'Marie spotted Thomas and thought of you. He\u2019s seen your profile and is interested.'},
+      {t:'You read his full profile',s:'See everything \u2014 his story, values, what he\u2019s looking for. Real context, not just a photo.'},
+      {t:'You say yes',s:'One tap. No awkward first message \u2014 the ice is already broken by someone you both trust.'},
+      {t:'You matched with Thomas! \u2728',s:'All it took was one person who knew you both. That\u2019s the power of Circle.'}
+    ]
+  },
+  mm:{
+    title:'Your journey as a Matchmaker',
+    scenes:['g-sc-m1','g-sc-m2','g-sc-m3','g-sc-m4'],
+    caps:[
+      {t:'Sophie is counting on you',s:'She added you as her Matchmaker. Your mission: spot someone great for her.'},
+      {t:'You show the QR \u2014 10 seconds',s:'You just met someone who could be perfect for Sophie. Show the QR, they scan it, done.'},
+      {t:'Introduction sent!',s:'Thomas is interested and sent his profile to Sophie. The ball is in her court now.'},
+      {t:'Sophie & Thomas matched! \uD83C\uDF8A',s:'One spontaneous moment \u2014 and two people\u2019s lives just changed. That\u2019s what being a Matchmaker feels like.'}
+    ]
+  }
+};
+function gGoView(v){
+  ['g-picker','g-steps','g-sim'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(el)el.style.display=(id==='g-'+v)?'flex':'none';
+  });
+}
+function gGoSteps(p){
+  _gPath=p;_gStep=0;
+  var l=document.getElementById('g-path-lbl');
+  if(l)l.textContent=p==='love'?'Looking for love':'Helping a friend';
+  gRenderStep();gGoView('steps');
+}
+function gRenderStep(){
+  var s=_gStepsData[_gPath][_gStep],total=_gStepsData[_gPath].length,e;
+  if((e=document.getElementById('g-s-ico')))e.textContent=s.ico;
+  if((e=document.getElementById('g-s-title')))e.textContent=s.t;
+  if((e=document.getElementById('g-s-desc')))e.textContent=s.d;
+  if((e=document.getElementById('g-s-badge')))e.textContent='Step '+(_gStep+1)+' of '+total;
+  if((e=document.getElementById('g-s-num')))e.textContent=(_gStep+1)+' / '+total;
+  var prev=document.getElementById('g-btn-prev');
+  if(prev)prev.style.visibility=_gStep>0?'visible':'hidden';
+  var isLast=_gStep===total-1;
+  var nb=document.getElementById('g-btn-next');
+  if(nb){nb.textContent=isLast?'Watch the simulation \u2192':'Next \u2192';nb.style.background=isLast?'#1A1614':'var(--p)';}
+  var dots=document.getElementById('g-dots');
+  if(dots)dots.innerHTML=_gStepsData[_gPath].map(function(_,i){var on=i===_gStep;return '<div style="width:'+(on?18:7)+'px;height:7px;border-radius:'+(on?4:50)+'%;background:'+(on?'var(--p)':'#E8E4E0')+';transition:all .2s"></div>';}).join('');
+}
+function gStepNav(d){
+  var total=_gStepsData[_gPath].length;
+  if(d===1&&_gStep===total-1){gStartSim();return;}
+  _gStep=Math.max(0,Math.min(total-1,_gStep+d));
+  gRenderStep();
+}
+function gStartSim(){
+  _gSimStep=0;
+  var st=document.getElementById('g-sim-title');
+  if(st)st.textContent=_gSimData[_gPath].title;
+  gRenderSim();gGoView('sim');
+}
+function gRenderSim(){
+  var sim=_gSimData[_gPath],total=sim.scenes.length,cap=sim.caps[_gSimStep],e;
+  if((e=document.getElementById('g-sim-num')))e.textContent=(_gSimStep+1)+' / '+total;
+  if((e=document.getElementById('g-prog')))e.style.width=(((_gSimStep+1)/total)*100)+'%';
+  if((e=document.getElementById('g-cap-t')))e.textContent=cap.t;
+  if((e=document.getElementById('g-cap-s')))e.textContent=cap.s;
+  document.querySelectorAll('.g-scene').forEach(function(s){s.style.opacity='0';s.style.pointerEvents='none';});
+  var sc=document.getElementById(sim.scenes[_gSimStep]);
+  if(sc){sc.style.opacity='1';sc.style.pointerEvents='all';}
+  if((e=document.getElementById('g-sf-back')))e.textContent=_gSimStep===0?'\u2039 Back to steps':'\u2190 Back';
+  if((e=document.getElementById('g-sf-next')))e.textContent=_gSimStep===total-1?'Try other path \u21ba':'Next \u2192';
+}
+function gSimNav(d){
+  var sim=_gSimData[_gPath],total=sim.scenes.length;
+  if(d===1&&_gSimStep===total-1){_gPath=_gPath==='love'?'mm':'love';_gStep=0;gRenderStep();gGoView('steps');return;}
+  if(d===-1&&_gSimStep===0){gGoView('steps');return;}
+  _gSimStep=Math.max(0,Math.min(total-1,_gSimStep+d));
+  gRenderSim();
+}
 function switchGuideTab(tab) {
   var tabs = ['how','why'];
   tabs.forEach(function(t) {
@@ -2459,53 +2660,16 @@ function renderGuideTab(tab) {
   }
 
   if (tab === 'how') {
-    body.innerHTML =
-      '<p style="font-size:14px;color:var(--tx2);text-align:center;line-height:1.65;margin-bottom:4px">Circle replaces swiping with warm, real-world introductions \u2014 made by people who know and care about you.</p>'
-
-      + sectionHead(
-          '<path d="M11 17s-7-4.3-7-8.5C4 5.1 6.3 3 11 6.5c4.7-3.5 7-1.4 7 2C18 12.7 11 17 11 17z"/>',
-          'Looking for love?'
-        )
-      + stepCard(
-          '<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M14 13v4M12 15h4"/>',
-          'Choose your Matchmakers',
-          'Invite friends who know you well and want to see you happy. They become your ambassadors in the real world \u2014 your eyes and ears for a great match.'
-        )
-      + stepCard(
-          '<rect x="3" y="3" width="5" height="5" rx=".6"/><rect x="14" y="3" width="5" height="5" rx=".6"/><rect x="3" y="14" width="5" height="5" rx=".6"/><rect x="14" y="14" width="2.5" height="2.5"/><rect x="17" y="14" width="2.5" height="2.5"/><rect x="14" y="17" width="2.5" height="2.5"/>',
-          'They find someone for you',
-          'When a Matchmaker meets someone who could be a great fit, they share your profile via a QR code. The other person sees your profile and, if interested, sends you theirs.'
-        )
-      + stepCard(
-          '<path d="M2 5h18a1 1 0 011 1v8a1 1 0 01-1 1H6l-5 3.5V6a1 1 0 011-1z"/>',
-          'You decide',
-          'You receive the introduction and can see the other person\'s full profile. Accept, decline, or take your time \u2014 no pressure, no awkwardness.'
-        )
-
-      + sectionHead(
-          '<circle cx="8" cy="7" r="3"/><path d="M2 18c0-3.3 2.7-5.5 6-5.5M14 13v4M12 15h4"/>',
-          'Helping a friend?'
-        )
-      + stepCard(
-          '<path d="M11 17s-7-4.3-7-8.5C4 5.1 6.3 3 11 6.5c4.7-3.5 7-1.4 7 2C18 12.7 11 17 11 17z"/>',
-          'Your friend is counting on you',
-          'Someone you care about has added you as their Matchmaker. Your mission: keep your eyes open for someone who could be right for them.'
-        )
-      + stepCard(
-          '<rect x="3" y="3" width="5" height="5" rx=".6"/><rect x="14" y="3" width="5" height="5" rx=".6"/><rect x="3" y="14" width="5" height="5" rx=".6"/><rect x="14" y="14" width="2.5" height="2.5"/>',
-          'Make the introduction',
-          'When you meet someone promising, show your friend\u2019s QR code. They scan it, see your friend\u2019s profile in seconds, and send their own profile back if they\u2019re interested.'
-        )
-      + stepCard(
-          '<path d="M11 2l2.5 6H19L14 11.5l2 6L11 14l-5 3.5 2-6L3 8h5.5z"/>',
-          'Watch the magic happen',
-          'Your friend receives the introduction and discovers who you found. If they\u2019re both interested, they match. You just made something beautiful \u2014 and your friend will thank you forever.'
-        )
-
-      + '<button class="btn btn-p mt20 mb8" onclick="back()" style="border-radius:100px;font-size:15px;font-weight:700">Got it, let\u2019s go \u2192</button>'
-      + '<div style="height:16px"></div>';
-
-  } else {
+    var guide=document.getElementById('g-guide');
+    if(guide)guide.style.display='flex';
+    body.style.display='none';
+    _gPath='love';_gStep=0;_gSimStep=0;
+    gGoView('picker');
+    gRenderStep();
+    } else {
+    var guide=document.getElementById('g-guide');
+    if(guide)guide.style.display='none';
+    body.style.display='';
     var rows=[
       ['Endless swiping, no real results',       'Curated intros from people you trust'],
       ['Strangers \u2014 no context, no trust', 'Every intro comes via a friend'],
