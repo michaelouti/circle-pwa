@@ -1752,7 +1752,7 @@ function startIntroFlow(){
   S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
   localStorage.setItem('c_scan_'+S.introId,JSON.stringify({
-    name:s.name,age:s.age,job:s.job||'',loc:s.loc||'',bio:s.bio||'',
+    name:s.name,age:s.age,gender:s.gender||'',job:s.job||'',loc:s.loc||'',bio:s.bio||'',
     tags:s.tags||[],qs:s.qs||{},ci:s.ci||0,photos:s.photos||[],
     mmName:(_u&&_u.name)||'Your matchmaker',singleId:s.id
   }));
@@ -1794,90 +1794,102 @@ function sendIntroNoNote(){
 function initScan(){
   var body=document.getElementById('scan-body');if(!body)return;
   addPts(3);
-  // ── Look up real single data ──────────────────────────────────
+
+  // ── Data lookup ──────────────────────────────────────────────
   var profile=null;
   if(S.scanId){try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}}
   if(!profile&&S.introSingle){
     var _s=S.introSingle,_u=DB.user();
-    profile={name:_s.name,age:_s.age,job:_s.job||'',loc:_s.loc||'',
+    profile={name:_s.name,age:_s.age,gender:_s.gender||'',job:_s.job||'',loc:_s.loc||'',
       tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
       mmName:(_u&&_u.name)||'Your matchmaker',singleId:_s.id};
   }
   if(!profile){
-    profile={name:'Sophie',age:28,job:'Architect',loc:'Paris, France',
+    profile={name:'Sophie',age:28,gender:'Woman',job:'Architect',loc:'Paris, France',
       tags:['Creative','Adventurous','Authentic'],
       qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'},
       ci:0,photos:[],mmName:'Your matchmaker'};
   }
+
   // Save pending scan for sub-flow B
   var _ref=S.scanId||S.introId||'';
   if(_ref)localStorage.setItem('c_pending_scan',JSON.stringify({scanId:_ref,ts:Date.now(),singleName:profile.name,mmName:profile.mmName||''}));
 
-  // ── Hero (same structure as previewProfile) ───────────────────
-  var col=AVCOLS[(profile.ci||0)%AVCOLS.length];
-  var heroHtml=profile.photos&&profile.photos.length
-    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';}).join('')+'</div>'
-    :'<div style="height:300px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);position:relative;display:flex;align-items:center;justify-content:center">'
-      +'<div style="font-size:110px;font-weight:800;color:'+col.tc+';opacity:.15;user-select:none">'+ini(profile.name)+'</div>'
-      +'<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">'+av(ini(profile.name),profile.ci||0,90)+'</div>'
-      +'<div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 13px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:var(--p)"></div><span style="font-size:11px;font-weight:700;color:var(--tx)">circle intro</span></div></div>'
-      +'<div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 11px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">&#9201; 72h left</span></div></div>'
-      +'<div style="position:absolute;bottom:0;left:0;right:0;padding:24px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)">'
-        +'<div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.3px;margin-bottom:5px">'+profile.name+(profile.age?', '+profile.age:'')+'</div>'
-        +'<div style="font-size:13px;color:rgba(255,255,255,.88)">'+(profile.job?profile.job+' &bull; ':'')+profile.loc+'</div>'
-      +'</div>'
-    +'</div>';
+  // ── metaIcon — identical to previewProfile ────────────────────
+  function _scanMetaIcon(type){
+    var icons={
+      loc:'<path d="M7 1a5 5 0 0 1 5 5c0 3.8-5 8-5 8S2 9.8 2 6a5 5 0 0 1 5-5z"/><circle cx="7" cy="6" r="2"/>',
+      job:'<rect x="1" y="4" width="12" height="8" rx="1.5"/><path d="M4 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/>',
+    };
+    return '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round">'+(icons[type]||'')+'</svg>';
+  }
 
-  // ── "Friends describe…" sentence (matching previewProfile) ────
-  var _tags=profile.tags||[];
-  var _first=_tags[0]||'';
+  // ── Hero — identical structure to previewProfile ──────────────
+  var col=AVCOLS[(profile.ci||0)%AVCOLS.length];
+  var metaItems=[];
+  if(profile.loc)metaItems.push(_scanMetaIcon('loc')+' <span>'+profile.loc+'</span>');
+  if(profile.job)metaItems.push(_scanMetaIcon('job')+' <span>'+profile.job+'</span>');
+  var metaHtml=metaItems.map(function(m){
+    return '<div style="display:flex;align-items:center;gap:5px;font-size:13px;color:rgba(255,255,255,.92);font-weight:500">'+m+'</div>';
+  }).join('');
+  var _ovHtml='<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 20px 16px;background:linear-gradient(to top,rgba(0,0,0,.72) 0%,transparent 100%)">'
+    +'<h1 style="color:#fff;font-size:28px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px">'+profile.name+(profile.age?', '+profile.age:'')+'</h1>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:10px 16px">'+metaHtml+'</div></div>';
+  var _badge='<div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 13px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:var(--p)"></div><span style="font-size:11px;font-weight:700;color:var(--tx)">circle intro</span></div></div>';
+  var _timer='<div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 11px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">&#9201; 72h left</span></div></div>';
+  var heroHtml=profile.photos&&profile.photos.length
+    ?'<div style="position:relative"><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
+    :'<div style="position:relative"><div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(profile.name)+'</div></div>'+_badge+_timer+_ovHtml+'</div>';
+
+  // ── Tags sentence — identical to previewProfile ───────────────
+  var _first=(profile.tags||[])[0]||'';
   var _art=/^[AEIOUaeiou]/.test(_first)?'an':'a';
-  var _tagsBold=_tags.map(function(t){return '<strong style="color:var(--p)">'+t+'</strong>';});
-  var _tagStr=_tagsBold.length?(_tagsBold.slice(0,-1).join(', ')+(_tagsBold.length>1?' and ':'')+_tagsBold[_tagsBold.length-1]):'';
-  var tagsSentence=_tagStr
-    ?'<div class="card-warm" style="text-align:center;padding:16px;margin-bottom:16px"><p style="font-size:15px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+profile.name+'</strong> as '+_art+' '+_tagStr+' person.</p></div>'
+  var _tb=(profile.tags||[]).map(function(t){return '<strong style="color:var(--p)">'+t+'</strong>';});
+  var tagsSentence=(profile.tags||[]).length
+    ?'<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px"><p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+profile.name+'</strong> as '+_art+' '+(_tb.length?_tb.slice(0,-1).join(', ')+(_tb.length>1?' and ':'')+_tb[_tb.length-1]:'')+' person.</p></div>'
     :'';
 
-  // ── 6 Q&A tiles with icons (matching previewProfile exactly) ──
-  var Q_CFG={
-    intent:  {label:'Looking for',         icon:'heart',    color:'#E07060'},
+  // ── Q&A tiles — exact qIcon paths from previewProfile ─────────
+  var Q_CONFIG={
+    intent:  {label:'Looking for',          icon:'heart',    color:'#E07060'},
     location:{label:'Location flexibility', icon:'location', color:'#E07060'},
-    family:  {label:'Family',              icon:'family',   color:'#E07060'},
-    sport:   {label:'Physical activity',   icon:'sport',    color:'#E07060'},
-    travel:  {label:'Travel',              icon:'travel',   color:'#E07060'},
-    food:    {label:'Food lifestyle',      icon:'food',     color:'#E07060'},
+    family:  {label:'Family',               icon:'family',   color:'#E07060'},
+    sport:   {label:'Physical activity',    icon:'sport',    color:'#E07060'},
+    travel:  {label:'Travel',               icon:'travel',   color:'#E07060'},
+    food:    {label:'Food lifestyle',       icon:'food',     color:'#E07060'},
   };
-  var _PATHS={
-    heart:   '<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',
-    location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',
-    family:  '<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/>',
-    sport:   '<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',
-    travel:  '<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',
-    food:    '<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>',
-  };
-  function _scanQIco(type,color){
-    return '<svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+(_PATHS[type]||_PATHS.heart)+'</svg>';
+  function _scanQIcon(type,color){
+    var paths={
+      heart:    '<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',
+      location: '<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',
+      family:   '<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',
+      sport:    '<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',
+      travel:   '<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',
+      food:     '<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>',
+    };
+    return '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="'+color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+(paths[type]||paths.heart)+'</svg>';
   }
   var _pk=['gender','ageMin','ageMax','seeking','partnerGender'];
   var tilesHtml=Object.entries(profile.qs||{}).filter(function(e){return _pk.indexOf(e[0])===-1;}).map(function(e){
     var k=e[0],v=e[1];
-    var cfg=Q_CFG[k]||{label:k,icon:'heart',color:'var(--p)'};
+    var cfg=Q_CONFIG[k]||{label:k,icon:'heart',color:'var(--p)'};
     var rgb=hexToRgb(cfg.color)||'224,112,96';
-    return '<div style="background:var(--bg2);border-radius:var(--r3);padding:12px 12px 14px">'
-      +'<div class="row mb6" style="gap:6px"><div style="width:28px;height:28px;border-radius:50%;background:rgba('+rgb+',.12);display:flex;align-items:center;justify-content:center">'+_scanQIco(cfg.icon,cfg.color)+'</div>'
-      +'<span style="font-size:11px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div>'
-      +'<div style="font-size:14px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(v,profile.gender||'')+'</div>'
-      +'</div>';
+    return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px">'
+      +'<div class="row mb6" style="gap:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba('+rgb+',.12);display:flex;align-items:center;justify-content:center">'+_scanQIcon(cfg.icon,cfg.color)+'</div>'
+      +'<span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div>'
+      +'<div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(v,profile.gender||'')+'</div></div>';
   }).join('');
 
-  // ── Render ────────────────────────────────────────────────────
+  // ── Render — flex column so buttons always pinned ─────────────
   body.innerHTML=
     '<div style="height:100dvh;display:flex;flex-direction:column;overflow:hidden">'
     +'<div style="flex:1;overflow-y:auto">'
     +heroHtml
-    +'<div style="padding:20px">'
+    +'<div style="padding:16px 20px 0">'
+    +'<div style="height:16px"></div>'
     +tagsSentence
-    +(tilesHtml?'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>':'')
+    +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
+    +'<div style="height:4px"></div>'
     +'</div></div>'
     +'<div class="scan-actions">'
     +'<button class="btn btn-p mb8" onclick="scanInterested()">&#128140; Send my profile</button>'
