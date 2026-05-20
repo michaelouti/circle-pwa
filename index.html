@@ -445,7 +445,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <p class="cap mb20" style="max-width:260px">Show to someone you'd like to introduce. They scan with their camera.</p>
     <div style="background:var(--bg2);border-radius:var(--r3);padding:22px;margin-bottom:16px;display:inline-block"><div id="qr-out"></div></div>
     <div class="row mb20" style="justify-content:center;gap:6px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok)"></div><p class="tiny" style="color:var(--ok)">Valid for 72 hours</p></div>
-    <button class="btn btn-p w100 mb8" onclick="simScan()">&#9654; Simulate scan (demo)</button>
+    <button class="btn btn-s w100 mb8" style="border:1.5px dashed var(--bd2);color:var(--tx3)" onclick="simScan()">&#9654; Demo: simulate a scan</button>
     <button class="btn btn-s w100" onclick="shareQR()">Share link instead</button>
   </div>
 </div>
@@ -453,7 +453,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-context" class="screen">
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Add context</span><span style="min-width:56px"></span></div>
   <div class="p20">
-    <div class="card-warm mb20"><div class="row" style="gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0"></div><p class="cap" id="ctx-scan-msg" style="color:var(--p6)">Someone scanned the QR!</p></div></div>
+    <div class="card-warm mb20"><div class="row" style="gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0"></div><p class="cap" id="ctx-scan-msg" style="color:var(--p6)">Someone wants to meet your friend!</p></div></div>
     <h2 class="mb4">Why would they click?</h2><p class="cap mb16">A personal note makes a big difference</p>
     <div class="igrp"><label class="lbl">Your note</label>
       <textarea id="ctx-ta" rows="5" placeholder="e.g. You both love hiking and he's genuinely one of the most thoughtful people I know." oninput="ctxChange(this)"></textarea>
@@ -1415,6 +1415,20 @@ function renderGettingStarted(){
 }
 function initHome(){
   renderGettingStarted();
+  (function(){
+    var _p=localStorage.getItem('c_pending_scan');if(!_p)return;
+    try{
+      var p=JSON.parse(_p);if(!p||!p.scanId)return;
+      if(DB.intros().some(function(i){return i.id==='scan_'+p.scanId;})){localStorage.removeItem('c_pending_scan');return;}
+      var _sd=localStorage.getItem('c_scan_'+p.scanId);if(!_sd){localStorage.removeItem('c_pending_scan');return;}
+      var _sg=JSON.parse(_sd);
+      var ni={id:'scan_'+p.scanId,sName:_sg.name,sAge:_sg.age,sJob:_sg.job,sLoc:_sg.loc,ci:_sg.ci||0,tags:_sg.tags||[],qs:_sg.qs||{},photos:_sg.photos||[],mmName:_sg.mmName||'A matchmaker',mmRel:'Matchmaker',ctx:'You scanned this person\u2019s Circle profile.',status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
+      var intros=DB.intros();intros.unshift(ni);DB.setIntros(intros);
+      DB.addNotif({id:'n_scan_'+Date.now(),type:'intro',msg:'You scanned '+_sg.name+'\u2019s profile \u2014 it\u2019s now waiting in your Intros!',ts:Date.now(),read:false});
+      localStorage.removeItem('c_pending_scan');
+      toast(_sg.name+' is in your Intros!');
+    }catch(e){localStorage.removeItem('c_pending_scan');}
+  })();
   const u=S.user||DB.user();if(!u)return;S.user=u;
   const now=Date.now(),weekAgo=now-7*24*3600000;
   const weekIntros=DB.intros().filter(i=>i.ts&&i.ts>weekAgo).length;
@@ -1732,14 +1746,108 @@ function submitFb(){const v=document.querySelector('#modal-feedback .qopt.sel')?
 function initIntroduce(){const singles=DB.singles(),inner=document.getElementById('car-inner');if(!inner)return;inner.innerHTML=singles.map(s=>{const c=AVCOLS[s.ci%AVCOLS.length];return `<div style="min-width:100%;flex-shrink:0"><div style="background:${c.bg};height:260px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden"><div style="font-size:80px;font-weight:700;color:${c.tc};opacity:.18;user-select:none">${ini(s.name)}</div><div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">${av(ini(s.name),s.ci,80)}<div style="text-align:center;padding:0 16px"><div style="font-size:20px;font-weight:700;color:var(--tx)">${s.name}, ${s.age}</div><div style="font-size:14px;color:var(--tx2);margin-top:3px">${s.job} · ${s.loc}</div></div></div></div><div style="padding:14px 16px"><div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px">${s.tags.map(t=>`<span class="pill pill-p">${t}</span>`).join('')}</div><p style="font-size:14px;color:var(--tx2);line-height:1.55">${s.bio}</p></div></div>`}).join('')||`<div style="min-width:100%;flex-shrink:0"><div style="height:200px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:20px"><div style="font-size:44px">👥</div><p class="cap center">No singles yet</p></div></div>`;document.getElementById('car-dots').innerHTML=singles.map((_,i)=>`<div style="width:6px;height:6px;border-radius:3px;background:var(--bg4);transition:all .22s;cursor:pointer" onclick="carJump(${i})"></div>`).join('');carJump(S.carIdx)}
 function carJump(i){const singles=DB.singles();S.carIdx=Math.max(0,Math.min(i,Math.max(0,singles.length-1)));document.getElementById('car-inner').style.transform=`translateX(-${S.carIdx*100}%)`;document.querySelectorAll('#car-dots div').forEach((d,j)=>{d.style.width=j===S.carIdx?'18px':'6px';d.style.background=j===S.carIdx?'var(--p)':'var(--bg4)'});const s=singles[S.carIdx],btn=document.getElementById('intro-btn');if(btn)btn.textContent=s?'Introduce '+s.name+' →':'No singles yet'}
 function carNav(dir){carJump(S.carIdx+dir)}
-function startIntroFlow(){const singles=DB.singles(),s=singles[S.carIdx];if(!s){toast('No singles to introduce');return}S.introSingle=s;S.introId='qi_'+Date.now();document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;const qrout=document.getElementById('qr-out');qrout.innerHTML='';const url=`${location.origin}${location.pathname}#scan/${S.introId}`;try{new QRCode(qrout,{text:url,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H})}catch(e){qrout.innerHTML=`<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready<br><span style="word-break:break-all;color:var(--p);margin-top:8px;display:block">${url}</span></div>`}go('qr')}
-function simScan(){const s=S.introSingle;document.getElementById('ctx-scan-msg').textContent='Someone just scanned '+(s?.name||'the')+"'s QR!";document.getElementById('ctx-ta').value='';document.getElementById('ctx-btn').disabled=true;document.getElementById('ctx-count').textContent='0/240';go('context')}
+function startIntroFlow(){
+  const singles=DB.singles(),s=singles[S.carIdx];
+  if(!s){toast('No singles to introduce');return;}
+  S.introSingle=s;S.introId='qi_'+Date.now();
+  const _u=DB.user();
+  localStorage.setItem('c_scan_'+S.introId,JSON.stringify({
+    name:s.name,age:s.age,job:s.job||'',loc:s.loc||'',bio:s.bio||'',
+    tags:s.tags||[],qs:s.qs||{},ci:s.ci||0,photos:s.photos||[],
+    mmName:(_u&&_u.name)||'Your matchmaker',singleId:s.id
+  }));
+  document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;
+  const qrout=document.getElementById('qr-out');qrout.innerHTML='';
+  const url=`${location.origin}${location.pathname}#scan/${S.introId}`;
+  try{new QRCode(qrout,{text:url,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});}
+  catch(e){qrout.innerHTML=`<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready<br><span style="word-break:break-all;color:var(--p);margin-top:8px;display:block">${url}</span></div>`;}
+  go('qr');
+}
+function simScan(){go('scan');}
 function shareQR(){const url=`${location.origin}${location.pathname}#scan/${S.introId}`;if(navigator.share)navigator.share({title:'Meet '+S.introSingle?.name+' on Circle',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link copied! 📋')}else toast('Link: '+url)}
 function ctxChange(ta){const n=ta.value.length;document.getElementById('ctx-count').textContent=`${n}/240`;document.getElementById('ctx-hint').textContent=n<10?'Minimum 10 characters':'Looking good!';document.getElementById('ctx-hint').style.color=n>=10?'var(--ok)':'var(--tx3)';document.getElementById('ctx-btn').disabled=n<10}
-function sendIntro(){const s=S.introSingle;document.getElementById('sent-msg').textContent=(s?.name||'Your friend')+' will receive your introduction with your personal note.';document.getElementById('sent-pts').textContent='+5 points earned!';addPts(5);go('intro-sent');toast('Introduction sent! +5 pts 🎉')}
-function sendIntroNoNote(){const s=S.introSingle;document.getElementById('sent-msg').textContent=(s?.name||'Your friend')+' will receive your introduction.';document.getElementById('sent-pts').textContent='+3 points earned';addPts(3);go('intro-sent');toast('Sent without note. +3 pts')}
-function initScan(){const body=document.getElementById('scan-body');if(!body)return;addPts(3);const profile={name:'Sophie',age:28,job:'Architect',loc:'Paris, France',bio:'Creative soul who loves design, travel, and the outdoors. Looking for something real.',tags:['Creative','Adventurous','Authentic'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'},mmName:'Marie',mmRel:'Best friend',ci:0};const c=AVCOLS[profile.ci];body.innerHTML=`<div style="min-height:100dvh;overflow-y:auto;padding-bottom:160px"><div style="height:320px;background:${c.bg};position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="font-size:120px;font-weight:700;color:${c.tc};opacity:.15;user-select:none">${ini(profile.name)}</div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">${av(ini(profile.name),profile.ci,100)}</div><div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:100px;padding:7px 14px;display:flex;align-items:center;gap:6px"><div style="width:7px;height:7px;border-radius:50%;background:var(--p)"></div><span style="font-size:12px;font-weight:700;color:var(--tx)">circle intro</span></div></div><div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:100px;padding:7px 12px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">⏱ 71h 34m left</span></div></div></div><div style="padding:20px"><h2 class="mb4">${profile.name}, ${profile.age}</h2><p class="cap mb16">${profile.job} · ${profile.loc}</p><div style="background:var(--p1);border-radius:var(--r3);padding:16px;margin-bottom:16px"><div class="row mb10" style="gap:8px">${av(ini(profile.mmName),0,30)}<div><div style="font-size:13px;font-weight:700;color:var(--p8)">${profile.mmName} thinks you should meet</div><div class="tiny" style="color:var(--p6)">${profile.mmRel}</div></div></div><p style="font-size:14px;color:var(--p8);line-height:1.6;font-style:italic">"She is one of the most genuine, creative people I know."</p></div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">${profile.tags.map(t=>`<span class="pill pill-p">${t}</span>`).join('')}</div><p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:18px">${profile.bio}</p><div class="card" style="margin-bottom:8px"><div class="micro mb12">About ${profile.name}</div>${Object.entries(profile.qs).map(([k,v])=>`<div class="row mb8" style="gap:10px"><span class="tiny" style="min-width:90px">${QS.find(q=>q.id===k)?.q||k}</span><span style="font-size:14px;color:var(--tx)">${v}</span></div>`).join('')}</div></div></div><div class="scan-actions"><button class="btn btn-p mb8" onclick="scanInterested()">♡ I am interested</button><div class="row" style="gap:8px"><button class="btn btn-s flex1" onclick="scanSaveLater()">Save for later</button><button class="btn btn-s flex1" onclick="scanDecline()">Not interested</button></div></div>`}
-function scanInterested(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><div class="pop" style="width:72px;height:72px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;margin-bottom:20px"><svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M5 16l8 8 14-16" stroke="var(--p)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h2 class="mb8">Great choice! 💌</h2><p class="cap mb28" style="max-width:260px">Your interest has been passed to Sophie's matchmaker. You will only hear back if there is mutual interest.</p><button class="btn btn-p" style="max-width:240px;width:100%" onclick="go('signup')">Create a Circle account</button><button class="btn-ghost mt8" onclick="history.back()">Close</button></div>`}
+function sendIntro(){
+  var s=S.introSingle,u=DB.user();
+  var note=(document.getElementById('ctx-ta')&&document.getElementById('ctx-ta').value.trim())||'';
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var sc=_pool[Math.floor(Math.random()*_pool.length)];
+  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:note,status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
+  var intros=DB.intros();
+  if(!intros.find(function(i){return i.id===ni.id;})){intros.unshift(ni);DB.setIntros(intros);}
+  DB.addNotif({id:'n_'+Date.now(),type:'intro',msg:(u&&u.name?u.name:'Your matchmaker')+' introduced you to '+sc.name+'!',ts:Date.now(),read:false});
+  document.getElementById('sent-msg').textContent=sc.name+"'s profile has been sent to "+(s?s.name:'your single')+(note?' with your personal note.':'.');
+  document.getElementById('sent-pts').textContent='+5 points earned!';
+  addPts(5);go('intro-sent');toast('Introduction sent! +5 pts');
+}
+function sendIntroNoNote(){
+  var s=S.introSingle,u=DB.user();
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var sc=_pool[Math.floor(Math.random()*_pool.length)];
+  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:'',status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
+  var intros=DB.intros();
+  if(!intros.find(function(i){return i.id===ni.id;})){intros.unshift(ni);DB.setIntros(intros);}
+  DB.addNotif({id:'n_'+Date.now(),type:'intro',msg:(u&&u.name?u.name:'Your matchmaker')+' introduced you to '+sc.name+'!',ts:Date.now(),read:false});
+  document.getElementById('sent-msg').textContent=sc.name+"'s profile has been sent to "+(s?s.name:'your single')+'.';
+  document.getElementById('sent-pts').textContent='+3 points earned';
+  addPts(3);go('intro-sent');toast('Sent without note. +3 pts');
+}
+function initScan(){
+  var body=document.getElementById('scan-body');if(!body)return;
+  addPts(3);
+  var profile=null;
+  if(S.scanId){try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}}
+  if(!profile&&S.introSingle){
+    var _s=S.introSingle,_u=DB.user();
+    profile={name:_s.name,age:_s.age,job:_s.job||'',loc:_s.loc||'',bio:_s.bio||'',
+      tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
+      mmName:(_u&&_u.name)||'Your matchmaker',singleId:_s.id};
+  }
+  if(!profile){
+    profile={name:'Sophie',age:28,job:'Architect',loc:'Paris, France',
+      bio:'Creative soul who loves design, travel, and the outdoors.',
+      tags:['Creative','Adventurous','Authentic'],
+      qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'},
+      ci:0,photos:[],mmName:'Your matchmaker'};
+  }
+  var _ref=S.scanId||S.introId||'';
+  if(_ref)localStorage.setItem('c_pending_scan',JSON.stringify({scanId:_ref,ts:Date.now(),singleName:profile.name,mmName:profile.mmName||''}));
+  var col=AVCOLS[(profile.ci||0)%AVCOLS.length];
+  var heroHtml=profile.photos&&profile.photos.length
+    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';}).join('')+'</div>'
+    :'<div style="height:320px;background:'+col.bg+';position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden"><div style="font-size:120px;font-weight:700;color:'+col.tc+';opacity:.15;user-select:none">'+ini(profile.name)+'</div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">'+av(ini(profile.name),profile.ci||0,100)+'</div><div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:100px;padding:7px 14px;display:flex;align-items:center;gap:6px"><div style="width:7px;height:7px;border-radius:50%;background:var(--p)"></div><span style="font-size:12px;font-weight:700;color:var(--tx)">circle intro</span></div></div><div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.9);backdrop-filter:blur(8px);border-radius:100px;padding:7px 12px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">&#9201; 72h left</span></div></div></div>';
+  var _pk=['gender','ageMin','ageMax','seeking','partnerGender'];
+  var qsHtml='';
+  Object.entries(profile.qs||{}).forEach(function(e){
+    var k=e[0],v=e[1];
+    if(_pk.indexOf(k)===-1){var ql=QS.find(function(q){return q.id===k;});qsHtml+='<div class="row mb8" style="gap:10px"><span class="tiny" style="min-width:90px">'+(ql?ql.q:k)+'</span><span style="font-size:14px;color:var(--tx)">'+v+'</span></div>';}
+  });
+  var tagsHtml=(profile.tags||[]).length?'<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px">'+(profile.tags||[]).map(function(t){return '<span class="pill pill-p">'+t+'</span>';}).join('')+'</div>':'';
+  body.innerHTML='<div style="min-height:100dvh;overflow-y:auto;padding-bottom:160px">'+heroHtml+'<div style="padding:20px"><h2 class="mb4">'+profile.name+', '+profile.age+'</h2><p class="cap mb16">'+(profile.job?profile.job+' &bull; ':'')+profile.loc+'</p>'+tagsHtml+(profile.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:18px">'+profile.bio+'</p>':'')+(qsHtml?'<div class="card" style="margin-bottom:8px"><div class="micro mb12">About '+profile.name+'</div>'+qsHtml+'</div>':'')+'</div></div><div class="scan-actions"><button class="btn btn-p mb8" onclick="scanInterested()">&#128140; Send my profile</button><div class="row" style="gap:8px"><button class="btn btn-s flex1" onclick="scanSaveLater()">Save for later</button><button class="btn btn-s flex1" onclick="scanDecline()">Not interested</button></div></div>';
+}
+function scanInterested(){
+  var u=DB.user();
+  if(u){
+    var s=S.introSingle;
+    var msg='Someone wants to meet '+(s?s.name:'your friend')+'! Add a personal note \u2014 you have 24 hours.';
+    var el=document.getElementById('ctx-scan-msg');if(el)el.textContent=msg;
+    var ta=document.getElementById('ctx-ta');if(ta)ta.value='';
+    var btn=document.getElementById('ctx-btn');if(btn)btn.disabled=true;
+    var cnt=document.getElementById('ctx-count');if(cnt)cnt.textContent='0/240';
+    go('context');
+  }else{
+    var _ps=localStorage.getItem('c_pending_scan');
+    var _sName=(_ps?JSON.parse(_ps).singleName:null)||'this person';
+    document.getElementById('scan-body').innerHTML=
+      '<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">'
+      +'<div class="pop" style="width:72px;height:72px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;margin-bottom:20px"><span style="font-size:28px">&#128140;</span></div>'
+      +'<h2 class="mb8">One more step!</h2>'
+      +'<p class="cap mb4" style="max-width:260px">Create your Circle profile to introduce yourself to '+_sName+'.</p>'
+      +'<p class="tiny mb24" style="color:var(--p)">Your progress is saved \u2014 the intro will appear in your Intros once you sign up.</p>'
+      +'<button class="btn btn-p mb8" style="max-width:240px;width:100%" onclick="go(\'signup\')">Create a Circle account</button>'
+      +'<button class="btn-ghost primary mt4" onclick="go(\'ob\')">Log in instead</button>'
+      +'</div>';
+  }
+}
 function scanSaveLater(){const url=location.href;if(navigator.share)navigator.share({title:'Circle intro saved',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link saved! 📋')}else toast('Copy: '+url)}
 function scanDecline(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><h2 class="mb8">No worries</h2><p class="cap" style="max-width:240px">Sophie will not know you viewed this.</p><button class="btn-ghost primary mt24" onclick="history.back()">Close</button></div>`}
 function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent='Intro by '+m.mmName;const ctx=document.getElementById('chat-ctx');if(m.ctx){ctx.style.display='block';document.getElementById('chat-ctx-txt').textContent='"'+m.ctx+'"';document.getElementById('chat-ctx-by').textContent='— '+m.mmName}else ctx.style.display='none';renderMsgs(id);go('chat')}
