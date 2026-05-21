@@ -343,28 +343,26 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <div style="text-align:center;margin-bottom:32px">
       <h1 style="font-size:30px;font-weight:800;color:var(--p);letter-spacing:-1.5px;margin-bottom:4px">circle</h1>
       <p style="font-size:10px;font-weight:700;letter-spacing:2.8px;color:var(--tx3);text-transform:uppercase;margin-bottom:28px">Friends introduce. You decide.</p>
-      <h2 style="font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.3px;margin-bottom:6px">How will you use Circle?</h2>
-      <p class="cap">Choose your main role &mdash; you can always do both</p>
+      <h2 style="font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.3px;margin-bottom:6px">Are you open to being introduced?</h2>
+      <p class="cap">Your friends can introduce you to people they meet.</p>
     </div>
-    <div onclick="chooseSetupPath('short')" class="card mb12" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
+    <div onclick="chooseSetupPath('long')" class="card mb10" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
+      <div style="font-size:28px;margin-bottom:10px">&#128140;</div>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Yes, I&rsquo;m open</div>
+      <p class="cap mb12">Build a full profile so your friends can introduce you.</p>
+      <div class="row" style="gap:6px">
+        <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">4-step setup</span>
+      </div>
+    </div>
+    <div onclick="chooseSetupPath('short')" class="card" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
       <div style="font-size:28px;margin-bottom:10px">&#129309;</div>
-      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Help friends find love</div>
-      <p class="cap mb12">Introduce singles to people you meet. Get started in 1 step.</p>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Not right now</div>
+      <p class="cap mb12">Start helping your friends find love today.</p>
       <div class="row" style="gap:6px">
         <span style="background:var(--bg2);color:var(--tx3);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">1-step setup</span>
-        <span style="background:var(--bg2);color:var(--tx3);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">No photos needed</span>
       </div>
     </div>
-    <div onclick="chooseSetupPath('long')" class="card" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
-      <div style="font-size:28px;margin-bottom:10px">&#128149;</div>
-      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Find love through friends</div>
-      <p class="cap mb12">Get introduced to great people through friends you trust.</p>
-      <div class="row" style="gap:6px">
-        <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">4-step profile</span>
-        <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">Open to introductions</span>
-      </div>
-    </div>
-    <p class="tiny" style="text-align:center;color:var(--tx3);margin-top:20px">You can switch roles anytime in your profile settings</p>
+    <p class="tiny" style="text-align:center;color:var(--tx3);margin-top:20px">You can change this anytime in your profile</p>
   </div>
 </div>
 
@@ -1039,8 +1037,8 @@ function closeModal(id){document.getElementById(id).classList.remove('on')}
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')})});
 const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
-function go(id){const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
-function back(){if(!S.stack.length)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
+function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
+function back(){if(!DB.user())return;if(!S.stack.length)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
 function navTo(id){S.stack=[];go(id)}
 function _el(id){return document.getElementById('s-'+id)}
 function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.has(id)?bnav.classList.add('on'):bnav.classList.remove('on');document.querySelectorAll('.nbt').forEach(b=>b.classList.remove('on'));const act=NAV_MAP[id];if(act)document.getElementById(act)?.classList.add('on');const pend=DB.intros().filter(i=>i.status==='pending').length;const bd=document.getElementById('nb-badge'),pb=document.getElementById('pb-badge');if(bd){bd.textContent=pend;bd.style.display=pend>0?'flex':'none'}if(pb){pb.textContent=pend;pb.style.display=pend>0?'':'none'}}
