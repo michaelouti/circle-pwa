@@ -213,7 +213,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <h2 class="mb8">Account created! &#127881;</h2>
     <p class="cap mb4" style="max-width:270px">Welcome to Circle!<br><strong id="verify-email" style="color:var(--tx)"></strong></p>
     <div style="background:var(--okbg);border-radius:var(--r2);padding:12px 16px;margin:16px 0 28px;max-width:300px;width:100%"><p class="tiny" style="color:var(--ok);line-height:1.6;text-align:center">&#9989; <strong>MVP mode:</strong> Tap below to build your profile.</p></div>
-    <button class="btn btn-p" style="max-width:280px;width:100%" onclick="go('setup')">Set up my profile &#8594;</button>
+    <button class="btn btn-p" style="max-width:280px;width:100%" onclick="go('path-choice')">Set up my profile &#8594;</button>
   </div>
 </div>
 <!-- SETUP: SINGLE TABBED SCREEN -->
@@ -336,6 +336,37 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   </div><!-- pane area -->
 </div><!-- #s-setup -->
 
+
+<!-- PATH CHOICE -->
+<div id="s-path-choice" class="screen no-nav" style="display:flex;flex-direction:column">
+  <div class="p20 col" style="flex:1;justify-content:center;gap:0">
+    <div style="text-align:center;margin-bottom:32px">
+      <h1 style="font-size:30px;font-weight:800;color:var(--p);letter-spacing:-1.5px;margin-bottom:4px">circle</h1>
+      <p style="font-size:10px;font-weight:700;letter-spacing:2.8px;color:var(--tx3);text-transform:uppercase;margin-bottom:28px">Friends introduce. You decide.</p>
+      <h2 style="font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.3px;margin-bottom:6px">How will you use Circle?</h2>
+      <p class="cap">Choose your main role &mdash; you can always do both</p>
+    </div>
+    <div onclick="chooseSetupPath('short')" class="card mb12" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
+      <div style="font-size:28px;margin-bottom:10px">&#129309;</div>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Help friends find love</div>
+      <p class="cap mb12">Introduce singles to people you meet. Get started in 1 step.</p>
+      <div class="row" style="gap:6px">
+        <span style="background:var(--bg2);color:var(--tx3);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">1-step setup</span>
+        <span style="background:var(--bg2);color:var(--tx3);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">No photos needed</span>
+      </div>
+    </div>
+    <div onclick="chooseSetupPath('long')" class="card" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
+      <div style="font-size:28px;margin-bottom:10px">&#128149;</div>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Find love through friends</div>
+      <p class="cap mb12">Get introduced to great people through friends you trust.</p>
+      <div class="row" style="gap:6px">
+        <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">4-step profile</span>
+        <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">Open to introductions</span>
+      </div>
+    </div>
+    <p class="tiny" style="text-align:center;color:var(--tx3);margin-top:20px">You can switch roles anytime in your profile settings</p>
+  </div>
+</div>
 
 <!-- HOME -->
 <div id="s-home" class="screen">
@@ -1217,7 +1248,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('')}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
@@ -2425,12 +2456,57 @@ function doRemoveMm() {
 
 
 // ── PROFILE: OPEN/CLOSE TOGGLE ───────────────────────────────────
-function toggleOpenStatus(isOpen) {
-  const u = DB.user(); if (!u) return;
-  u.isOpen = isOpen;
-  DB.setUser(u); S.user = u;
+function chooseSetupPath(path){
+  S.setup=S.setup||{};
+  S.setup.path=path;
+  go('setup');
+}
+function finishShortSetup(){
+  var u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',
+    name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,
+    location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,
+    job:S.setup.job||'',religion:S.setup.religion||'',
+    tags:[],qs:{},prefs:{},isOpen:false,setupPath:'short',points:5,
+    createdAt:Date.now(),
+    matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},
+                 {name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},
+                 {name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};
+  DB.setUser(u);S.user=u;seedDemo(u.name);
+  toast('Welcome to Circle!');
+  setTimeout(function(){navTo('home');},300);
+}
+function isLongPathComplete(){
+  var u=DB.user();if(!u)return false;
+  return !!(u.name&&u.gender&&u.dob&&u.location&&u.job&&
+    (u.photos||[]).length>=3&&(u.tags||[]).length===3&&
+    Object.keys(u.qs||{}).length>=QS.length&&
+    u.prefs&&u.prefs.gender&&(u.prefs.ageMin||u.prefs.ageMin===0));
+}
+function _firstMissingLongField(){
+  var u=DB.user();if(!u)return 'basics';
+  if(!u.name||!u.gender||!u.dob||!u.location||!u.job||(u.photos||[]).length<3)return 'basics';
+  if((u.tags||[]).length!==3)return 'tags';
+  if(Object.keys(u.qs||{}).length<QS.length)return 'qa';
+  if(!u.prefs||!u.prefs.gender)return 'prefs';
+  return 'basics';
+}
+function toggleOpenStatus(isOpen){
+  var u=DB.user();if(!u)return;
+  if(isOpen&&!isLongPathComplete()){
+    var chk=document.getElementById('prof-open-toggle');
+    if(chk)chk.checked=false;
+    toast('Complete your profile first — tap to continue');
+    setTimeout(function(){
+      var tab=_firstMissingLongField();
+      navTo('edit-profile');
+      setTimeout(function(){epSwitchTab(tab);},350);
+    },700);
+    return;
+  }
+  u.isOpen=isOpen;
+  DB.setUser(u);S.user=u;
   _renderOpenRow(isOpen);
-  toast(isOpen ? 'Open to introductions ✓' : 'Introductions paused');
+  toast(isOpen?'Open to introductions ✓':'Introductions paused');
   renderGettingStarted();
 }
 function _renderOpenRow(isOpen) {
@@ -3043,33 +3119,44 @@ function suSwitchTab(tab) {
   if (scroller) scroller.scrollTop = 0;
 }
 
-function initSetup() {
+function initSetup(){
   suSwitchTab('basics');
   buildDobDropdowns();
   initTags();
   initQs();
   initPrefsScreen();
-  renderPhotoGrid('pg-setup', S.setup.photos, 'ph-input-setup', 'setup');
-  requestAnimationFrame(function(){ initAgeSlider('pref-amin','pref-amax','su-age-fill','su-age-display',22,36); });
+  renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');
+  requestAnimationFrame(function(){initAgeSlider('pref-amin','pref-amax','su-age-fill','su-age-display',22,36);});
+  if((S.setup||{}).path==='short'){
+    var tb=document.querySelector('#s-setup .ep-tab-bar');
+    if(tb)tb.style.display='none';
+    var lbl=document.getElementById('setup-step-label');
+    if(lbl)lbl.textContent='Quick setup';
+    var prog=document.getElementById('setup-prog');
+    if(prog)prog.style.width='100%';
+    var btn=document.querySelector('#su-pane-basics .btn-p');
+    if(btn)btn.textContent='Get started →';
+  }
 }
 
-function saveBasicAndNext() {
-  const name = document.getElementById('f-name').value.trim();
-  if (!name) { toast('Please enter your display name'); return; }
-  if (!S.setup.gender) { toast('Please select your gender'); return; }
-  const loc = document.getElementById('f-loc').value.trim();
-  if (!loc) { toast('Please enter your location'); return; }
-  if (S.setup.photos.length < 3) { toast('Please add at least 3 photos'); return; }
-  S.setup.name = name;
-  S.setup.location = loc;
+function saveBasicAndNext(){
+  var name=document.getElementById('f-name').value.trim();
+  if(!name){toast('Please enter your display name');return;}
+  if(!S.setup.gender){toast('Please select your gender');return;}
+  var loc=document.getElementById('f-loc').value.trim();
+  if(!loc){toast('Please enter your location');return;}
   var _d=+document.getElementById('dob-d').value,_m=+document.getElementById('dob-m').value,_y=+document.getElementById('dob-y').value;
-  if(!_d||!_m||!_y){toast('Please select your date of birth');return}
+  if(!_d||!_m||!_y){toast('Please select your date of birth');return;}
+  S.setup.name=name;S.setup.location=loc;
   S.setup.dob=_y+'-'+_m+'-'+_d;S.setup.age=calcAge(_y,_m,_d);
-  S.setup.height = S.htVal || 170;
-  const job = document.getElementById('f-job').value.trim();
-  if (job) S.setup.job = job;
-  const rel = document.getElementById('f-rel').value;
-  if (rel) S.setup.religion = rel;
+  S.setup.height=S.htVal||170;
+  var job=document.getElementById('f-job').value.trim();
+  if(job)S.setup.job=job;
+  var rel=document.getElementById('f-rel').value;
+  if(rel)S.setup.religion=rel;
+  if((S.setup||{}).path==='short'){finishShortSetup();return;}
+  if(S.setup.photos.length<3){toast('Please add at least 3 photos');return;}
+  if(!job){toast('Please enter your occupation');return;}
   suSwitchTab('tags');
 }
 
