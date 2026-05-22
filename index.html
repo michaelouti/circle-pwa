@@ -238,9 +238,9 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
     <!-- BASICS -->
     <div class="ep-pane on" id="su-pane-basics" style="padding-top:16px">
-      <div class="igrp"><label class="lbl">Display name</label><input type="text" id="f-name" placeholder="First name or nickname" autocomplete="given-name"></div>
+      <div class="igrp"><label class="lbl">Display name</label><input type="text" id="f-name" placeholder="First name or nickname" autocomplete="given-name" oninput="checkBasicsBtn()"></div>
       <div class="igrp mb4"><label class="lbl">Date of birth</label>
-        <div class="dob-drops"><select id="dob-d" onchange="updDobAge()"><option value="">Day</option></select><select id="dob-m" onchange="updDobAge()"><option value="">Month</option></select><select id="dob-y" onchange="updDobAge()"><option value="">Year</option></select></div>
+        <div class="dob-drops"><select id="dob-d" onchange="updDobAge();checkBasicsBtn()"><option value="">Day</option></select><select id="dob-m" onchange="updDobAge();checkBasicsBtn()"><option value="">Month</option></select><select id="dob-y" onchange="updDobAge();checkBasicsBtn()"><option value="">Year</option></select></div>
         <div class="dob-age" id="dob-preview"></div>
       </div>
       <div class="igrp"><label class="lbl">Gender</label>
@@ -255,7 +255,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         </div>
       </div>
       <div class="igrp"><label class="lbl">Location</label>
-        <div class="row" style="gap:8px"><input type="text" id="f-loc" placeholder="Your city" style="flex:1" autocomplete="off" oninput="locInput(this)"><button class="btn btn-s btn-sm" style="flex-shrink:0;gap:4px" onclick="gpsLocate()">GPS</button></div>
+        <div class="row" style="gap:8px"><input type="text" id="f-loc" placeholder="Your city" style="flex:1" autocomplete="off" oninput="locInput(this);checkBasicsBtn()"><button class="btn btn-s btn-sm" style="flex-shrink:0;gap:4px" onclick="gpsLocate()">GPS</button></div>
       </div>
       <div class="igrp"><label class="lbl">Height</label>
         <div class="row mb8" style="gap:12px">
@@ -268,9 +268,9 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <input type="range" id="ht-slider" min="140" max="220" value="170" oninput="htSlide()">
         <div class="between mt4"><span class="tiny">140cm</span><span class="tiny">220cm</span></div>
       </div>
-      <div class="igrp"><label class="lbl">Occupation or industry</label><input type="text" id="f-job" placeholder="e.g. Product Designer, Finance..."></div>
+      <div class="igrp"><label class="lbl">Occupation or industry</label><input type="text" id="f-job" placeholder="e.g. Product Designer, Finance..." oninput="checkBasicsBtn()"></div>
       <div class="igrp"><label class="lbl">Religion</label>
-        <select id="f-rel"><option value="">Select...</option><option>Christian</option><option>Catholic</option><option>Muslim</option><option>Jewish</option><option>Buddhist</option><option>Hindu</option><option>Sikh</option><option>Agnostic</option><option>Atheist</option><option>Spiritual but not religious</option><option>Other</option><option>Prefer not to say</option></select>
+        <select id="f-rel" onchange="checkBasicsBtn()"><option value="">Select...</option><option>Christian</option><option>Catholic</option><option>Muslim</option><option>Jewish</option><option>Buddhist</option><option>Hindu</option><option>Sikh</option><option>Agnostic</option><option>Atheist</option><option>Spiritual but not religious</option><option>Other</option><option>Prefer not to say</option></select>
       </div>
       <div class="igrp"><label class="lbl">Photos <span style="text-transform:none;font-weight:400;letter-spacing:0;font-size:12px">(min 3, max 6)</span></label>
         <div class="pgrid" id="pg-setup"></div>
@@ -278,7 +278,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <button class="btn btn-s btn-sm mb4" onclick="document.getElementById('ph-input-setup').click()">+ Add photos</button>
         <p class="tiny" id="ph-count">0/6 added (3 required)</p>
       </div>
-      <button class="btn btn-p mt16" onclick="saveBasicAndNext()">Next: Tags →</button>
+      <button class="btn btn-p mt16" id="basics-btn" onclick="saveBasicAndNext()" disabled>Next: Tags →</button>
       <div style="height:16px"></div>
     </div>
 
@@ -329,7 +329,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Anything else to help your matchmaker find a great match for you</p>
         <textarea id="pref-note" rows="3" placeholder="e.g. I love the outdoors..."></textarea>
       </div>
-      <button class="btn btn-p mt8" onclick="savePrefs()">Complete my profile 🎉</button>
+      <button class="btn btn-p mt8" id="prefs-btn" onclick="savePrefs()" disabled>Complete my profile 🎉</button>
       <div style="height:16px"></div>
     </div>
 
@@ -1069,7 +1069,7 @@ function buildPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padS
 function fillPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function highlightPcol(el,idx){el.querySelectorAll('.pitem').forEach((item,i)=>item.classList.toggle('active',i===idx+2))}
 function updateDobPreview(){const mns=['January','February','March','April','May','June','July','August','September','October','November','December'],el=document.getElementById('dob-preview');if(el)el.textContent=`${mns[S.dob.m-1]} ${S.dob.d}, ${S.dob.y} — Age ${calcAge(S.dob.y,S.dob.m,S.dob.d)}`}
-function selOpt(btn,group,val){const wrap=btn.closest('.opills');if(wrap)wrap.querySelectorAll('.opill').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');S.setup[group]=val}
+function selOpt(btn,group,val){const wrap=btn.closest('.opills');if(wrap)wrap.querySelectorAll('.opill').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');S.setup[group]=val;if(group==='gender')checkBasicsBtn();if(group==='pref_gender')checkPrefsBtn();}
 function togglePw(inputId,btn){
   const el=document.getElementById(inputId);if(!el)return;
   const show=el.type==='password';el.type=show?'text':'password';
@@ -1102,7 +1102,7 @@ function renderPhotoGrid(gridId,photos,inputId,mode){
         +'</div>'
         +'</div>';
     }else{
-      const req=i<3;
+      const isShortSetup=(S.setup||{}).path==='short'&&mode==='setup';const req=i<3&&!isShortSetup;
       html+='<div class="pslot '+(req?'req':'')+'" ondragover="photoDragOver(event)" ondrop="photoDrop(event)" data-idx="'+i+'" data-mode="'+mode+'" data-input-id="'+inputId+'" onclick="photoSlotClick(this)">'
         +'<svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 3v16M3 11h16" stroke="'+(req?'rgba(216,90,48,.6)':'var(--bd3)')+'" stroke-width="2" stroke-linecap="round"/></svg>'
         +'<span class="plbl">'+(req?'Required':'Optional')+'</span>'
@@ -1111,7 +1111,7 @@ function renderPhotoGrid(gridId,photos,inputId,mode){
   }
   g.innerHTML=html;
   const cnt=document.getElementById('ph-count');
-  if(cnt)cnt.textContent=photos.length+'/6 added'+(photos.length>=3?' ✓':' (3 required)');
+  if(cnt){if((S.setup||{}).path==='short'&&mode==='setup'){cnt.textContent=photos.length+'/6 added'+(photos.length>0?' ✓':' (optional)');}else{cnt.textContent=photos.length+'/6 added'+(photos.length>=3?' ✓':' (3 required)');}}checkBasicsBtn();
   const btn=document.getElementById('ph-next');
   if(btn)btn.disabled=photos.length<3;
   _bindPhotoTouch(g, photos, mode);
@@ -1244,7 +1244,7 @@ function initQs(){const l=document.getElementById('q-list');if(!l)return;l.inner
 function selQ(btn,qid,val){S.setup.qs[qid]=val;btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');updQBtn()}
 function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementById('q-btn');if(b){b.disabled=n<QS.length;b.textContent=`Continue (${n}/${QS.length}) →`}}
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
-function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('')}
+function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('');checkPrefsBtn();}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
 function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
@@ -2454,9 +2454,31 @@ function doRemoveMm() {
 
 
 // ── PROFILE: OPEN/CLOSE TOGGLE ───────────────────────────────────
+function checkBasicsBtn(){
+  if((S.setup||{}).path==='short')return;
+  var ok=!!(
+    (document.getElementById('f-name')&&document.getElementById('f-name').value.trim())&&
+    S.setup.gender&&
+    (document.getElementById('f-loc')&&document.getElementById('f-loc').value.trim())&&
+    +((document.getElementById('dob-d')||{}).value||0)&&
+    +((document.getElementById('dob-m')||{}).value||0)&&
+    +((document.getElementById('dob-y')||{}).value||0)&&
+    (document.getElementById('f-job')&&document.getElementById('f-job').value.trim())&&
+    (document.getElementById('f-rel')&&document.getElementById('f-rel').value)&&
+    (S.setup.photos||[]).length>=3
+  );
+  var btn=document.getElementById('basics-btn');
+  if(btn)btn.disabled=!ok;
+}
+function checkPrefsBtn(){
+  var ok=!!(S.setup.pref_gender);
+  var btn=document.getElementById('prefs-btn');
+  if(btn)btn.disabled=!ok;
+}
 function chooseSetupPath(path){
   S.setup=S.setup||{};
   S.setup.path=path;
+  var _bn=document.getElementById('bnav');if(_bn)_bn.classList.remove('on');
   go('setup');
 }
 function finishShortSetup(){
@@ -3125,6 +3147,9 @@ function initSetup(){
   initPrefsScreen();
   renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');
   requestAnimationFrame(function(){initAgeSlider('pref-amin','pref-amax','su-age-fill','su-age-display',22,36);});
+  // Always hide bottom nav during setup
+  var _bn=document.getElementById('bnav');
+  if(_bn)_bn.classList.remove('on');
   if((S.setup||{}).path==='short'){
     var tb=document.querySelector('#s-setup .ep-tab-bar');
     if(tb)tb.style.display='none';
@@ -3132,8 +3157,17 @@ function initSetup(){
     if(lbl)lbl.textContent='Quick setup';
     var prog=document.getElementById('setup-prog');
     if(prog)prog.style.width='100%';
-    var btn=document.querySelector('#su-pane-basics .btn-p');
-    if(btn)btn.textContent='Get started →';
+    var btn=document.getElementById('basics-btn');
+    if(btn){btn.textContent='Get started →';btn.disabled=false;}
+    // Hide fields not needed for short path
+    var htEl=document.getElementById('ht-display');
+    if(htEl&&htEl.closest('.igrp'))htEl.closest('.igrp').style.display='none';
+    var jobEl=document.getElementById('f-job');
+    if(jobEl&&jobEl.closest('.igrp'))jobEl.closest('.igrp').style.display='none';
+    var relEl=document.getElementById('f-rel');
+    if(relEl&&relEl.closest('.igrp'))relEl.closest('.igrp').style.display='none';
+  } else {
+    checkBasicsBtn();
   }
 }
 
@@ -3155,6 +3189,7 @@ function saveBasicAndNext(){
   if((S.setup||{}).path==='short'){finishShortSetup();return;}
   if(S.setup.photos.length<3){toast('Please add at least 3 photos');return;}
   if(!job){toast('Please enter your occupation');return;}
+  if(!rel){toast('Please select your religion');return;}
   suSwitchTab('tags');
 }
 
