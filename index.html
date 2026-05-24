@@ -221,7 +221,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <!-- header -->
   <div style="flex-shrink:0;padding:max(16px,var(--sat)) 16px 0">
     <div class="between mb4">
-      <h2 style="font-size:20px">Set up your profile</h2>
+      <div class="row" style="gap:8px;align-items:center">
+        <button onclick="back()" style="background:none;border:none;cursor:pointer;padding:4px 0;color:var(--p);font-size:13px;font-weight:600;font-family:inherit">&#8592;</button>
+        <h2 style="font-size:20px">Set up your profile</h2>
+      </div>
       <span id="setup-step-label" class="micro" style="color:var(--tx3)">Step 1 of 4</span>
     </div>
     <div class="progbar" style="margin-bottom:0"><div class="progfill" id="setup-prog" style="width:25%"></div></div>
@@ -333,7 +336,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <div class="igrp mt8">
         <label class="lbl">Notes for your matchmaker <span style="text-transform:none;font-weight:400;letter-spacing:0">(optional)</span></label>
         <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Anything else to help your matchmaker find a great match for you</p>
-        <textarea id="pref-note" rows="3" placeholder="e.g. I love the outdoors..."></textarea>
+        <textarea id="pref-note" rows="3" placeholder="e.g. I'm looking for someone who loves sport and outdoor adventures, ideally between 28 and 38"></textarea>
       </div>
       <button class="btn btn-p mt8" id="prefs-btn" onclick="savePrefs()" disabled>Complete my profile 🎉</button>
       <div style="height:16px"></div>
@@ -667,7 +670,12 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <p class="cap mb8">How would friends describe you? Pick 3 tags that capture your personality.</p>
       <p class="tiny mb16" id="ep-tag-count" style="color:var(--p);font-weight:600"></p>
       <div class="tags-wrap mb20" id="ep-tags-wrap"></div>
-      <button class="btn btn-p mt8" onclick="epSwitchTab('qa')">Next: Q&amp;A →</button>
+      <div class="igrp" style="margin-top:20px">
+        <label class="lbl">About you</label>
+        <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Describe yourself in your own words — a fun fact, what drives you, or what makes you laugh.</p>
+        <textarea id="ep-bio" rows="4" placeholder="e.g. I'm a morning person who somehow always ends up at midnight concerts. Big fan of terrible puns and great pasta..." style="resize:vertical;min-height:80px"></textarea>
+      </div>
+      <button class="btn btn-p mt16" onclick="epSwitchTab('qa')">Next: Q&amp;A →</button>
     </div>
 
     <!-- Q&A -->
@@ -1043,7 +1051,7 @@ document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=
 const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
 function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
-function back(){if(!DB.user())return;if(!S.stack.length)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
+function back(){if(!S.stack.length)return;var _prev=S.stack[S.stack.length-1];var _onb=['ob','login','signup','verify','path-choice','setup'];if(!DB.user()&&_onb.indexOf(_prev)===-1)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
 function navTo(id){S.stack=[];go(id)}
 function _el(id){return document.getElementById('s-'+id)}
 function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.has(id)?bnav.classList.add('on'):bnav.classList.remove('on');document.querySelectorAll('.nbt').forEach(b=>b.classList.remove('on'));const act=NAV_MAP[id];if(act)document.getElementById(act)?.classList.add('on');const pend=DB.intros().filter(i=>i.status==='pending').length;const bd=document.getElementById('nb-badge'),pb=document.getElementById('pb-badge');if(bd){bd.textContent=pend;bd.style.display=pend>0?'flex':'none'}if(pb){pb.textContent=pend;pb.style.display=pend>0?'':'none'}}
@@ -1770,7 +1778,7 @@ function openIntroDetail(id){
       +'<p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe '
       +'<strong style="color:var(--p)">'+i.sName+'</strong> as '+_iArt+' '+_iTagStr+' person.</p></div>';
   }
-  var bioHtml=i.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+i.bio+'</p>':'';
+  var bioHtml=i.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+i.sName+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+i.bio+'</p></div>':'  ';
   var qaHtml='';
   if(i.qs&&Object.keys(i.qs).length){
     var _idQC={intent:{label:'Looking for',icon:'heart',color:'#E07060'},location:{label:'Location flexibility',icon:'location',color:'#E07060'},family:{label:'Family',icon:'family',color:'#E07060'},sport:{label:'Physical activity',icon:'sport',color:'#E07060'},travel:{label:'Travel',icon:'travel',color:'#E07060'},food:{label:'Food lifestyle',icon:'food',color:'#E07060'}};
@@ -1941,7 +1949,7 @@ function initScan(){
     +'<div style="padding:16px 20px 0">'
     +'<div style="height:16px"></div>'
     +tagsSentence
-    +(profile.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+profile.bio+'</p>':'')
+    +(profile.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
     +'<div style="height:4px"></div>'
     +'</div></div>'
@@ -2094,7 +2102,7 @@ function statBox(val, label, iconPath, iconColor, isEmoji) {
 }
 
 let epDob={d:15,m:6,y:1995},epHtVal=170,epHUnit='cm',epTags=[],epQs={},epPrefs={};
-function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';var _ep=u.dob?u.dob.split('-'):[new Date().getFullYear()-28,'6','15'];buildEpDobDropdowns(+(_ep[2]||15),+(_ep[1]||6),+(_ep[0]||new Date().getFullYear()-28));epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');initAgeSlider('ep-amin','ep-amax','ep-age-fill','ep-age-display',u.prefs?.ageMin||22,u.prefs?.ageMax||36);buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||''}
+function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';var _ep=u.dob?u.dob.split('-'):[new Date().getFullYear()-28,'6','15'];buildEpDobDropdowns(+(_ep[2]||15),+(_ep[1]||6),+(_ep[0]||new Date().getFullYear()-28));epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');initAgeSlider('ep-amin','ep-amax','ep-age-fill','ep-age-display',u.prefs?.ageMin||22,u.prefs?.ageMax||36);buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||'';var _epBio=document.getElementById('ep-bio');if(_epBio)_epBio.value=u.bio||'';}
 function buildEpPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')),months=['January','February','March','April','May','June','July','August','September','October','November','December'],cy=new Date().getFullYear(),years=Array.from({length:65},(_,i)=>String(cy-18-i));fillEpPcol('ep-pc-day',days,epDob.d-1);fillEpPcol('ep-pc-month',months,epDob.m-1);fillEpPcol('ep-pc-year',years,Math.max(0,cy-18-epDob.y));updateEpDobPreview()}
 function fillEpPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function pickerScroll(el,type){clearTimeout(el._t);el._t=setTimeout(()=>{const idx=Math.round(el.scrollTop/48);el.scrollTop=idx*48;highlightPcol(el,idx);if(type==='day')S.dob.d=idx+1;else if(type==='month')S.dob.m=idx+1;else if(type==='year'){const cy=new Date().getFullYear();S.dob.y=cy-18-idx}else if(type==='ep-day')epDob.d=idx+1;else if(type==='ep-month')epDob.m=idx+1;else if(type==='ep-year'){const cy=new Date().getFullYear();epDob.y=cy-18-idx}if(type.startsWith('ep-'))updateEpDobPreview();else updateDobPreview()},100)}
@@ -2126,7 +2134,7 @@ function epSwitchTab(tab) {
   if (scroller) scroller.scrollTop = 0;
 }
 
-function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;var _ey=+document.getElementById('ep-dob-y').value,_em=+document.getElementById('ep-dob-m').value,_ed=+document.getElementById('ep-dob-d').value;u.dob=_ey+'-'+_em+'-'+_ed;u.age=calcAge(_ey,_em,_ed);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
+function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;var _ey=+document.getElementById('ep-dob-y').value,_em=+document.getElementById('ep-dob-m').value,_ed=+document.getElementById('ep-dob-d').value;u.dob=_ey+'-'+_em+'-'+_ed;u.age=calcAge(_ey,_em,_ed);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;var _epBioEl=document.getElementById('ep-bio');if(_epBioEl)u.bio=_epBioEl.value.trim()||u.bio||'';if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
 function initNotifs(){const notifs=DB.notifs();notifs.forEach(n=>n.read=true);DB.s('notifs',notifs);document.getElementById('notif-dot').style.display='none';document.getElementById('notifs-list').innerHTML=notifs.length?notifs.map(n=>`<div class="tl-item px"><div class="tl-dot" style="background:${n.read?'var(--bg4)':'var(--p)'}"></div><div class="flex1"><p style="font-size:14px;color:${n.read?'var(--tx2)':'var(--tx)'};font-weight:${n.read?'400':'500'}">${n.text}</p><p class="tiny mt4">${ago(n.ts)}</p></div></div>`).join(''):`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">🔔</div><h3>No notifications yet</h3></div>`}
 function sendInvite(){const name=document.getElementById('inv-name').value.trim();if(!name){toast('Enter their name');return}const url=`${location.origin}${location.pathname}?invite=${encodeURIComponent(name)}`;closeModal('modal-invite');if(navigator.share)navigator.share({title:name+', join Circle!',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Invite link copied for '+name+'! 📋')}else toast('Invite: '+url);document.getElementById('inv-name').value=''}
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
@@ -2236,7 +2244,7 @@ function viewSingleProfile(sid) {
     var _vsArt=/^[AEIOUaeiou]/.test(tags[0])?'an':'a';
     tagsSentence=`<div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.65;color:var(--tx)">Friends describe <strong style="color:var(--p)">${s.name}</strong> as ${_vsArt} ${tagStr} person.</div>`;
   }
-  var bioHtml=s.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+s.bio+'</p>':'';
+  var bioHtml=s.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+s.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+s.bio+'</p></div>':'  ';
   var qaHtml='';
   if(s.qs&&Object.keys(s.qs).length){
     var _sg=s.gender||(s.prefs&&s.prefs.gender==='Man'?'Woman':s.prefs&&s.prefs.gender==='Woman'?'Man':'');
@@ -2769,7 +2777,7 @@ function previewProfile() {
     + '</div></div></div>'
     + '<div style="height:16px"></div>'
     + tagsSentence
-    + (u.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+u.bio+'</p>':'')
+    + (u.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+u.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+u.bio+'</p></div>':'')
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>';
 
   go('prof-preview');
