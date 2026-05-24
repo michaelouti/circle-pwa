@@ -288,7 +288,13 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <p class="cap mb8">Choose exactly 3 tags that capture your personality.</p>
       <p class="tiny mb16" id="tag-count" style="color:var(--p);font-weight:600">0/3 selected</p>
       <div class="tags-wrap" id="tags-wrap"></div>
-      <button class="btn btn-p mt20" id="tags-btn" onclick="saveTagsAndNext()" disabled>Next: Q&amp;A →</button>
+      <div class="igrp" style="margin-top:20px" id="su-bio-wrap">
+        <label class="lbl">About you <span style="text-transform:none;font-weight:400;letter-spacing:0;font-size:12px">(required)</span></label>
+        <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Describe yourself in your own words — a fun fact, what drives you, or what makes you laugh. The more personal, the better.</p>
+        <textarea id="su-bio" rows="4" placeholder="e.g. I'm a morning person who somehow always ends up at midnight concerts. Big fan of terrible puns and great pasta..." oninput="updTagCount()" style="resize:vertical;min-height:80px"></textarea>
+        <div class="row between mt4"><span class="tiny" id="bio-count" style="color:var(--tx3)">0 / 20 min</span></div>
+      </div>
+      <button class="btn btn-p mt16" id="tags-btn" onclick="saveTagsAndNext()" disabled>Next: Q&amp;A →</button>
       <div style="height:16px"></div>
     </div>
 
@@ -340,29 +346,28 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <!-- PATH CHOICE -->
 <div id="s-path-choice" class="screen no-nav" style="display:flex;flex-direction:column">
   <div class="p20 col" style="flex:1;justify-content:center;gap:0">
-    <div style="text-align:center;margin-bottom:32px">
+    <div style="text-align:center;margin-bottom:28px">
       <h1 style="font-size:30px;font-weight:800;color:var(--p);letter-spacing:-1.5px;margin-bottom:4px">circle</h1>
-      <p style="font-size:10px;font-weight:700;letter-spacing:2.8px;color:var(--tx3);text-transform:uppercase;margin-bottom:28px">Friends introduce. You decide.</p>
-      <h2 style="font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.3px;margin-bottom:6px">Are you open to being introduced?</h2>
-      <p class="cap">Your friends can introduce you to people they meet.</p>
+      <p style="font-size:10px;font-weight:700;letter-spacing:2.8px;color:var(--tx3);text-transform:uppercase;margin-bottom:24px">Friends introduce. You decide.</p>
+      <h2 style="font-size:22px;font-weight:700;color:var(--tx);letter-spacing:-.3px;margin-bottom:6px">Choose your role</h2>
     </div>
     <div onclick="chooseSetupPath('long')" class="card mb10" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
       <div style="font-size:28px;margin-bottom:10px">&#128140;</div>
-      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Yes, I&rsquo;m open</div>
-      <p class="cap mb12">Build a full profile so your friends can introduce you.</p>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Find love &amp; introduce friends</div>
+      <p class="cap mb12">Build a full profile so trusted friends can introduce you to people they meet. You&rsquo;ll also be able to introduce your own singles.</p>
       <div class="row" style="gap:6px">
         <span style="background:var(--p1);color:var(--p8);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">4-step setup</span>
       </div>
     </div>
     <div onclick="chooseSetupPath('short')" class="card" style="padding:20px;cursor:pointer;border:1.5px solid var(--bd2)">
       <div style="font-size:28px;margin-bottom:10px">&#129309;</div>
-      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Not right now</div>
-      <p class="cap mb12">Start helping your friends find love today.</p>
+      <div style="font-size:16px;font-weight:700;color:var(--tx);margin-bottom:5px">Matchmaker only</div>
+      <p class="cap mb12">Start introducing your friends to great people today. No full profile needed.</p>
       <div class="row" style="gap:6px">
         <span style="background:var(--bg2);color:var(--tx3);font-size:11px;font-weight:600;padding:3px 9px;border-radius:100px">1-step setup</span>
       </div>
     </div>
-    <p class="tiny" style="text-align:center;color:var(--tx3);margin-top:20px">You can change this anytime in your profile</p>
+    <p class="tiny" style="text-align:center;color:var(--tx3);margin-top:20px">You can switch to Looking for love anytime in your settings</p>
   </div>
 </div>
 
@@ -1236,9 +1241,28 @@ function initAgeSlider(minId, maxId, fillId, displayId, minVal, maxVal) {
 }
 
 function saveDetails(){const job=document.getElementById('f-job').value.trim(),rel=document.getElementById('f-rel').value;if(!job){toast('Please enter your occupation');return}if(!rel){toast('Please select religion');return}S.setup.job=job;S.setup.religion=rel;S.setup.height=S.htVal||170;go('setup')}
-function initTags(){const w=document.getElementById('tags-wrap');if(!w)return;w.innerHTML=TAGS.map(t=>`<button class="tag-pill ${S.setup.tags.includes(t)?'sel':''}" onclick="toggleTag(this,'${t}')">${t}</button>`).join('');updTagCount()}
+function initTags(){
+  var w=document.getElementById('tags-wrap');if(!w)return;
+  w.innerHTML=TAGS.map(function(t){
+    var sel=S.setup.tags.includes(t)?'sel':'';
+    return '<button class="tag-pill '+sel+'" onclick="toggleTag(this,&quot;'+t+'&quot;)">'+t+'</button>';
+  }).join('');
+  var bioEl=document.getElementById('su-bio');
+  if(bioEl&&S.setup.bio)bioEl.value=S.setup.bio;
+  updTagCount();
+}
 function toggleTag(btn,t){if(S.setup.tags.includes(t)){S.setup.tags=S.setup.tags.filter(x=>x!==t);btn.classList.remove('sel')}else if(S.setup.tags.length<3){S.setup.tags.push(t);btn.classList.add('sel')}else{toast('Choose exactly 3 tags');return}updTagCount()}
-function updTagCount(){const n=S.setup.tags.length;document.getElementById('tag-count').textContent=`${n}/3 selected`;document.getElementById('tag-count').style.color=n===3?'var(--ok)':'var(--p)';document.getElementById('tags-btn').disabled=n!==3}
+function updTagCount(){
+  var n=S.setup.tags.length;
+  var bioEl=document.getElementById('su-bio');
+  var bio=bioEl?bioEl.value.trim():'';
+  var bioLen=bioEl?bioEl.value.length:0;
+  document.getElementById('tag-count').textContent=n+'/3 selected';
+  document.getElementById('tag-count').style.color=n===3?'var(--ok)':'var(--p)';
+  var bioCount=document.getElementById('bio-count');
+  if(bioCount){bioCount.textContent=bioLen+' / 20 min';bioCount.style.color=bio.length>=20?'var(--ok)':'var(--tx3)';}
+  document.getElementById('tags-btn').disabled=n!==3||bio.length<20;
+}
 function saveTags(){if(S.setup.tags.length!==3){toast('Select exactly 3 tags');return}go('setup')}
 function initQs(){const l=document.getElementById('q-list');if(!l)return;l.innerHTML=QS.map(q=>`<div class="qblock"><div class="qttl">${q.q}</div><div class="qopts">${q.a.map(o=>`<button class="qopt ${S.setup.qs[q.id]===o?'sel':''}" onclick="selQ(this,'${q.id}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div></div>`).join('');updQBtn()}
 function selQ(btn,qid,val){S.setup.qs[qid]=val;btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');updQBtn()}
@@ -1246,7 +1270,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('');checkPrefsBtn();}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
@@ -1746,7 +1770,7 @@ function openIntroDetail(id){
       +'<p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe '
       +'<strong style="color:var(--p)">'+i.sName+'</strong> as '+_iArt+' '+_iTagStr+' person.</p></div>';
   }
-  var bioHtml='';
+  var bioHtml=i.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+i.bio+'</p>':'';
   var qaHtml='';
   if(i.qs&&Object.keys(i.qs).length){
     var _idQC={intent:{label:'Looking for',icon:'heart',color:'#E07060'},location:{label:'Location flexibility',icon:'location',color:'#E07060'},family:{label:'Family',icon:'family',color:'#E07060'},sport:{label:'Physical activity',icon:'sport',color:'#E07060'},travel:{label:'Travel',icon:'travel',color:'#E07060'},food:{label:'Food lifestyle',icon:'food',color:'#E07060'}};
@@ -1798,9 +1822,9 @@ function ctxChange(ta){const n=ta.value.length;document.getElementById('ctx-coun
 function sendIntro(){
   var s=S.introSingle,u=DB.user();
   var note=(document.getElementById('ctx-ta')&&document.getElementById('ctx-ta').value.trim())||'';
-  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
   var sc=_pool[Math.floor(Math.random()*_pool.length)];
-  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:note,status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
+  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,bio:sc.bio||'',tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:note,status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
   var intros=DB.intros();
   if(!intros.find(function(i){return i.id===ni.id;})){intros.unshift(ni);DB.setIntros(intros);}
   DB.addNotif({id:'n_'+Date.now(),type:'intro',msg:(u&&u.name?u.name:'Your matchmaker')+' introduced you to '+sc.name+'!',ts:Date.now(),read:false});
@@ -1810,9 +1834,9 @@ function sendIntro(){
 }
 function sendIntroNoNote(){
   var s=S.introSingle,u=DB.user();
-  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
   var sc=_pool[Math.floor(Math.random()*_pool.length)];
-  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:'',status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
+  var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,bio:sc.bio||'',tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:'',status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
   var intros=DB.intros();
   if(!intros.find(function(i){return i.id===ni.id;})){intros.unshift(ni);DB.setIntros(intros);}
   DB.addNotif({id:'n_'+Date.now(),type:'intro',msg:(u&&u.name?u.name:'Your matchmaker')+' introduced you to '+sc.name+'!',ts:Date.now(),read:false});
@@ -1830,7 +1854,7 @@ function initScan(){
   if(!profile&&S.introSingle){
     var _s=S.introSingle,_u=DB.user();
     profile={name:_s.name,age:_s.age,gender:_s.gender||'',job:_s.job||'',loc:_s.loc||'',
-      tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
+      bio:_s.bio||'',tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
       mmName:(_u&&_u.name)||'Your matchmaker',singleId:_s.id};
   }
   if(!profile){
@@ -1917,6 +1941,7 @@ function initScan(){
     +'<div style="padding:16px 20px 0">'
     +'<div style="height:16px"></div>'
     +tagsSentence
+    +(profile.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+profile.bio+'</p>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
     +'<div style="height:4px"></div>'
     +'</div></div>'
@@ -2211,6 +2236,7 @@ function viewSingleProfile(sid) {
     var _vsArt=/^[AEIOUaeiou]/.test(tags[0])?'an':'a';
     tagsSentence=`<div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.65;color:var(--tx)">Friends describe <strong style="color:var(--p)">${s.name}</strong> as ${_vsArt} ${tagStr} person.</div>`;
   }
+  var bioHtml=s.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+s.bio+'</p>':'';
   var qaHtml='';
   if(s.qs&&Object.keys(s.qs).length){
     var _sg=s.gender||(s.prefs&&s.prefs.gender==='Man'?'Woman':s.prefs&&s.prefs.gender==='Woman'?'Man':'');
@@ -2239,7 +2265,7 @@ function viewSingleProfile(sid) {
     prefsHtml=`<div style="background:var(--p1);border:0.5px solid rgba(216,90,48,.15);border-radius:var(--r2);padding:14px;margin-bottom:16px"><div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:3px">${s.name}&#x2019;s partner preferences</div><div style="font-size:12px;color:var(--p);font-weight:500;margin-bottom:12px">&#x1F512; Only visible to matchmakers &#x2013; use this to find great matches</div>${rows}</div>`;
   }
   var stopBtn=`<button onclick="openStopHelping(window._viewSid)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">&#x26D4; Stop helping ${s.name}</button>`;
-  document.getElementById('preview-body').innerHTML=`<div style="position:relative;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${s.name}${s.age?', '+s.age:''}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${s.job?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${s.job}</span>`:''}${s.loc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${s.loc}</span>`:''}</div></div></div>${actionsHtml}${tagsSentence}${qaHtml}${prefsHtml}${stopBtn}`;
+  document.getElementById('preview-body').innerHTML=`<div style="position:relative;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${s.name}${s.age?', '+s.age:''}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${s.job?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${s.job}</span>`:''}${s.loc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${s.loc}</span>`:''}</div></div></div>${actionsHtml}${tagsSentence}${bioHtml}${qaHtml}${prefsHtml}${stopBtn}`;
   var titleEl=document.getElementById('prof-preview-title');
   if(titleEl)titleEl.textContent=s.name+"'s profile";
   go('prof-preview');
@@ -2743,6 +2769,7 @@ function previewProfile() {
     + '</div></div></div>'
     + '<div style="height:16px"></div>'
     + tagsSentence
+    + (u.bio?'<p style="font-size:15px;color:var(--tx2);line-height:1.65;margin-bottom:20px">'+u.bio+'</p>':'')
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>';
 
   go('prof-preview');
@@ -3193,8 +3220,12 @@ function saveBasicAndNext(){
   suSwitchTab('tags');
 }
 
-function saveTagsAndNext() {
-  if (S.setup.tags.length !== 3) { toast('Select exactly 3 tags'); return; }
+function saveTagsAndNext(){
+  if(S.setup.tags.length!==3){toast('Select exactly 3 tags');return;}
+  var bioEl=document.getElementById('su-bio');
+  var bio=bioEl?bioEl.value.trim():'';
+  if(bio.length<20){toast('Add a short bio — at least 20 characters');return;}
+  S.setup.bio=bio;
   suSwitchTab('qa');
 }
 
