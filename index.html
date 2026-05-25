@@ -3081,13 +3081,14 @@ function renderGuideTab(tab) {
     body.style.display='';
     var rows=[
       ['Endless swiping, no real results',       'Curated intros from people you trust'],
-      ['Strangers \u2014 no context, no trust', 'Every intro comes via a friend'],
-      ['Algorithms miss real chemistry',         'Humans use intuition \u0026 empathy'],
-      ['Introducing people feels awkward',       'QR makes it instant \u0026 natural'],
-      ['No accountability \u2014 ghosting',     'Friends create mutual accountability'],
-      ['Low-intent users wasting your time',     'Only trusted, intentional intros'],
-      ['High friction \u2014 download, signup\u2026', 'Scan a QR, see a profile instantly'],
-      ['Nobody helps you find love',             'Your whole network works for you'],
+      ['Strangers \u2014 no context, no trust',  'Every intro comes via a friend'],
+      ['Algorithms miss real chemistry',          'Humans use intuition \u0026 empathy'],
+      ['Introducing people feels awkward',        'QR makes it instant \u0026 natural'],
+      ['No accountability \u2014 ghosting',      'Friends create mutual accountability'],
+      ['Nobody helps you find love',              'Your whole network works for you'],
+      ['Traditional matchmaking requires sharing your phone/Instagram before you\u2019re comfortable', 'Just show a QR \u2014 no personal details needed upfront'],
+      ['Matchmakers juggle back-and-forth coordination', 'No coordination \u2014 matchmaker selects, shows QR, done'],
+      ['Exchanging contacts creates pressure to respond', 'Profiles shared first; engagement only when genuinely interested'],
     ];
     var tRows=rows.map(function(r,i){
       var last=i===rows.length-1;
