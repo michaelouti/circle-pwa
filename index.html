@@ -1462,11 +1462,6 @@ function initHome(){
     }catch(e){localStorage.removeItem('c_pending_scan');}
   })();
   const u=S.user||DB.user();if(!u)return;S.user=u;
-  const now=Date.now(),weekAgo=now-7*24*3600000;
-  const weekIntros=DB.intros().filter(i=>i.ts&&i.ts>weekAgo).length;
-  const li=lvlInfo(u.points||0),nextLvl=LEVELS[li.idx+1];
-  document.getElementById('h-week-intros').textContent=weekIntros+' intro'+(weekIntros!==1?'s':'')+' made';
-  document.getElementById('h-level-info').innerHTML='Matchmaker level: <strong style="color:var(--tx)">'+li.name+'</strong>'+(nextLvl?' — '+li.rem+' points to reach '+nextLvl.n:' — Maximum level 🏆');
   const singles=DB.singles(),scroll=document.getElementById('h-singles-scroll'),dotsEl=document.getElementById('h-scroll-dots');
   if(!singles.length){
     scroll.innerHTML='<div class="sing-card sing-add-card" style="min-width:min(190px,54vw)" onclick="showModal(\'modal-invite\')"><div style="width:48px;height:48px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 4v14M4 11h14" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:13px;font-weight:600;color:var(--tx3)">Add a single friend</span></div>';
