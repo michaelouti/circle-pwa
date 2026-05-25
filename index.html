@@ -41,7 +41,7 @@ input:focus,textarea:focus,select:focus{border-color:var(--p);background:var(--b
 select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 6l4 4 4-4' stroke='%23A8A39E' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
 .irow{display:flex;gap:8px}.irow>*{flex:1}
 .card{background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:16px;margin-bottom:12px}.card-warm{background:var(--p1);border:.5px solid rgba(216,90,48,.12);border-radius:var(--r3);padding:16px;margin-bottom:12px}.card-tap{cursor:pointer;transition:transform .15s}.card-tap:active{transform:scale(.985)}
-.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;overflow:hidden;background:var(--bg2);color:var(--tx2)}.av img{width:100%;height:100%;object-fit:cover}
+.av{border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;overflow:hidden;background:var(--bg2);color:var(--tx2)}.av img{width:100%;height:100%;object-fit:cover;object-position:top}
 .pill{display:inline-flex;align-items:center;border-radius:100px;font-size:12px;font-weight:600;padding:4px 10px;white-space:nowrap}.pill-p{background:var(--p1);color:var(--p6)}.pill-ok{background:var(--okbg);color:var(--ok)}.pill-er{background:var(--erbg);color:var(--er)}.pill-gray{background:var(--bg3);color:var(--tx2)}.pill-new{background:var(--p);color:#fff}
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;min-height:52px;background:var(--bg);position:sticky;top:0;z-index:20;border-bottom:.5px solid transparent;transition:border-color .2s}.topbar.scroll-bd{border-bottom-color:var(--bd)}.back-btn{background:none;border:none;cursor:pointer;color:var(--p);font-size:15px;font-weight:600;font-family:inherit;padding:4px 0;display:flex;align-items:center;gap:3px;min-width:56px}.back-btn svg{stroke:var(--p);stroke-width:2.5;fill:none;width:20px;height:20px}
 .progbar{height:3px;background:var(--bg3);border-radius:2px;margin-bottom:24px;overflow:hidden}.progfill{height:100%;background:var(--p);border-radius:2px;transition:width .35s ease}
@@ -53,7 +53,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .nbt-center{justify-content:center;padding-bottom:8px}.nbt-ring{width:50px;height:50px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(216,90,48,.42)}.nbt-ring .nbt-svg{stroke:#fff;width:24px;height:24px}
 .nbadge{position:absolute;top:4px;right:calc(50% - 19px);min-width:16px;height:16px;border-radius:8px;background:var(--p);border:2px solid var(--bg);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px}
 /* HOME */
-.home-header{text-align:center;padding:max(10px,var(--sat)) 20px 8px;position:relative}
+.home-header{text-align:center;padding:max(10px,var(--sat)) 20px 8px;position:relative;border-bottom:.5px solid var(--bd)}
 .stats-card{margin:0 16px 10px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:12px 16px}
 .singles-scroll{display:flex;overflow-x:auto;overflow-y:visible;gap:0;padding:8px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-padding:0 calc(50% - 100px)}
 .singles-scroll::-webkit-scrollbar{display:none}
@@ -100,7 +100,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .mc-counter{font-size:12px;color:var(--tx3);font-weight:500;text-align:right;padding:4px 16px 8px}
 /* MISC */
 .tog{position:relative;width:48px;height:28px;flex-shrink:0}.tog input{opacity:0;width:0;height:0;position:absolute}.tog-sl{position:absolute;inset:0;background:var(--bg4);border-radius:14px;cursor:pointer;transition:background .22s}.tog-sl:before{content:'';position:absolute;width:22px;height:22px;left:3px;top:3px;background:#fff;border-radius:50%;transition:transform .22s;box-shadow:0 1px 4px rgba(0,0,0,.2)}.tog input:checked+.tog-sl{background:var(--p)}.tog input:checked+.tog-sl:before{transform:translateX(20px)}
-.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.pslot{aspect-ratio:3/4;border-radius:var(--r2);background:var(--bg2);border:1.5px dashed var(--bd3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative}.pslot.req{border-color:rgba(216,90,48,.4)}.pslot.filled{border:none}.pslot img{width:100%;height:100%;object-fit:cover;display:block}.prm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:14px;z-index:2;line-height:1}.pslot.filled .prm{display:flex}.pnum{position:absolute;bottom:5px;left:6px;font-size:10px;font-weight:700;color:rgba(255,255,255,.9);background:rgba(0,0,0,.35);border-radius:4px;padding:2px 5px}.plbl{font-size:11px;font-weight:600;color:var(--tx3);margin-top:5px}.pslot.req .plbl{color:rgba(216,90,48,.7)}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.pslot{aspect-ratio:3/4;border-radius:var(--r2);background:var(--bg2);border:1.5px dashed var(--bd3);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;overflow:hidden;position:relative}.pslot.req{border-color:rgba(216,90,48,.4)}.pslot.filled{border:none}.pslot img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}.prm{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.6);border:none;color:#fff;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:14px;z-index:2;line-height:1}.pslot.filled .prm{display:flex}.pnum{position:absolute;bottom:5px;left:6px;font-size:10px;font-weight:700;color:rgba(255,255,255,.9);background:rgba(0,0,0,.35);border-radius:4px;padding:2px 5px}.plbl{font-size:11px;font-weight:600;color:var(--tx3);margin-top:5px}.pslot.req .plbl{color:rgba(216,90,48,.7)}
 .picker-wrap{display:flex;height:240px;border-radius:var(--r2);overflow:hidden;background:var(--bg2);position:relative;border:1px solid var(--bd2)}.pcol{flex:1;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}.pcol::-webkit-scrollbar{display:none}.pitem{height:48px;display:flex;align-items:center;justify-content:center;font-size:15px;scroll-snap-align:center;user-select:none;flex-shrink:0;color:var(--tx3)}.pitem.active{color:var(--tx);font-weight:700;font-size:18px}.pfa{position:absolute;left:0;right:0;height:96px;pointer-events:none;z-index:2}.pfa.top{top:0;background:linear-gradient(to bottom,var(--bg2) 0%,rgba(248,246,244,0) 100%)}.pfa.bot{bottom:0;background:linear-gradient(to top,var(--bg2) 0%,rgba(248,246,244,0) 100%)}.pline{position:absolute;left:8px;right:8px;height:48px;top:96px;border-top:1.5px solid var(--bd3);border-bottom:1.5px solid var(--bd3);pointer-events:none;z-index:1;border-radius:var(--r)}.psep{width:.5px;background:var(--bd2);flex-shrink:0}
 .dob-drops{display:flex;gap:8px}.dob-drops select{flex:1;font-size:15px}.dob-age{font-size:13px;color:var(--ok);font-weight:500;margin-top:6px;min-height:18px}
 .opills{display:flex;flex-wrap:wrap;gap:8px}.opill{padding:10px 16px;border-radius:100px;background:var(--bg2);border:1px solid var(--bd2);font-size:14px;cursor:pointer;font-family:inherit;color:var(--tx);transition:all .15s;line-height:1}.opill.sel{background:var(--p1);border-color:var(--p);color:var(--p6);font-weight:600}.opill:hover:not(.sel){background:var(--bg3)}
@@ -386,8 +386,8 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
   <div id="home-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:14px 0 12px;min-height:0;overflow:hidden">
   <div style="text-align:center;padding:0 20px 6px">
-    <p style="font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--tx3);text-transform:uppercase">People you're helping</p>
-    <p style="font-size:11px;color:var(--p);margin-top:3px">Tap a card to introduce them</p>
+    <p style="font-size:16px;font-weight:700;color:var(--tx)">People you can introduce</p>
+    <p style="font-size:12px;font-weight:400;color:var(--tx2);margin-top:4px">Slide or tap to explore and introduce</p>
   </div>
   <div id="h-singles-scroll" class="singles-scroll"></div>
   <div id="h-scroll-dots" class="scroll-dots"></div>
@@ -1255,23 +1255,23 @@ function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(d
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
-    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',gender:'Woman',tags:['Creative','Adventurous','Authentic'],photos:[],ci:0,
+    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',gender:'Woman',tags:['Creative','Adventurous','Authentic'],photos:['https://randomuser.me/api/portraits/women/44.jpg'],ci:0,
      bio:'Creative soul who loves design and the outdoors. Splits weekends between gallery openings and hiking trails.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Looking for someone who loves the outdoors and has a creative spirit. Bonus points for architecture or design background.'}},
-    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',gender:'Man',tags:['Passionate','Foodie','Reliable'],photos:[],ci:5,
+    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',gender:'Man',tags:['Passionate','Foodie','Reliable'],photos:['https://randomuser.me/api/portraits/men/32.jpg'],ci:5,
      bio:'Head chef at a Lyon bistro. Believes the best conversations happen around a good table. Serious about food, even more serious about people.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:25,ageMax:35,religions:['No preference'],note:'Someone who appreciates good food and is not afraid of a flour-covered apron. Warmth matters more than ambition.'}},
-    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',gender:'Woman',tags:['Ambitious','Optimistic','Traveler'],photos:[],ci:2,
+    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',gender:'Woman',tags:['Ambitious','Optimistic','Traveler'],photos:['https://randomuser.me/api/portraits/women/22.jpg'],ci:2,
      bio:'Marketing lead by day, world traveller by weekend. Has a passport that is almost full and a bucket list that is nowhere near empty.',
      qs:{intent:'Seeing where things go',location:'Open within my country',family:"I don't know yet",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'Vegetarian'},
      prefs:{gender:'Man',ageMin:26,ageMax:36,religions:['No preference'],note:'Open-minded and curious about the world. An adventurous spirit is a must. No couch potatoes please.'}},
-    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',gender:'Man',tags:['Thoughtful','Funny','Calm'],photos:[],ci:4,
+    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',gender:'Man',tags:['Thoughtful','Funny','Calm'],photos:['https://randomuser.me/api/portraits/men/52.jpg'],ci:4,
      bio:'Engineer by training, philosopher by nature. Loves long bike rides, sci-fi novels, and cooking elaborate Sunday dinners for friends.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Looking for someone kind and curious. Doesn\'t need to love tech but should at least tolerate my book collection.'}},
-    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',gender:'Woman',tags:['Caring','Grounded','Witty'],photos:[],ci:8,
+    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',gender:'Woman',tags:['Caring','Grounded','Witty'],photos:['https://randomuser.me/api/portraits/women/65.jpg'],ci:8,
      bio:'Pediatric nurse with a dark sense of humour (occupational hazard). Off-duty she paints, runs half-marathons, and talks too much about her cat.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Someone emotionally available and not afraid of vulnerability. Sense of humour is non-negotiable.'}}
@@ -1285,18 +1285,21 @@ function seedDemo(uname){
     {id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',mmName:'Marie',mmRel:'Best friend',
      ctx:"You both love hiking and he's one of the most thoughtful people I know. I think you'd really get along.",
      status:'pending',ts:now-3600000*14,exp:now+3600000*58,ci:2,gender:'Man',
+     photos:['https://randomuser.me/api/portraits/men/18.jpg'],
      tags:['Adventurous','Thoughtful','Creative'],
      bio:'Photographer splitting time between Paris and the mountains. Passionate about visual storytelling and slow travel.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'}},
     {id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',mmName:'Paul',mmRel:'Colleague',
      ctx:"She's brilliant, funny, and has the same dry humor as you. You'll either become best friends or fall in love — probably both.",
      status:'pending',ts:now-3600000*6,exp:now+3600000*66,ci:6,gender:'Woman',
+     photos:['https://randomuser.me/api/portraits/women/28.jpg'],
      tags:['Ambitious','Funny','Authentic'],
      bio:'UX designer who believes great design should feel invisible. Bookworm, amateur cook, and always planning the next trip.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'}},
     {id:i3,sName:'Hugo',sAge:32,sJob:'Lawyer',sLoc:'Lyon, France',mmName:'Julie',mmRel:'Childhood friend',
      ctx:"Hugo is one of the most genuine people I know. Successful but never arrogant, great listener, and he cooks better than any chef I know.",
      status:'pending',ts:now-3600000*2,exp:now+3600000*70,ci:3,gender:'Man',
+     photos:['https://randomuser.me/api/portraits/men/41.jpg'],
      tags:['Reliable','Genuine','Cultured'],
      bio:'Corporate lawyer who unwinds through cooking, classical piano, and long runs along the Rhône. Prefers depth over small talk.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'}}
@@ -1476,7 +1479,7 @@ function initHome(){
     const addFriendCard='<div class="sing-card sing-add-card" onclick="toast(\'Add single friend — coming soon!\')"><div style="width:40px;height:40px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:12px;font-weight:600;color:var(--tx3)">Add friend</span></div>';
     scroll.innerHTML=addFriendCard+singles.map(function(s){
       const c=AVCOLS[s.ci%AVCOLS.length];
-      const inner=s.photos&&s.photos.length?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block">':'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+c.bg+','+c.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:'+c.tc+';opacity:.45;letter-spacing:-4px">'+ini(s.name)+'</span></div>';
+      const inner=s.photos&&s.photos.length?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block">':'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+c.bg+','+c.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:60px;font-weight:800;color:'+c.tc+';opacity:.45;letter-spacing:-4px">'+ini(s.name)+'</span></div>';
       return '<div class="sing-card" onclick="singCardTap(\''+s.id+'\')">'+inner+'<button class="sing-card-menu" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><div class="sing-card-overlay"><div style="font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px">'+s.name+'</div><div style="font-size:13px;color:rgba(255,255,255,.85);margin-top:2px">'+s.loc+'</div></div></div>';
     }).join('')+addFriendCard;
     const spStyle='flex-shrink:0;scroll-snap-align:none;pointer-events:none;display:block';
@@ -1599,7 +1602,7 @@ function renderMcSinglesGrid() {
     if (s) {
       const c = AVCOLS[s.ci % AVCOLS.length];
       const inner = (s.photos && s.photos.length)
-        ? '<img src="' + s.photos[0] + '" style="width:100%;height:100%;object-fit:cover;display:block">'
+        ? '<img src="' + s.photos[0] + '" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block">'
         : '<div style="width:100%;height:100%;background:linear-gradient(145deg,' + c.bg + ',' + c.bg + 'cc);display:flex;align-items:center;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1.2" opacity=".5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>';
       html += '<div class="mc-card" data-sid="' + s.id + '" onclick="mcCardTap(this.dataset.sid)">'
             + inner
@@ -1736,7 +1739,7 @@ function openIntroDetail(id){
   var i=S.currentIntro, col=AVCOLS[i.ci%AVCOLS.length];
   var hoursLeft=Math.max(0,Math.round((i.exp-Date.now())/3600000));
   var heroHtml=(i.photos&&i.photos.length)
-    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${i.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`).join('')}</div>`
+    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${i.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>`).join('')}</div>`
     :`<div style="position:absolute;inset:0;background:linear-gradient(145deg,${col.bg},${col.bg}bb)"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:${col.tc}">${ini(i.sName)}</div></div>`;
   var _ig=i.gender||'';
 
@@ -1861,7 +1864,7 @@ function initScan(){
   var _badge='<div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 13px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:var(--p)"></div><span style="font-size:11px;font-weight:700;color:var(--tx)">circle intro</span></div></div>';
   var _timer='<div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 11px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">&#9201; 72h left</span></div></div>';
   var heroHtml=profile.photos&&profile.photos.length
-    ?'<div style="position:relative"><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
+    ?'<div style="position:relative"><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
     :'<div style="position:relative"><div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(profile.name)+'</div></div>'+_badge+_timer+_ovHtml+'</div>';
 
 
@@ -1954,7 +1957,7 @@ function initProfile() {
   if (photos.length) {
     strip.innerHTML = photos.map(function(p, i) {
       return '<div style="min-width:100%;height:100%;scroll-snap-align:start;flex-shrink:0;cursor:zoom-in" onclick="openLightbox('+i+')">'
-           + '<img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';
+           + '<img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>';
     }).join('');
     dots.innerHTML = photos.map(function(_, i) {
       return '<div style="height:3px;border-radius:2px;background:'+(i===0?'#fff':'rgba(255,255,255,.4)')+';transition:all .22s;width:'+(i===0?'22px':'22px')+'"></div>';
@@ -2183,7 +2186,7 @@ function viewSingleProfile(sid) {
   var col=AVCOLS[s.ci%AVCOLS.length];
   window._viewSid=sid;
   var heroHtml=(s.photos&&s.photos.length)
-    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${s.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`).join('')}</div>`
+    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${s.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>`).join('')}</div>`
     :`<div style="height:220px;background:linear-gradient(145deg,${col.bg},${col.bg}bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:${col.tc};border:2.5px solid rgba(255,255,255,.3)">${ini(s.name)}</div></div>`;
   var bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
   var ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
@@ -2253,7 +2256,7 @@ function openSingleDash(sid) {
       + '<div><p style="font-size:14px;color:var(--tx)">' + a.label + '</p><p class="tiny">' + ago(a.ts) + '</p></div></div>';
   });
   const inner = s.photos && s.photos.length
-    ? '<img src="'+s.photos[0]+'" style="width:80px;height:80px;object-fit:cover;border-radius:50%">'
+    ? '<img src="'+s.photos[0]+'" style="width:80px;height:80px;object-fit:cover;object-position:top;border-radius:50%">'
     : '<div class="av" style="width:80px;height:80px;font-size:28px;background:'+c.bg+';color:'+c.tc+'">'+ini(s.name)+'</div>';
   document.getElementById('dash-body').innerHTML =
     '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
@@ -2657,7 +2660,7 @@ function previewProfile() {
   // photo hero (full-bleed, scrollable)
   const photoHtml = photos.length
     ? '<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'
-      + photos.map(function(p){ return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;position:relative"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>'; }).join('')
+      + photos.map(function(p){ return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;position:relative"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>'; }).join('')
       + '</div>'
     : '<div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center">'
       + '<div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(u.name)+'</div></div>';
@@ -3232,7 +3235,7 @@ function openIntroducePicker() {
   list.innerHTML = singles.map(function(s) {
     const col = AVCOLS[s.ci % AVCOLS.length];
     const avatar = (s.photos && s.photos.length)
-      ? '<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;display:block;border-radius:50%">'
+      ? '<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;border-radius:50%">'
       : '<div class="av" style="width:54px;height:54px;font-size:18px;font-weight:700;background:'+col.bg+';color:'+col.tc+';border-radius:50%">'+ini(s.name)+'</div>';
     return '<button onclick="closeModal(\'modal-intro-picker\');pickAndIntroduce(\''+s.id+'\')" '
       + 'style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--r3);background:var(--p1);border:.5px solid rgba(216,90,48,.15);text-align:left;width:100%;cursor:pointer;font-family:inherit;transition:background .15s" '
