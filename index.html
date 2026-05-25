@@ -384,7 +384,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div id="gs-card-wrap"></div>
 
 
-  <div id="home-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:14px 0 12px;min-height:0;overflow:hidden">
+  <div id="home-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:14px 0 12px;min-height:0;overflow:hidden;background:var(--bg)">
   <div style="text-align:center;padding:0 20px 6px">
     <p style="font-size:16px;font-weight:700;color:var(--tx)">People you can introduce</p>
     <p style="font-size:12px;font-weight:400;color:var(--tx2);margin-top:4px">Slide or tap to explore and introduce</p>
@@ -1452,7 +1452,28 @@ function renderGettingStarted(){
     +'<svg class="gs-chevron'+(st.collapsed?'':' open')+'" width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"><path d="M4 6.5l5 5 5-5"/></svg>'
     +'</div>'+body+'</div>';
 }
+function migrateDemoPhotos(){
+  var pm={
+    's1':'https://randomuser.me/api/portraits/women/44.jpg',
+    's2':'https://randomuser.me/api/portraits/men/32.jpg',
+    's3':'https://randomuser.me/api/portraits/women/22.jpg',
+    's4':'https://randomuser.me/api/portraits/men/52.jpg',
+    's5':'https://randomuser.me/api/portraits/women/65.jpg'
+  };
+  var im={
+    'intro_1':'https://randomuser.me/api/portraits/men/18.jpg',
+    'intro_2':'https://randomuser.me/api/portraits/women/28.jpg',
+    'intro_3':'https://randomuser.me/api/portraits/men/41.jpg'
+  };
+  var singles=DB.singles();var sc=false;
+  singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}});
+  if(sc)DB.setSingles(singles);
+  var intros=DB.intros();var ic=false;
+  intros.forEach(function(i){if(im[i.id]&&(!i.photos||!i.photos.length)){i.photos=[im[i.id]];ic=true;}});
+  if(ic)DB.setIntros(intros);
+}
 function initHome(){
+  migrateDemoPhotos();
   renderGettingStarted();
   (function(){
     var _p=localStorage.getItem('c_pending_scan');if(!_p)return;
