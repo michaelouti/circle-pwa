@@ -232,7 +232,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <!-- tab bar -->
   <div class="ep-tab-bar" style="margin:12px 16px 0">
     <button class="ep-tab on" id="su-t-basics"  onclick="suSwitchTab('basics')">Basics</button>
-    <button class="ep-tab"    id="su-t-tags"    onclick="suSwitchTab('tags')">Tags</button>
+    <button class="ep-tab"    id="su-t-tags"    onclick="suSwitchTab('tags')">About</button>
     <button class="ep-tab"    id="su-t-qa"      onclick="suSwitchTab('qa')">Q&amp;A</button>
     <button class="ep-tab"    id="su-t-prefs"   onclick="suSwitchTab('prefs')">Prefs</button>
   </div>
@@ -287,10 +287,6 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
     <!-- TAGS -->
     <div class="ep-pane" id="su-pane-tags" style="padding-top:16px">
-      <h3 class="mb4">How would friends describe you?</h3>
-      <p class="cap mb8">Choose exactly 3 tags that capture your personality.</p>
-      <p class="tiny mb16" id="tag-count" style="color:var(--p);font-weight:600">0/3 selected</p>
-      <div class="tags-wrap" id="tags-wrap"></div>
       <div class="igrp" style="margin-top:20px" id="su-bio-wrap">
         <label class="lbl">About you <span style="text-transform:none;font-weight:400;letter-spacing:0;font-size:12px">(required)</span></label>
         <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Describe yourself in your own words — a fun fact, what drives you, or what makes you laugh. The more personal, the better.</p>
@@ -616,7 +612,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <!-- tab bar -->
   <div class="ep-tab-bar">
     <button class="ep-tab on" id="ep-t-basics"  onclick="epSwitchTab('basics')">Basics</button>
-    <button class="ep-tab"    id="ep-t-tags"    onclick="epSwitchTab('tags')">Tags</button>
+    <button class="ep-tab"    id="ep-t-tags"    onclick="epSwitchTab('tags')">About</button>
     <button class="ep-tab"    id="ep-t-qa"      onclick="epSwitchTab('qa')">Q&amp;A</button>
     <button class="ep-tab"    id="ep-t-prefs"   onclick="epSwitchTab('prefs')">Prefs</button>
     <button class="ep-tab"    id="ep-t-account" onclick="epSwitchTab('account')" style="color:var(--p)">Account</button>
@@ -626,10 +622,6 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
     <!-- BASICS -->
     <div class="ep-pane on" id="ep-pane-basics">
-      <div class="sec-hd" style="padding-top:16px">Photos</div>
-      <div class="pgrid" id="pg-edit"></div>
-      <input type="file" accept="image/*" multiple id="ph-input-edit" style="display:none" onchange="photosAdded(event,'edit')">
-      <button class="btn btn-s btn-sm mb20" onclick="document.getElementById('ph-input-edit').click()">+ Add photos</button>
       <div class="igrp"><label class="lbl">Display name</label><input type="text" id="ep-name"></div>
       <div class="igrp mb4"><label class="lbl">Date of birth</label>
         <div class="dob-drops"><select id="ep-dob-d" onchange="updEpDobAge()"><option value="">Day</option></select><select id="ep-dob-m" onchange="updEpDobAge()"><option value="">Month</option></select><select id="ep-dob-y" onchange="updEpDobAge()"><option value="">Year</option></select></div>
@@ -661,6 +653,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <div class="igrp"><label class="lbl">Religion</label>
         <select id="ep-rel"><option value="">Select...</option><option>Christian</option><option>Catholic</option><option>Muslim</option><option>Jewish</option><option>Buddhist</option><option>Hindu</option><option>Sikh</option><option>Agnostic</option><option>Atheist</option><option>Spiritual but not religious</option><option>Other</option><option>Prefer not to say</option></select>
       </div>
+      <div class="sec-hd" style="padding-top:8px">Photos</div>
+      <div class="pgrid" id="pg-edit"></div>
+      <input type="file" accept="image/*" multiple id="ph-input-edit" style="display:none" onchange="photosAdded(event,'edit')">
+      <button class="btn btn-s btn-sm mb20" onclick="document.getElementById('ph-input-edit').click()">+ Add photos</button>
       <button class="btn btn-p mt8" onclick="epSwitchTab('tags')">Next: Tags →</button>
     </div>
 
@@ -668,12 +664,11 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <div class="ep-pane" id="ep-pane-tags">
       <div class="sec-hd" style="padding-top:16px">Friend tags <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:12px;color:var(--tx3)">(choose exactly 3)</span></div>
       <p class="cap mb8">How would friends describe you? Pick 3 tags that capture your personality.</p>
-      <p class="tiny mb16" id="ep-tag-count" style="color:var(--p);font-weight:600"></p>
-      <div class="tags-wrap mb20" id="ep-tags-wrap"></div>
       <div class="igrp" style="margin-top:20px">
         <label class="lbl">About you</label>
         <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Describe yourself in your own words — a fun fact, what drives you, or what makes you laugh.</p>
-        <textarea id="ep-bio" rows="4" placeholder="e.g. I'm a morning person who somehow always ends up at midnight concerts. Big fan of terrible puns and great pasta..." style="resize:vertical;min-height:80px"></textarea>
+        <textarea id="ep-bio" rows="4" placeholder="e.g. I'm a morning person who somehow always ends up at midnight concerts. Big fan of terrible puns and great pasta..." style="resize:vertical;min-height:80px" oninput="var _n=this.value.length,_c=document.getElementById('ep-bio-count');if(_c){_c.textContent=_n+' characters';_c.style.color=_n>=20?'var(--ok)':_n>0?'var(--err)':'var(--tx3)';}"></textarea>
+        <div class="row between mt4"><span class="tiny" id="ep-bio-count" style="color:var(--tx3)">0 characters</span></div>
       </div>
       <button class="btn btn-p mt16" onclick="epSwitchTab('qa')">Next: Q&amp;A →</button>
     </div>
@@ -1249,27 +1244,15 @@ function initAgeSlider(minId, maxId, fillId, displayId, minVal, maxVal) {
 }
 
 function saveDetails(){const job=document.getElementById('f-job').value.trim(),rel=document.getElementById('f-rel').value;if(!job){toast('Please enter your occupation');return}if(!rel){toast('Please select religion');return}S.setup.job=job;S.setup.religion=rel;S.setup.height=S.htVal||170;go('setup')}
-function initTags(){
-  var w=document.getElementById('tags-wrap');if(!w)return;
-  w.innerHTML=TAGS.map(function(t){
-    var sel=S.setup.tags.includes(t)?'sel':'';
-    return '<button class="tag-pill '+sel+'" onclick="toggleTag(this,&quot;'+t+'&quot;)">'+t+'</button>';
-  }).join('');
-  var bioEl=document.getElementById('su-bio');
-  if(bioEl&&S.setup.bio)bioEl.value=S.setup.bio;
-  updTagCount();
-}
+function initTags(){var bioEl=document.getElementById('su-bio');if(bioEl&&S.setup.bio)bioEl.value=S.setup.bio;updTagCount();}
 function toggleTag(btn,t){if(S.setup.tags.includes(t)){S.setup.tags=S.setup.tags.filter(x=>x!==t);btn.classList.remove('sel')}else if(S.setup.tags.length<3){S.setup.tags.push(t);btn.classList.add('sel')}else{toast('Choose exactly 3 tags');return}updTagCount()}
 function updTagCount(){
-  var n=S.setup.tags.length;
   var bioEl=document.getElementById('su-bio');
   var bio=bioEl?bioEl.value.trim():'';
   var bioLen=bioEl?bioEl.value.length:0;
-  document.getElementById('tag-count').textContent=n+'/3 selected';
-  document.getElementById('tag-count').style.color=n===3?'var(--ok)':'var(--p)';
   var bioCount=document.getElementById('bio-count');
-  if(bioCount){bioCount.textContent=bioLen+' / 20 min';bioCount.style.color=bio.length>=20?'var(--ok)':'var(--tx3)';}
-  document.getElementById('tags-btn').disabled=n!==3||bio.length<20;
+  if(bioCount){bioCount.textContent=bioLen+' / 20 min';bioCount.style.color=bio.length>=20?'var(--ok)':bioLen>0?'var(--err)':'var(--tx3)';}
+  document.getElementById('tags-btn').disabled=bio.length<20;
 }
 function saveTags(){if(S.setup.tags.length!==3){toast('Select exactly 3 tags');return}go('setup')}
 function initQs(){const l=document.getElementById('q-list');if(!l)return;l.innerHTML=QS.map(q=>`<div class="qblock"><div class="qttl">${q.q}</div><div class="qopts">${q.a.map(o=>`<button class="qopt ${S.setup.qs[q.id]===o?'sel':''}" onclick="selQ(this,'${q.id}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div></div>`).join('');updQBtn()}
@@ -1372,7 +1355,7 @@ function seedDemo(uname){
 function gsState(){
   var u=DB.user(),singles=DB.singles?DB.singles():[],mms=(u&&u.matchmakers)?u.matchmakers:[];
   var openToIntro=!!(u&&u.isOpen);
-  var profileDone=!!(u&&u.name&&u.tags&&u.tags.length===3);
+  var profileDone=openToIntro?isLongPathComplete():!!(u&&u.name&&u.gender&&u.dob&&u.location);
   var singleDone=singles.length>0;
   var mmDone=mms.length>0;
   var total=openToIntro?3:2;
@@ -1769,16 +1752,8 @@ function openIntroDetail(id){
     ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:220px">${i.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;display:block"></div>`).join('')}</div>`
     :`<div style="position:absolute;inset:0;background:linear-gradient(145deg,${col.bg},${col.bg}bb)"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:${col.tc}">${ini(i.sName)}</div></div>`;
   var _ig=i.gender||'';
-  var tagsHtml='';
-  if(i.tags&&i.tags.length){
-    var _it=i.tags.map(function(x){return '<strong style="color:var(--p)">'+x+'</strong>';});
-    var _iTagStr=_it.slice(0,-1).join(', ')+(i.tags.length>1?' and ':'')+_it[_it.length-1];
-    var _iArt=/^[AEIOUaeiou]/.test(i.tags[0])?'an':'a';
-    tagsHtml='<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px">'
-      +'<p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe '
-      +'<strong style="color:var(--p)">'+i.sName+'</strong> as '+_iArt+' '+_iTagStr+' person.</p></div>';
-  }
-  var bioHtml=i.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+i.sName+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+i.bio+'</p></div>':'  ';
+
+  var bioHtml=(i.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+i.sName+'</div><p style="font-size:15px;color:var(--tx);line-height:1.65">'+i.bio+'</p></div>':'');
   var qaHtml='';
   if(i.qs&&Object.keys(i.qs).length){
     var _idQC={intent:{label:'Looking for',icon:'heart',color:'#E07060'},location:{label:'Location flexibility',icon:'location',color:'#E07060'},family:{label:'Family',icon:'family',color:'#E07060'},sport:{label:'Physical activity',icon:'sport',color:'#E07060'},travel:{label:'Travel',icon:'travel',color:'#E07060'},food:{label:'Food lifestyle',icon:'food',color:'#E07060'}};
@@ -1796,7 +1771,7 @@ function openIntroDetail(id){
           +'<div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(kv[1],_ig)+'</div></div>';
       }).join('')+'</div>';
   }
-  document.getElementById('id-body').innerHTML=`<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tx)">&#x23F1; ${hoursLeft}h left</div><div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${i.sName}, ${i.sAge}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${i.sJob?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${i.sJob}</span>`:''}${i.sLoc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${i.sLoc}</span>`:''}</div></div></div><div class="card-warm mb14"><div class="row mb8" style="gap:8px">${av(ini(i.mmName),0,28)}<div><div style="font-size:13px;font-weight:700;color:var(--p8)">${i.mmName} thinks you should meet</div><div class="tiny" style="color:var(--p6)">${i.mmRel}</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;${i.ctx||'No context note yet.'}&#x201D;</p></div>${tagsHtml}${bioHtml}${qaHtml}<div class="row mb8" style="gap:8px"><button class="btn btn-s flex1" onclick="declineIntro(this.dataset.id)" data-id="${i.id}">Decline</button><button class="btn btn-p flex1" onclick="acceptIntro(this.dataset.id)" data-id="${i.id}">Accept &#x2713;</button></div><button class="btn-ghost primary w100 center" onclick="openFeedback(this.dataset.id)" data-id="${i.id}">Rate this intro</button>`;
+  document.getElementById('id-body').innerHTML=`<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tx)">&#x23F1; ${hoursLeft}h left</div><div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${i.sName}, ${i.sAge}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${i.sJob?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${i.sJob}</span>`:''}${i.sLoc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${i.sLoc}</span>`:''}</div></div></div><div class="card-warm mb14"><div class="row mb8" style="gap:8px">${av(ini(i.mmName),0,28)}<div><div style="font-size:13px;font-weight:700;color:var(--p8)">${i.mmName} thinks you should meet</div><div class="tiny" style="color:var(--p6)">${i.mmRel}</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;${i.ctx||'No context note yet.'}&#x201D;</p></div>${bioHtml}${qaHtml}<div class="row mb8" style="gap:8px"><button class="btn btn-s flex1" onclick="declineIntro(this.dataset.id)" data-id="${i.id}">Decline</button><button class="btn btn-p flex1" onclick="acceptIntro(this.dataset.id)" data-id="${i.id}">Accept &#x2713;</button></div><button class="btn-ghost primary w100 center" onclick="openFeedback(this.dataset.id)" data-id="${i.id}">Rate this intro</button>`;
   go('intro-detail');
 }
 function acceptIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;const i=intros[idx];i.status='matched';DB.setIntros(intros);const m={id:'match_'+Date.now(),oName:i.sName,oJob:i.sJob,oLoc:i.sLoc,mmName:i.mmName,ctx:i.ctx,ts:Date.now(),ci:i.ci,unread:0};const matches=DB.matches();matches.unshift(m);DB.setMatches(matches);addPts(10);toast('Matched with '+i.sName+'! +10 pts');setTimeout(()=>{go('intros');switchTab('matches')},500)}
@@ -1902,13 +1877,6 @@ function initScan(){
     ?'<div style="position:relative"><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
     :'<div style="position:relative"><div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(profile.name)+'</div></div>'+_badge+_timer+_ovHtml+'</div>';
 
-  // ── Tags sentence — identical to previewProfile ───────────────
-  var _first=(profile.tags||[])[0]||'';
-  var _art=/^[AEIOUaeiou]/.test(_first)?'an':'a';
-  var _tb=(profile.tags||[]).map(function(t){return '<strong style="color:var(--p)">'+t+'</strong>';});
-  var tagsSentence=(profile.tags||[]).length
-    ?'<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px"><p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+profile.name+'</strong> as '+_art+' '+(_tb.length?_tb.slice(0,-1).join(', ')+(_tb.length>1?' and ':'')+_tb[_tb.length-1]:'')+' person.</p></div>'
-    :'';
 
   // ── Q&A tiles — exact qIcon paths from previewProfile ─────────
   var Q_CONFIG={
@@ -1948,8 +1916,7 @@ function initScan(){
     +heroHtml
     +'<div style="padding:16px 20px 0">'
     +'<div style="height:16px"></div>'
-    +tagsSentence
-    +(profile.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
+    +(profile.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px">'+'<div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
     +'<div style="height:4px"></div>'
     +'</div></div>'
@@ -2102,7 +2069,7 @@ function statBox(val, label, iconPath, iconColor, isEmoji) {
 }
 
 let epDob={d:15,m:6,y:1995},epHtVal=170,epHUnit='cm',epTags=[],epQs={},epPrefs={};
-function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';var _ep=u.dob?u.dob.split('-'):[new Date().getFullYear()-28,'6','15'];buildEpDobDropdowns(+(_ep[2]||15),+(_ep[1]||6),+(_ep[0]||new Date().getFullYear()-28));epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');initAgeSlider('ep-amin','ep-amax','ep-age-fill','ep-age-display',u.prefs?.ageMin||22,u.prefs?.ageMax||36);buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||'';var _epBio=document.getElementById('ep-bio');if(_epBio)_epBio.value=u.bio||'';}
+function initEditProfile(){epSwitchTab('basics');const u=DB.user();if(!u)return;editPhotos=[...(u.photos||[])];renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');document.getElementById('ep-name').value=u.name||'';document.getElementById('ep-loc').value=u.location||'';var _ep=u.dob?u.dob.split('-'):[new Date().getFullYear()-28,'6','15'];buildEpDobDropdowns(+(_ep[2]||15),+(_ep[1]||6),+(_ep[0]||new Date().getFullYear()-28));epSelOptById('ep-gender-pills','gender',u.gender||'');epHtVal=u.height||170;epHUnit='cm';document.getElementById('ep-ht-slider').value=epHtVal;epDispHeight();document.getElementById('ep-job').value=u.job||'';document.getElementById('ep-rel').value=u.religion||'';epTags=[...(u.tags||[])];buildEpTags();epQs={...(u.qs||{})};buildEpQs();epPrefs={...(u.prefs||{})};epSelOptById('ep-pref-gender','pref_gender',u.prefs?.gender||'');initAgeSlider('ep-amin','ep-amax','ep-age-fill','ep-age-display',u.prefs?.ageMin||22,u.prefs?.ageMax||36);buildEpRelPrefs(u.prefs?.religions||[]);document.getElementById('ep-note').value=u.prefs?.note||'';var _epBio=document.getElementById('ep-bio');if(_epBio){_epBio.value=u.bio||'';var _ec=document.getElementById('ep-bio-count');if(_ec){var _en=_epBio.value.length;_ec.textContent=_en+' characters';_ec.style.color=_en>=20?'var(--ok)':_en>0?'var(--err)':'var(--tx3)';}}}
 function buildEpPicker(){const days=Array.from({length:31},(_,i)=>String(i+1).padStart(2,'0')),months=['January','February','March','April','May','June','July','August','September','October','November','December'],cy=new Date().getFullYear(),years=Array.from({length:65},(_,i)=>String(cy-18-i));fillEpPcol('ep-pc-day',days,epDob.d-1);fillEpPcol('ep-pc-month',months,epDob.m-1);fillEpPcol('ep-pc-year',years,Math.max(0,cy-18-epDob.y));updateEpDobPreview()}
 function fillEpPcol(id,items,initIdx){const el=document.getElementById(id);if(!el)return;el.innerHTML='<div class="pitem"></div><div class="pitem"></div>'+items.map(x=>`<div class="pitem">${x}</div>`).join('')+'<div class="pitem"></div><div class="pitem"></div>';requestAnimationFrame(()=>requestAnimationFrame(()=>{el.scrollTop=initIdx*48;highlightPcol(el,initIdx)}))}
 function pickerScroll(el,type){clearTimeout(el._t);el._t=setTimeout(()=>{const idx=Math.round(el.scrollTop/48);el.scrollTop=idx*48;highlightPcol(el,idx);if(type==='day')S.dob.d=idx+1;else if(type==='month')S.dob.m=idx+1;else if(type==='year'){const cy=new Date().getFullYear();S.dob.y=cy-18-idx}else if(type==='ep-day')epDob.d=idx+1;else if(type==='ep-month')epDob.m=idx+1;else if(type==='ep-year'){const cy=new Date().getFullYear();epDob.y=cy-18-idx}if(type.startsWith('ep-'))updateEpDobPreview();else updateDobPreview()},100)}
@@ -2134,7 +2101,7 @@ function epSwitchTab(tab) {
   if (scroller) scroller.scrollTop = 0;
 }
 
-function saveEditProfile(){const u=DB.user();if(!u)return;if(epTags.length!==3){toast('Please select exactly 3 friend tags');return}u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;var _ey=+document.getElementById('ep-dob-y').value,_em=+document.getElementById('ep-dob-m').value,_ed=+document.getElementById('ep-dob-d').value;u.dob=_ey+'-'+_em+'-'+_ed;u.age=calcAge(_ey,_em,_ed);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.tags=epTags;u.qs=epQs;var _epBioEl=document.getElementById('ep-bio');if(_epBioEl)u.bio=_epBioEl.value.trim()||u.bio||'';if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
+function saveEditProfile(){const u=DB.user();if(!u)return;u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;var _ey=+document.getElementById('ep-dob-y').value,_em=+document.getElementById('ep-dob-m').value,_ed=+document.getElementById('ep-dob-d').value;u.dob=_ey+'-'+_em+'-'+_ed;u.age=calcAge(_ey,_em,_ed);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.qs=epQs;var _epBioEl=document.getElementById('ep-bio');if(_epBioEl)u.bio=_epBioEl.value.trim()||u.bio||'';if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
 function initNotifs(){const notifs=DB.notifs();notifs.forEach(n=>n.read=true);DB.s('notifs',notifs);document.getElementById('notif-dot').style.display='none';document.getElementById('notifs-list').innerHTML=notifs.length?notifs.map(n=>`<div class="tl-item px"><div class="tl-dot" style="background:${n.read?'var(--bg4)':'var(--p)'}"></div><div class="flex1"><p style="font-size:14px;color:${n.read?'var(--tx2)':'var(--tx)'};font-weight:${n.read?'400':'500'}">${n.text}</p><p class="tiny mt4">${ago(n.ts)}</p></div></div>`).join(''):`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">🔔</div><h3>No notifications yet</h3></div>`}
 function sendInvite(){const name=document.getElementById('inv-name').value.trim();if(!name){toast('Enter their name');return}const url=`${location.origin}${location.pathname}?invite=${encodeURIComponent(name)}`;closeModal('modal-invite');if(navigator.share)navigator.share({title:name+', join Circle!',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Invite link copied for '+name+'! 📋')}else toast('Invite: '+url);document.getElementById('inv-name').value=''}
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
@@ -2241,10 +2208,9 @@ function viewSingleProfile(sid) {
     var tagStr=tags.length===1
       ?'<strong style="color:var(--p)">'+tags[0]+'</strong>'
       :tags.slice(0,-1).map(function(t){return '<strong style="color:var(--p)">'+t+'</strong>';}).join(', ')+' and '+('<strong style="color:var(--p)">'+tags[tags.length-1]+'</strong>');
-    var _vsArt=/^[AEIOUaeiou]/.test(tags[0])?'an':'a';
-    tagsSentence=`<div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px;font-size:14px;line-height:1.65;color:var(--tx)">Friends describe <strong style="color:var(--p)">${s.name}</strong> as ${_vsArt} ${tagStr} person.</div>`;
+  tagsSentence='';
   }
-  var bioHtml=s.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+s.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+s.bio+'</p></div>':'  ';
+  var bioHtml=(s.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+s.name+'</div><p style="font-size:15px;color:var(--tx);line-height:1.65">'+s.bio+'</p></div>':'');
   var qaHtml='';
   if(s.qs&&Object.keys(s.qs).length){
     var _sg=s.gender||(s.prefs&&s.prefs.gender==='Man'?'Woman':s.prefs&&s.prefs.gender==='Woman'?'Man':'');
@@ -2273,7 +2239,7 @@ function viewSingleProfile(sid) {
     prefsHtml=`<div style="background:var(--p1);border:0.5px solid rgba(216,90,48,.15);border-radius:var(--r2);padding:14px;margin-bottom:16px"><div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:3px">${s.name}&#x2019;s partner preferences</div><div style="font-size:12px;color:var(--p);font-weight:500;margin-bottom:12px">&#x1F512; Only visible to matchmakers &#x2013; use this to find great matches</div>${rows}</div>`;
   }
   var stopBtn=`<button onclick="openStopHelping(window._viewSid)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">&#x26D4; Stop helping ${s.name}</button>`;
-  document.getElementById('preview-body').innerHTML=`<div style="position:relative;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${s.name}${s.age?', '+s.age:''}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${s.job?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${s.job}</span>`:''}${s.loc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${s.loc}</span>`:''}</div></div></div>${actionsHtml}${tagsSentence}${bioHtml}${qaHtml}${prefsHtml}${stopBtn}`;
+  document.getElementById('preview-body').innerHTML=`<div style="position:relative;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.7),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${s.name}${s.age?', '+s.age:''}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${s.job?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${s.job}</span>`:''}${s.loc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${s.loc}</span>`:''}</div></div></div>${actionsHtml}${bioHtml}${qaHtml}${prefsHtml}${stopBtn}`;
   var titleEl=document.getElementById('prof-preview-title');
   if(titleEl)titleEl.textContent=s.name+"'s profile";
   go('prof-preview');
@@ -2532,14 +2498,14 @@ function finishShortSetup(){
 function isLongPathComplete(){
   var u=DB.user();if(!u)return false;
   return !!(u.name&&u.gender&&u.dob&&u.location&&u.job&&
-    (u.photos||[]).length>=3&&(u.tags||[]).length===3&&
+    (u.photos||[]).length>=3&&u.bio&&u.bio.length>=20&&
     Object.keys(u.qs||{}).length>=QS.length&&
     u.prefs&&u.prefs.gender&&(u.prefs.ageMin||u.prefs.ageMin===0));
 }
 function _firstMissingLongField(){
   var u=DB.user();if(!u)return 'basics';
   if(!u.name||!u.gender||!u.dob||!u.location||!u.job||(u.photos||[]).length<3)return 'basics';
-  if((u.tags||[]).length!==3)return 'tags';
+  if(!u.bio||u.bio.length<20)return 'tags';
   if(Object.keys(u.qs||{}).length<QS.length)return 'qa';
   if(!u.prefs||!u.prefs.gender)return 'prefs';
   return 'basics';
@@ -2736,9 +2702,7 @@ function previewProfile() {
   // tags sentence
   var _firstTag = (u.tags||[])[0] || '';
   var _article  = /^[AEIOUaeiou]/.test(_firstTag) ? 'an' : 'a';
-  const tagsSentence = (u.tags||[]).length
-    ? '<div class="card-warm" style="text-align:center;padding:18px;margin-bottom:20px"><p style="font-size:16px;line-height:1.6;color:var(--tx)">Friends describe <strong style="color:var(--p)">'+u.name+'</strong> as '+_article+' '+(function(){var t=(u.tags||[]).map(function(x){return '<strong style="color:var(--p)">'+x+'</strong>';});return t.length?t.slice(0,-1).join(', ')+(t.length>1?' and ':'')+t[t.length-1]:'';})()+' person.</p></div>'
-    : '';
+  const tagsSentence = '';
 
   // Q&A tiles with religion-aware icons + category icons
   const Q_CONFIG = {
@@ -2776,8 +2740,7 @@ function previewProfile() {
     + '<div style="display:flex;flex-wrap:wrap;gap:10px 16px">'+metaHtml+'</div>'
     + '</div></div></div>'
     + '<div style="height:16px"></div>'
-    + tagsSentence
-    + (u.bio?'<div style="border-top:.5px solid var(--bd2);border-bottom:.5px solid var(--bd2);padding:16px 0;margin-bottom:20px">'+'<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:8px">About '+u.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+u.bio+'</p></div>':'')
+    + (u.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px">'+'<div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+u.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+u.bio+'</p></div>':'')
     + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>';
 
   go('prof-preview');
@@ -3229,7 +3192,6 @@ function saveBasicAndNext(){
 }
 
 function saveTagsAndNext(){
-  if(S.setup.tags.length!==3){toast('Select exactly 3 tags');return;}
   var bioEl=document.getElementById('su-bio');
   var bio=bioEl?bioEl.value.trim():'';
   if(bio.length<20){toast('Add a short bio — at least 20 characters');return;}
