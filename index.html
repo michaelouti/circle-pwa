@@ -58,7 +58,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .singles-scroll{display:flex;overflow-x:auto;overflow-y:visible;gap:0;padding:8px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-padding:0 calc(50% - 100px)}
 .singles-scroll::-webkit-scrollbar{display:none}
 .sing-card{min-width:min(200px,56vw);height:260px;border-radius:var(--r3);overflow:hidden;position:relative;cursor:pointer;scroll-snap-align:center;flex-shrink:0;background:var(--bg3);transition:transform .35s ease,opacity .35s ease,filter .35s ease;will-change:transform}
-#s-home{overflow:hidden}
+#s-home{overflow:hidden;display:flex;flex-direction:column}
+#s-home .home-header{flex-shrink:0}
+#s-home #gs-card-wrap{flex-shrink:0}
 .sing-card:active{transform:scale(.97)}
 .sing-card-overlay{position:absolute;bottom:0;left:0;right:0;padding:12px 14px 16px;background:linear-gradient(to top,rgba(0,0,0,.78) 0%,rgba(0,0,0,.08) 65%,transparent 100%)}
 .sing-card-menu{position:absolute;top:10px;left:10px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.88);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);z-index:5}
@@ -382,6 +384,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div id="gs-card-wrap"></div>
 
 
+  <div id="home-body" style="flex:1;display:flex;flex-direction:column;justify-content:space-between;padding:14px 0 12px;min-height:0;overflow:hidden">
   <div style="text-align:center;padding:0 20px 6px">
     <p style="font-size:10px;font-weight:700;letter-spacing:2.2px;color:var(--tx3);text-transform:uppercase">People you're helping</p>
     <p style="font-size:11px;color:var(--p);margin-top:3px">Tap a card to introduce them</p>
@@ -396,6 +399,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <div style="font-size:14px;font-weight:700;color:var(--p)">Invite Matchmakers</div>
       <p class="tiny mt4" style="color:var(--tx3)">to help you find love</p>
     </div>
+  </div>
   </div>
 </div><!-- /s-home -->
 
