@@ -53,7 +53,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .nbt-center{justify-content:center;padding-bottom:8px}.nbt-ring{width:50px;height:50px;border-radius:50%;background:var(--p);display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(216,90,48,.42)}.nbt-ring .nbt-svg{stroke:#fff;width:24px;height:24px}
 .nbadge{position:absolute;top:4px;right:calc(50% - 19px);min-width:16px;height:16px;border-radius:8px;background:var(--p);border:2px solid var(--bg);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px}
 /* HOME */
-.home-header{text-align:center;padding:max(10px,var(--sat)) 20px 8px;position:relative;border-bottom:.5px solid var(--bd)}
+.home-header{display:flex;align-items:center;justify-content:space-between;padding:max(10px,var(--sat)) 16px 10px;border-bottom:.5px solid var(--bd)}
 .stats-card{margin:0 16px 10px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:12px 16px}
 .singles-scroll{display:flex;overflow-x:auto;overflow-y:visible;gap:0;padding:8px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-padding:0 calc(50% - 100px)}
 .singles-scroll::-webkit-scrollbar{display:none}
@@ -75,7 +75,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:10px;min-height:0;scrollbar-width:none}
 .home-v-scroll::-webkit-scrollbar{display:none}
 .home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0}
-.home-v-photo{height:170px;position:relative;overflow:hidden;background:var(--bg3)}
+.home-v-photo{height:230px;position:relative;overflow:hidden;background:var(--bg3)}
 .home-v-photo-grad{position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,rgba(0,0,0,.78),transparent)}
 .home-v-name-row{position:absolute;bottom:10px;left:13px}
 .home-v-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
@@ -96,6 +96,18 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .home-v-more{width:30px;height:30px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0}
 .home-v-add{border-radius:var(--r3);border:1.5px dashed var(--bd2);background:transparent;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:20px;cursor:pointer;flex-shrink:0}
 .home-v-hot{position:absolute;top:10px;right:10px;background:var(--p);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
+.hvc-top{position:absolute;top:0;left:0;right:0;padding:10px 10px 0;display:flex;align-items:flex-start;justify-content:space-between;z-index:2}
+.hvc-badge{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px}
+.hvc-badge-green{background:rgba(34,197,94,.85);color:#fff}
+.hvc-badge-amber{background:rgba(245,158,11,.85);color:#fff}
+.hvc-badge-orange{background:rgba(216,90,48,.88);color:#fff}
+.hvc-badge-grey{background:rgba(0,0,0,.5);color:rgba(255,255,255,.85)}
+.hvc-dot{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0}
+.hvc-bottom{position:absolute;bottom:0;left:0;right:0;padding:50px 12px 12px;background:linear-gradient(to top,rgba(0,0,0,.84) 0%,rgba(0,0,0,.35) 60%,transparent 100%);display:flex;align-items:flex-end;justify-content:space-between;gap:8px;z-index:2}
+.hvc-info{flex:1;min-width:0}
+.hvc-job{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px}
+.hvc-intro{background:var(--p);color:#fff;border:none;border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;white-space:nowrap}
+.hvc-intro:active{opacity:.85}
 /* MY CIRCLE */
 .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 100px}
 .mc-card{border-radius:var(--r3);overflow:hidden;position:relative;cursor:pointer;background:var(--bg2);aspect-ratio:.75;transition:transform .15s}
@@ -400,10 +412,13 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <!-- HOME -->
 <div id="s-home" class="screen">
   <div class="home-header">
-    <h1 style="font-size:30px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Circle</h1>
-    <button class="btn-icon" style="position:absolute;right:12px;top:max(14px,var(--sat))" onclick="go('how-circle-works')">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M8.5 8.5a2.5 2.5 0 014.8.8c0 1.8-2.3 2.2-2.3 3.7" stroke-linecap="round"/><circle cx="11" cy="16" r=".8" fill="var(--tx2)"/></svg>
-    </button>
+    <h1 style="font-size:26px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Circle</h1>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span id="home-singles-count" style="font-size:11px;color:var(--tx3);font-weight:500"></span>
+      <button class="btn-icon" onclick="go('how-circle-works')">
+        <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M8.5 8.5a2.5 2.5 0 014.8.8c0 1.8-2.3 2.2-2.3 3.7" stroke-linecap="round"/><circle cx="11" cy="16" r=".8" fill="var(--tx2)"/></svg>
+      </button>
+    </div>
   </div>
   <div id="gs-card-wrap"></div>
 
@@ -1508,24 +1523,33 @@ function initHome(){
     var recent=si.filter(function(i){return i.ts&&i.ts>weekAgo;});
     var interested=si.filter(function(i){return i.status==='matched'||i.status==='accepted';});
     if(recent.length){
-      return {cls:'hv-green',dot:'hvd-g',text:recent.length+' intro'+(recent.length>1?'s':'')+' this week'+(interested.length?' · '+interested.length+' interested':''),count:si.length+' intro'+(si.length!==1?'s':'')+' total',hot:interested.length>0};
+      return {cls:'hvc-badge-green',text:recent.length+' intro'+(recent.length>1?'s':'')+' this week'+(interested.length?' \u00b7 '+interested.length+' \u2665':'')};
     } else if(!si.length){
-      return {cls:'hv-orange',dot:'hvd-o',text:'No intro yet — introduce them!',count:'New',hot:false};
+      return {cls:'hvc-badge-orange',text:'No intro yet'};
     } else {
       var last=si.reduce(function(a,b){return(a.ts||0)>(b.ts||0)?a:b;},si[0]);
       var dAgo=last.ts?Math.floor((now-last.ts)/86400000):0;
-      return {cls:'hv-grey',dot:'hvd-x',text:si.length+' intro'+(si.length!==1?'s':(dAgo>0?' · '+dAgo+'d ago':'')),count:si.length+' intro'+(si.length!==1?'s':''),hot:false};
+      return {cls:'hvc-badge-grey',text:si.length+' intro'+(si.length!==1?'s':'')+(dAgo>0?' \u00b7 '+dAgo+'d ago':'')};
     }
   }
-  var QR_SVG='<svg width="13" height="13" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="4.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="3" width="6" height="6" rx="1"/><rect x="14.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="3" y="13" width="6" height="6" rx="1"/><rect x="4.5" y="14.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="16.5" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="13" y="16.5" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/></svg>';
+  var QR_SVG='<svg width="12" height="12" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="4.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="3" width="6" height="6" rx="1"/><rect x="14.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="3" y="13" width="6" height="6" rx="1"/><rect x="4.5" y="14.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="16.5" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="13" y="16.5" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/></svg>';
   function _hvCard(s){
     var st=_hvStatus(s);
     var col=AVCOLS[s.ci%AVCOLS.length];
     var ph=s.photos&&s.photos.length
-      ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block">'
+      ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">'
       :'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:64px;font-weight:800;color:'+col.tc+';opacity:.35">'+ini(s.name)+'</span></div>';
-    var hot=st.hot?'<div class="home-v-hot">Hot \u2665</div>':'';
-    return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')"><div class="home-v-photo">'+ph+'<div class="home-v-photo-grad"></div>'+hot+'<div class="home-v-name-row"><div class="home-v-name">'+s.name+', '+s.age+'</div><div class="home-v-sub">'+s.loc+'</div></div></div><div class="home-v-status"><div class="home-v-pill '+st.cls+'"><div class="home-v-dot '+st.dot+'"></div>'+st.text+'</div><div class="home-v-count">'+st.count+'</div></div><div class="home-v-bottom"><div class="home-v-job">'+s.job+'</div><button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button><button class="home-v-qr" onclick="event.stopPropagation();startIntroForSingle(\''+s.id+'\')">'+QR_SVG+' Introduce</button></div></div>';
+    var dot='<button class="hvc-dot" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>';
+    return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')">'
+      +'<div class="home-v-photo">'+ph
+      +'<div class="home-v-photo-grad"></div>'
+      +'<div class="hvc-top"><span class="hvc-badge '+st.cls+'">'+st.text+'</span>'+dot+'</div>'
+      +'<div class="hvc-bottom">'
+      +'<div class="hvc-info"><div class="home-v-name">'+s.name+', '+s.age+'</div><div class="home-v-sub">'+s.loc+'</div><div class="hvc-job">'+s.job+'</div></div>'
+      +'<button class="hvc-intro" onclick="event.stopPropagation();startIntroForSingle(\''+s.id+'\')">'+QR_SVG+' Introduce</button>'
+      +'</div>'
+      +'</div>'
+      +'</div>';
   }
   var sorted=singles.slice().sort(function(a,b){
     var ai=allIntros.filter(function(i){return i.sName===a.name&&i.ts&&i.ts>weekAgo;}).length;
@@ -1534,6 +1558,8 @@ function initHome(){
   });
   var addCard='<div class="home-v-add" onclick="navTo(\'my-circle\')"><div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:11px;font-weight:500;color:var(--tx3)">Add a single friend</span></div>';
   scroll.innerHTML=sorted.map(_hvCard).join('')+addCard;
+  var _sc=document.getElementById('home-singles-count');
+  if(_sc)_sc.textContent=sorted.length+' single'+(sorted.length!==1?'s':'');
   if(u.isOpen){
     var inv=document.createElement('div');inv.className='invite-cta-card';inv.style.marginTop='0';inv.onclick=function(){showModal('modal-invite');};
     inv.innerHTML='<div class="invite-cta-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="7.5" cy="7" r="3" stroke="var(--p)" stroke-width="1.7"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4" stroke="var(--p)" stroke-width="1.7" stroke-linecap="round"/></svg></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:var(--p)">Invite Matchmakers</div><p class="tiny mt4" style="color:var(--tx3)">to help you find love</p></div>';
