@@ -72,7 +72,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .invite-cta-card{margin:0 auto 14px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r2);padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:14px;cursor:pointer;transition:background .15s;width:calc(100% - 32px);max-width:340px}
 .invite-cta-card:active{background:var(--bg2)}
 .invite-cta-icon{width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:10px;min-height:0;scrollbar-width:none}
+.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:14px;min-height:0;scrollbar-width:none}
 .home-v-scroll::-webkit-scrollbar{display:none}
 .home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0}
 .home-v-photo{height:230px;position:relative;overflow:hidden;background:var(--bg3)}
@@ -108,6 +108,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .hvc-job{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px}
 .hvc-intro{background:var(--p);color:#fff;border:none;border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .hvc-intro:active{opacity:.85}
+.hvc-info-strip{padding:10px 13px 12px;background:var(--bg);border-top:.5px solid var(--bd)}
+.hvc-meta{font-size:11px;color:var(--tx2);margin-top:3px;line-height:1.4}
+.hvc-foot-row{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
+.hvc-job-label{font-size:11px;color:var(--tx3);flex:1}
 /* MY CIRCLE */
 .mc-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 100px}
 .mc-card{border-radius:var(--r3);overflow:hidden;position:relative;cursor:pointer;background:var(--bg2);aspect-ratio:.75;transition:transform .15s}
@@ -412,9 +416,12 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <!-- HOME -->
 <div id="s-home" class="screen">
   <div class="home-header">
-    <h1 style="font-size:26px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Circle</h1>
+    <h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Circle</h1>
     <div style="display:flex;align-items:center;gap:8px">
-      <span id="home-singles-count" style="font-size:11px;color:var(--tx3);font-weight:500"></span>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:1px">
+        <span id="home-singles-count" style="font-size:11px;color:var(--tx3);font-weight:500"></span>
+        <span id="home-mm-count" style="font-size:11px;color:var(--tx3);font-weight:500"></span>
+      </div>
       <button class="btn-icon" onclick="go('how-circle-works')">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="var(--tx2)" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M8.5 8.5a2.5 2.5 0 014.8.8c0 1.8-2.3 2.2-2.3 3.7" stroke-linecap="round"/><circle cx="11" cy="16" r=".8" fill="var(--tx2)"/></svg>
       </button>
@@ -430,10 +437,8 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- MY CIRCLE -->
 <div id="s-my-circle" class="screen" style="padding-bottom:0">
-  <div class="topbar between" style="padding-top:max(12px,var(--sat))">
-    <button class="back-btn" onclick="navTo('home')"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <h2>My Circle</h2>
-    <span style="min-width:36px"></span>
+  <div class="home-header" style="padding-top:max(12px,var(--sat))">
+    <h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">My Circle</h1>
   </div>
   <!-- Tab bar -->
   <div class="mc-tab-bar">
@@ -455,7 +460,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- INTROS -->
 <div id="s-intros" class="screen">
-  <div class="topbar between" style="padding-top:max(12px,var(--sat))"><h2>Introductions</h2></div>
+  <div class="home-header" style="padding-top:max(12px,var(--sat))"><h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Introductions</h1></div>
   <div class="tabs">
     <button class="tab-btn on" id="t-pending" onclick="switchTab('pending')">Pending<span class="tab-badge" id="pb-badge" style="display:none"></span></button>
     <button class="tab-btn" id="t-matches" onclick="switchTab('matches')">Matches</button>
@@ -1280,23 +1285,23 @@ function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(d
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
-    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',gender:'Woman',tags:['Creative','Adventurous','Authentic'],photos:['https://randomuser.me/api/portraits/women/44.jpg'],ci:0,
+    {id:'s1',name:'Sophie',age:28,job:'Architect',loc:'Paris, France',gender:'Woman',height:168,religion:'Agnostic',tags:['Creative','Adventurous','Authentic'],photos:['https://randomuser.me/api/portraits/women/44.jpg'],ci:0,
      bio:'Creative soul who loves design and the outdoors. Splits weekends between gallery openings and hiking trails.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Looking for someone who loves the outdoors and has a creative spirit. Bonus points for architecture or design background.'}},
-    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',gender:'Man',tags:['Passionate','Foodie','Reliable'],photos:['https://randomuser.me/api/portraits/men/32.jpg'],ci:5,
+    {id:'s2',name:'Lucas',age:31,job:'Chef',loc:'Lyon, France',gender:'Man',height:182,religion:'Catholic',tags:['Passionate','Foodie','Reliable'],photos:['https://randomuser.me/api/portraits/men/32.jpg'],ci:5,
      bio:'Head chef at a Lyon bistro. Believes the best conversations happen around a good table. Serious about food, even more serious about people.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:25,ageMax:35,religions:['No preference'],note:'Someone who appreciates good food and is not afraid of a flour-covered apron. Warmth matters more than ambition.'}},
-    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',gender:'Woman',tags:['Ambitious','Optimistic','Traveler'],photos:['https://randomuser.me/api/portraits/women/22.jpg'],ci:2,
+    {id:'s3',name:'Camille',age:26,job:'Marketing Manager',loc:'Geneva, Switzerland',gender:'Woman',height:165,religion:'Atheist',tags:['Ambitious','Optimistic','Traveler'],photos:['https://randomuser.me/api/portraits/women/22.jpg'],ci:2,
      bio:'Marketing lead by day, world traveller by weekend. Has a passport that is almost full and a bucket list that is nowhere near empty.',
      qs:{intent:'Seeing where things go',location:'Open within my country',family:"I don't know yet",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'Vegetarian'},
      prefs:{gender:'Man',ageMin:26,ageMax:36,religions:['No preference'],note:'Open-minded and curious about the world. An adventurous spirit is a must. No couch potatoes please.'}},
-    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',gender:'Man',tags:['Thoughtful','Funny','Calm'],photos:['https://randomuser.me/api/portraits/men/52.jpg'],ci:4,
+    {id:'s4',name:'Antoine',age:34,job:'Software Engineer',loc:'Bordeaux, France',gender:'Man',height:178,religion:'Agnostic',tags:['Thoughtful','Funny','Calm'],photos:['https://randomuser.me/api/portraits/men/52.jpg'],ci:4,
      bio:'Engineer by training, philosopher by nature. Loves long bike rides, sci-fi novels, and cooking elaborate Sunday dinners for friends.',
      qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Looking for someone kind and curious. Doesn\'t need to love tech but should at least tolerate my book collection.'}},
-    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',gender:'Woman',tags:['Caring','Grounded','Witty'],photos:['https://randomuser.me/api/portraits/women/65.jpg'],ci:8,
+    {id:'s5',name:'Emma',age:29,job:'Nurse',loc:'Lille, France',gender:'Woman',height:170,religion:'Christian',tags:['Caring','Grounded','Witty'],photos:['https://randomuser.me/api/portraits/women/65.jpg'],ci:8,
      bio:'Pediatric nurse with a dark sense of humour (occupational hazard). Off-duty she paints, runs half-marathons, and talks too much about her cat.',
      qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'No preference'},
      prefs:{gender:'Man',ageMin:28,ageMax:38,religions:['No preference'],note:'Someone emotionally available and not afraid of vulnerability. Sense of humour is non-negotiable.'}}
@@ -1485,13 +1490,20 @@ function migrateDemoPhotos(){
     's4':'https://randomuser.me/api/portraits/men/52.jpg',
     's5':'https://randomuser.me/api/portraits/women/65.jpg'
   };
+  var em={
+    's1':{height:168,religion:'Agnostic'},
+    's2':{height:182,religion:'Catholic'},
+    's3':{height:165,religion:'Atheist'},
+    's4':{height:178,religion:'Agnostic'},
+    's5':{height:170,religion:'Christian'}
+  };
   var im={
     'intro_1':'https://randomuser.me/api/portraits/men/18.jpg',
     'intro_2':'https://randomuser.me/api/portraits/women/28.jpg',
     'intro_3':'https://randomuser.me/api/portraits/men/41.jpg'
   };
   var singles=DB.singles();var sc=false;
-  singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}});
+  singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}if(em[s.id]&&!s.height){s.height=em[s.id].height;s.religion=em[s.id].religion;sc=true;}});
   if(sc)DB.setSingles(singles);
   var intros=DB.intros();var ic=false;
   intros.forEach(function(i){if(im[i.id]&&(!i.photos||!i.photos.length)){i.photos=[im[i.id]];ic=true;}});
@@ -1540,12 +1552,18 @@ function initHome(){
       ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">'
       :'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:64px;font-weight:800;color:'+col.tc+';opacity:.35">'+ini(s.name)+'</span></div>';
     var dot='<button class="hvc-dot" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>';
+    var metaParts=[s.loc];
+    if(s.height)metaParts.push(s.height+' cm');
+    if(s.religion)metaParts.push(s.religion);
     return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')">'
       +'<div class="home-v-photo">'+ph
-      +'<div class="home-v-photo-grad"></div>'
       +'<div class="hvc-top"><span class="hvc-badge '+st.cls+'">'+st.text+'</span>'+dot+'</div>'
       +'<div class="hvc-bottom">'
-      +'<div class="hvc-info"><div class="home-v-name">'+s.name+', '+s.age+'</div><div class="home-v-sub">'+s.loc+'</div><div class="hvc-job">'+s.job+'</div></div>'
+      +'<div class="hvc-info">'
+      +'<div class="home-v-name" style="text-shadow:0 1px 6px rgba(0,0,0,.6)">'+s.name+', '+s.age+'</div>'
+      +'<div class="hvc-meta" style="color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.55)">'+metaParts.join(' \u00b7 ')+'</div>'
+      +'<div class="hvc-job" style="margin-top:1px;text-shadow:0 1px 4px rgba(0,0,0,.55)">'+s.job+'</div>'
+      +'</div>'
       +'<button class="hvc-intro" onclick="event.stopPropagation();startIntroForSingle(\''+s.id+'\')">'+QR_SVG+' Introduce</button>'
       +'</div>'
       +'</div>'
@@ -1560,11 +1578,8 @@ function initHome(){
   scroll.innerHTML=sorted.map(_hvCard).join('')+addCard;
   var _sc=document.getElementById('home-singles-count');
   if(_sc)_sc.textContent=sorted.length+' single'+(sorted.length!==1?'s':'');
-  if(u.isOpen){
-    var inv=document.createElement('div');inv.className='invite-cta-card';inv.style.marginTop='0';inv.onclick=function(){showModal('modal-invite');};
-    inv.innerHTML='<div class="invite-cta-icon"><svg width="18" height="18" viewBox="0 0 20 20" fill="none"><circle cx="7.5" cy="7" r="3" stroke="var(--p)" stroke-width="1.7"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4" stroke="var(--p)" stroke-width="1.7" stroke-linecap="round"/></svg></div><div style="text-align:center"><div style="font-size:14px;font-weight:700;color:var(--p)">Invite Matchmakers</div><p class="tiny mt4" style="color:var(--tx3)">to help you find love</p></div>';
-    scroll.appendChild(inv);
-  }
+  var _mc2=document.getElementById('home-mm-count');
+  if(_mc2){var mmc=(u.matchmakers||[]).length;_mc2.textContent=mmc+' matchmaker'+(mmc!==1?'s':'');}
   const hasUnread=DB.notifs().some(n=>!n.read);
   document.getElementById('notif-dot').style.display=hasUnread?'block':'none';
 }
