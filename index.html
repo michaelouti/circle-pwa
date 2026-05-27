@@ -54,6 +54,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .nbadge{position:absolute;top:4px;right:calc(50% - 19px);min-width:16px;height:16px;border-radius:8px;background:var(--p);border:2px solid var(--bg);font-size:9px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;padding:0 3px}
 /* HOME */
 .home-header{display:flex;align-items:center;justify-content:space-between;padding:max(10px,var(--sat)) 16px 10px;border-bottom:.5px solid var(--bd)}
+.mm-nudge{margin:6px 12px 0;background:#fff;border-radius:10px;border:.5px solid #EDE9E5;border-left:3px solid var(--p);padding:6px 11px;display:flex;align-items:center;gap:8px;cursor:pointer;flex-shrink:0}
+.mm-nudge-ico{width:22px;height:22px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mm-nudge-txt{flex:1;font-size:10px;color:var(--tx2)}
+.mm-nudge-link{font-size:10px;font-weight:700;color:var(--p);white-space:nowrap;flex-shrink:0}
 .stats-card{margin:0 16px 10px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:12px 16px}
 .singles-scroll{display:flex;overflow-x:auto;overflow-y:visible;gap:0;padding:8px 0 12px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;scroll-padding:0 calc(50% - 100px)}
 .singles-scroll::-webkit-scrollbar{display:none}
@@ -72,7 +76,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .invite-cta-card{margin:0 auto 14px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r2);padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:14px;cursor:pointer;transition:background .15s;width:calc(100% - 32px);max-width:340px}
 .invite-cta-card:active{background:var(--bg2)}
 .invite-cta-icon{width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:14px;min-height:0;scrollbar-width:none}
+.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:22px;min-height:0;scrollbar-width:none}
 .home-v-scroll::-webkit-scrollbar{display:none}
 .home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0}
 .home-v-photo{height:230px;position:relative;overflow:hidden;background:var(--bg3)}
@@ -95,6 +99,10 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .home-v-qr:active{opacity:.85}
 .home-v-more{width:30px;height:30px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;flex-shrink:0}
 .home-v-add{border-radius:var(--r3);border:1.5px dashed var(--bd2);background:transparent;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:6px;padding:20px;cursor:pointer;flex-shrink:0}
+.mm-nudge{margin:8px 12px 0;background:var(--bg);border-radius:12px;border:.5px solid var(--bd2);border-left:3px solid var(--p);padding:9px 12px;display:flex;align-items:center;gap:9px;cursor:pointer;flex-shrink:0}
+.mm-nudge-ico{width:28px;height:28px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.mm-nudge-line1{font-size:10.5px;font-weight:600;color:var(--tx)}
+.mm-nudge-line2{font-size:9.5px;color:var(--p);margin-top:2px;font-weight:500}
 .home-v-hot{position:absolute;top:10px;right:10px;background:var(--p);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px}
 .hvc-top{position:absolute;top:0;left:0;right:0;padding:10px 10px 0;display:flex;align-items:flex-start;justify-content:space-between;z-index:2}
 .hvc-badge{font-size:9px;font-weight:700;padding:3px 9px;border-radius:20px}
@@ -428,8 +436,22 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     </div>
   </div>
   <div id="gs-card-wrap"></div>
+  <div id="mm-nudge" class="mm-nudge" style="display:none" onclick="showModal('modal-invite')">
+    <div class="mm-nudge-ico"><svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="7.5" cy="7" r="3"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4"/></svg></div>
+    <span class="mm-nudge-txt" id="mm-nudge-txt"></span>
+    <span class="mm-nudge-link">Invite →</span>
+  </div>
 
 
+  <div id="mm-nudge" class="mm-nudge" style="display:none" onclick="showModal('modal-invite')">
+    <div class="mm-nudge-ico">
+      <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="7.5" cy="7" r="3"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4"/></svg>
+    </div>
+    <div style="flex:1">
+      <div class="mm-nudge-line1" id="mm-nudge-line1"></div>
+      <div class="mm-nudge-line2">Invite more to get more intros →</div>
+    </div>
+  </div>
   <div id="home-body" class="home-v-scroll">
     <div id="h-singles-scroll"></div>
   </div>
@@ -1579,7 +1601,18 @@ function initHome(){
   var _sc=document.getElementById('home-singles-count');
   if(_sc)_sc.textContent=sorted.length+' single'+(sorted.length!==1?'s':'');
   var _mc2=document.getElementById('home-mm-count');
-  if(_mc2){var mmc=(u.matchmakers||[]).length;_mc2.textContent=mmc+' matchmaker'+(mmc!==1?'s':'');}
+  var mmc=(u.matchmakers||[]).length;
+  if(_mc2)_mc2.textContent=mmc+' matchmaker'+(mmc!==1?'s':'');
+  var nudge=document.getElementById('mm-nudge');
+  var nudgeLine=document.getElementById('mm-nudge-line1');
+  if(nudge&&nudgeLine){
+    if(u.isOpen&&mmc<3){
+      nudgeLine.textContent=mmc===0?'No matchmakers yet — invite friends to help you':mmc+' matchmaker'+(mmc!==1?'s':'')+' helping you';
+      nudge.style.display='flex';
+    } else {
+      nudge.style.display='none';
+    }
+  }
   const hasUnread=DB.notifs().some(n=>!n.read);
   document.getElementById('notif-dot').style.display=hasUnread?'block':'none';
 }
