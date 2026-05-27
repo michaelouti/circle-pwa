@@ -433,7 +433,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     </div>
   </div>
   <div id="gs-card-wrap"></div>
-  <div id="mm-nudge" class="mm-nudge" style="display:none" onclick="showModal('modal-invite')">
+  <div id="mm-nudge" class="mm-nudge" style="display:none" onclick="inviteMatchmaker()">
     <div class="mm-nudge-ico">
       <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="7.5" cy="7" r="3"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4"/></svg>
     </div>
@@ -1592,7 +1592,7 @@ function initHome(){
     var bi=allIntros.filter(function(i){return i.sName===b.name&&i.ts&&i.ts>weekAgo;}).length;
     return bi-ai;
   });
-  var addCard='<div class="home-v-add" onclick="navTo(\'my-circle\')"><div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:11px;font-weight:500;color:var(--tx3)">Add a single friend</span></div>';
+  var addCard='<div class="home-v-add" onclick="inviteSingle()"><div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9h12" stroke="var(--tx3)" stroke-width="2" stroke-linecap="round"/></svg></div><span style="font-size:11px;font-weight:500;color:var(--tx3)">Add a single friend</span></div>';
   scroll.innerHTML=sorted.map(_hvCard).join('')+addCard;
   var _sc=document.getElementById('home-singles-count');
   if(_sc)_sc.textContent=sorted.length+' single'+(sorted.length!==1?'s':'');
@@ -1659,8 +1659,8 @@ function renderMcCounter() {
 }
 
 function mcFabAction() {
-  if (mcTab === 'singles') openIntroducePicker();
-  else showModal('modal-invite');
+  if (mcTab === 'singles') inviteSingle();
+  else inviteMatchmaker();
 }
 
 function initMyCircle() {
@@ -1698,7 +1698,7 @@ function renderMcSinglesGrid() {
       const isNext = (i === singles.length);
       const col = isNext ? 'rgba(216,90,48,.45)' : 'var(--bd3)';
       const txtCol = isNext ? 'var(--p)' : 'var(--tx3)';
-      html += '<div class="mc-card mc-add" onclick="toast(\'Add single friend \u2014 coming soon!\')" style="border-color:' + col + '">'
+      html += '<div class="mc-card mc-add" onclick="inviteSingle()" style="border-color:' + col + '">'
             + '<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v20M4 14h20" stroke="' + (isNext ? 'var(--p)' : 'var(--bd3)') + '" stroke-width="2" stroke-linecap="round"/></svg>'
             + '<span style="font-size:12px;font-weight:600;color:' + txtCol + ';margin-top:4px">Add</span>'
             + '</div>';
@@ -1787,7 +1787,7 @@ function renderMcMmsGrid() {
       const isNext = (i === mms.length);
       const col = isNext ? 'rgba(216,90,48,.45)' : 'var(--bd3)';
       const txtCol = isNext ? 'var(--p)' : 'var(--tx3)';
-      html += '<div class="mc-card mc-add" onclick="showModal(\'modal-invite\')" style="border-color:' + col + '">'
+      html += '<div class="mc-card mc-add" onclick="inviteMatchmaker()" style="border-color:' + col + '">'
             + '<svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4v20M4 14h20" stroke="' + (isNext ? 'var(--p)' : 'var(--bd3)') + '" stroke-width="2" stroke-linecap="round"/></svg>'
             + '<span style="font-size:12px;font-weight:600;color:' + txtCol + ';margin-top:4px">Add</span>'
             + '</div>';
@@ -2178,6 +2178,22 @@ function epSwitchTab(tab) {
 
 function saveEditProfile(){const u=DB.user();if(!u)return;u.name=document.getElementById('ep-name').value.trim()||u.name;u.location=document.getElementById('ep-loc').value.trim()||u.location;var _ey=+document.getElementById('ep-dob-y').value,_em=+document.getElementById('ep-dob-m').value,_ed=+document.getElementById('ep-dob-d').value;u.dob=_ey+'-'+_em+'-'+_ed;u.age=calcAge(_ey,_em,_ed);u.gender=epPrefs.gender||u.gender;u.height=epHtVal;u.job=document.getElementById('ep-job').value.trim()||u.job;u.religion=document.getElementById('ep-rel').value||u.religion;u.qs=epQs;var _epBioEl=document.getElementById('ep-bio');if(_epBioEl)u.bio=_epBioEl.value.trim()||u.bio||'';if(editPhotos.length>=3)u.photos=editPhotos;if(!u.prefs)u.prefs={};u.prefs.gender=epPrefs.pref_gender||u.prefs.gender;u.prefs.ageMin=parseInt(document.getElementById('ep-amin').value)||u.prefs.ageMin;u.prefs.ageMax=parseInt(document.getElementById('ep-amax').value)||u.prefs.ageMax;u.prefs.religions=epPrefs.religions||u.prefs.religions;u.prefs.note=document.getElementById('ep-note').value.trim();DB.setUser(u);S.user=u;toast('Profile updated ✓');back()}
 function initNotifs(){const notifs=DB.notifs();notifs.forEach(n=>n.read=true);DB.s('notifs',notifs);document.getElementById('notif-dot').style.display='none';document.getElementById('notifs-list').innerHTML=notifs.length?notifs.map(n=>`<div class="tl-item px"><div class="tl-dot" style="background:${n.read?'var(--bg4)':'var(--p)'}"></div><div class="flex1"><p style="font-size:14px;color:${n.read?'var(--tx2)':'var(--tx)'};font-weight:${n.read?'400':'500'}">${n.text}</p><p class="tiny mt4">${ago(n.ts)}</p></div></div>`).join(''):`<div style="text-align:center;padding:48px 20px"><div style="font-size:40px;margin-bottom:12px">🔔</div><h3>No notifications yet</h3></div>`}
+function inviteSingle(){
+  var msg="Hi! I joined Circle, a matchmaking app where friends introduce each other to great people. I’d love to be your matchmaker! Just create your profile here and I can start making introductions for you 😊 circle-appp.netlify.app";
+  if(navigator.share){
+    navigator.share({text:msg}).catch(function(){});
+  } else {
+    toast('Share not supported — copy this link: circle-appp.netlify.app');
+  }
+}
+function inviteMatchmaker(){
+  var msg="Hi! I'm on Circle — a matchmaking app where you, as my trusted friend, play matchmaker for me. When you meet someone you think I'd love, you show them my QR code. They scan, express interest, and we take it from there \uD83D\uDE0A Want to be my matchmaker? circle-appp.netlify.app";
+  if(navigator.share){
+    navigator.share({text:msg}).catch(function(){});
+  } else {
+    showModal('modal-invite');
+  }
+}
 function sendInvite(){const name=document.getElementById('inv-name').value.trim();if(!name){toast('Enter their name');return}const url=`${location.origin}${location.pathname}?invite=${encodeURIComponent(name)}`;closeModal('modal-invite');if(navigator.share)navigator.share({title:name+', join Circle!',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Invite link copied for '+name+'! 📋')}else toast('Invite: '+url);document.getElementById('inv-name').value=''}
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
 function showDeleteModal(){showModal('modal-delete');document.getElementById('del-confirm').value='';document.getElementById('del-btn').disabled=true;document.getElementById('del-confirm').oninput=function(){document.getElementById('del-btn').disabled=this.value!=='DELETE'}}
