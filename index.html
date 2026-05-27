@@ -76,9 +76,9 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .invite-cta-card{margin:0 auto 14px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r2);padding:12px 16px;display:flex;align-items:center;justify-content:center;gap:14px;cursor:pointer;transition:background .15s;width:calc(100% - 32px);max-width:340px}
 .invite-cta-card:active{background:var(--bg2)}
 .invite-cta-icon{width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:22px;min-height:0;scrollbar-width:none}
+.home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:28px;min-height:0;scrollbar-width:none}
 .home-v-scroll::-webkit-scrollbar{display:none}
-.home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0}
+.home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.08)}
 .home-v-photo{height:230px;position:relative;overflow:hidden;background:var(--bg3)}
 .home-v-photo-grad{position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,rgba(0,0,0,.78),transparent)}
 .home-v-name-row{position:absolute;bottom:10px;left:13px}
@@ -1303,7 +1303,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('');checkPrefsBtn();}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},{name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
@@ -1527,6 +1527,12 @@ function migrateDemoPhotos(){
   var singles=DB.singles();var sc=false;
   singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}if(em[s.id]&&!s.height){s.height=em[s.id].height;s.religion=em[s.id].religion;sc=true;}});
   if(sc)DB.setSingles(singles);
+  // Migrate user matchmakers: reduce to 2 for demo (remove Raph if present)
+  var du=DB.user();
+  if(du&&du.matchmakers&&du.matchmakers.length>=3&&du.matchmakers.some(function(m){return m.name==='Raph';})){
+    du.matchmakers=du.matchmakers.filter(function(m){return m.name!=='Raph';});
+    DB.setUser(du);if(S.user)S.user=du;
+  }
   var intros=DB.intros();var ic=false;
   intros.forEach(function(i){if(im[i.id]&&(!i.photos||!i.photos.length)){i.photos=[im[i.id]];ic=true;}});
   if(ic)DB.setIntros(intros);
@@ -2568,8 +2574,7 @@ function finishShortSetup(){
     tags:[],qs:{},prefs:{},isOpen:false,setupPath:'short',points:5,
     createdAt:Date.now(),
     matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},
-                 {name:'Paul',rel:'Colleague',loc:'Lyon',ci:1},
-                 {name:'Raph',rel:'Friend',loc:'Geneva',ci:3}]};
+                 {name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};
   DB.setUser(u);S.user=u;seedDemo(u.name);
   toast('Welcome to Circle!');
   setTimeout(function(){navTo('home');},300);
