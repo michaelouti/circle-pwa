@@ -113,6 +113,28 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .hvc-job{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px}
 .hvc-intro{background:var(--p);color:#fff;border:none;border-radius:20px;padding:7px 13px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer;flex-shrink:0;white-space:nowrap}
 .hvc-intro:active{opacity:.85}
+.why-card{border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);overflow:hidden;transition:border-color .25s,box-shadow .25s;margin-bottom:10px}
+.why-card.is-open{border-color:var(--p);box-shadow:0 4px 18px rgba(216,90,48,.1)}
+.why-head{padding:13px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
+.why-num{font-size:10px;font-weight:800;color:var(--p);background:var(--p1);width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.why-hook{font-size:13px;font-weight:700;color:var(--tx);flex:1;line-height:1.35;letter-spacing:-.1px}
+.why-chev{flex-shrink:0;transition:transform .28s,color .25s;color:var(--bd2)}
+.why-card.is-open .why-chev{transform:rotate(180deg);color:var(--p)}
+.why-body{display:none;border-top:.5px solid var(--bd)}
+.why-card.is-open .why-body{display:block}
+.why-inner{padding:11px 13px 13px 50px}
+.why-plabel{font-size:9px;font-weight:700;color:var(--tx3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.why-ptext{font-size:12px;color:var(--tx2);line-height:1.7;margin-bottom:10px}
+.why-divider{height:.5px;background:var(--bd);margin-bottom:10px}
+.why-alabel{font-size:9px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:4px}
+.why-atext{font-size:12px;color:var(--p);font-weight:500;line-height:1.65;margin-bottom:12px}
+.why-btns{display:flex;justify-content:flex-end}
+.why-btn-n{background:var(--p);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
+.why-btn-d{background:var(--tx);color:#fff;border:none;border-radius:20px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:5px}
+.why-closing{border-radius:var(--r3);background:var(--p1);border:.5px solid #F0DDD4;padding:18px 16px;text-align:center;margin-top:2px}
+.why-cq{font-size:14px;font-weight:700;color:var(--tx);line-height:1.45;font-style:italic;margin-bottom:8px}
+.why-cb{font-size:12px;color:var(--tx2);line-height:1.7}
+.why-cem{color:var(--p);font-weight:700;font-style:normal}
 .hvc-info-strip{padding:10px 13px 12px;background:var(--bg);border-top:.5px solid var(--bd)}
 .hvc-meta{font-size:11px;color:var(--tx2);margin-top:3px;line-height:1.4}
 .hvc-foot-row{display:flex;align-items:center;justify-content:space-between;margin-top:9px}
@@ -932,78 +954,9 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       </div>
     </div>
 
-    <!-- SIMULATION -->
-    <div id="g-sim" style="display:none;flex-direction:column">
-      <div style="display:flex;align-items:center;margin-bottom:8px">
-        <span onclick="gGoView('steps')" style="font-size:12px;font-weight:600;color:var(--p);cursor:pointer;flex-shrink:0">‹ Steps</span>
-        <span id="g-sim-title" style="flex:1;text-align:center;font-size:12px;font-weight:700;color:var(--tx)"></span>
-        <span id="g-sim-num" style="font-size:11px;font-weight:700;color:var(--tx3);flex-shrink:0">1 / 4</span>
-      </div>
-      <div style="height:3px;background:var(--bg2);border-radius:2px;margin-bottom:12px;overflow:hidden">
-        <div id="g-prog" style="height:100%;background:var(--p);border-radius:2px;transition:width .35s;width:25%"></div>
-      </div>
-      <div style="margin-bottom:10px">
-        <div id="g-cap-t" style="font-size:14px;font-weight:800;color:var(--tx);margin-bottom:4px"></div>
-        <div id="g-cap-s" style="font-size:12px;color:var(--tx2);line-height:1.45"></div>
-      </div>
-      <div style="background:#1A1614;border-radius:16px;padding:4px;overflow:hidden;height:240px;flex-shrink:0">
-        <div style="background:#fff;border-radius:13px;height:100%;position:relative;overflow:hidden">
-          <div class="g-scene vis" id="g-sc-l1" style="position:absolute;inset:0;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">💌</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Marie introduced you to Thomas! He&#39;s seen your profile and is interested.</div></div>
-            <div style="margin:0 7px;border-radius:10px;overflow:hidden;flex:1;display:flex;flex-direction:column;min-height:0">
-              <div style="background:linear-gradient(145deg,#EDE7F6,#B39DDB);height:55%;position:relative;display:flex;align-items:center;justify-content:center"><div style="width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.4);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#4527A0;background:rgba(255,255,255,.2);margin-bottom:14px">TH</div><div style="position:absolute;bottom:0;left:0;right:0;padding:8px 7px 5px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:9px;font-weight:800;color:#fff">Thomas, 30</div><div style="font-size:7px;color:rgba(255,255,255,.85)">Photographer · Paris</div></div></div>
-              <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;padding:7px 8px;flex:1;align-content:center"><button style="padding:7px 4px;border-radius:7px;font-size:8.5px;font-weight:700;background:var(--p);color:#fff;border:none;font-family:inherit">✓ Accept</button><button style="padding:7px 4px;border-radius:7px;font-size:8.5px;font-weight:700;background:var(--bg2);color:var(--tx2);border:none;font-family:inherit">✕ Decline</button></div>
-            </div>
-          </div>
-          <div class="g-scene" id="g-sc-l2" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">THOMAS&#39;S PROFILE</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">👀</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Thomas, 30 — Photographer. Marie says you&#39;d get along perfectly.</div></div>
-            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💕</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Looking for a serious relationship</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🏃</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sport is a big part of his life</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">✈️</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Travels every chance he gets</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🌿</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Adventurous, Thoughtful, Creative</span></div></div>
-          </div>
-          <div class="g-scene" id="g-sc-l3" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">✅</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">You accepted! Thomas has been notified — you&#39;ll both be connected.</div></div>
-            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💬</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Chat with Thomas is now open</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🙏</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Thanks to Marie for the intro</span></div><div style="background:var(--p);border-radius:7px;padding:8px;text-align:center;font-size:9px;font-weight:700;color:#fff;margin-top:4px">Say hello to Thomas →</div></div>
-          </div>
-          <div class="g-scene" id="g-sc-l4" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px">
-            <div style="font-size:44px;margin-bottom:9px">✨</div>
-            <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px">You matched with Thomas!</div>
-            <div style="font-size:11px;color:var(--tx2);line-height:1.55;padding:0 4px">All it took was one person who knew you both. That&#39;s the power of Circle.</div>
-          </div>
-          <div class="g-scene" id="g-sc-m1" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — MY CIRCLE</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">🤝</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Sophie added you as her Matchmaker. She&#39;s counting on you!</div></div>
-            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">👤</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sophie, 28 · Architect · Paris</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">💕</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Looking for a man, 28–38</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🌿</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Creative, Adventurous, Authentic</span></div><div style="background:var(--p);border-radius:7px;padding:8px;text-align:center;font-size:9px;font-weight:700;color:#fff;margin-top:4px">Open Sophie&#39;s QR card →</div></div>
-          </div>
-          <div class="g-scene" id="g-sc-m2" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — QR CODE</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">🎯</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">You just met someone who could be perfect for Sophie. Show them this QR!</div></div>
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px"><svg width="80" height="80" viewBox="0 0 70 70" fill="none"><rect x="5" y="5" width="20" height="20" rx="2" fill="#1A1614"/><rect x="8" y="8" width="14" height="14" rx="1" fill="white"/><rect x="11" y="11" width="8" height="8" rx="1" fill="#1A1614"/><rect x="45" y="5" width="20" height="20" rx="2" fill="#1A1614"/><rect x="48" y="8" width="14" height="14" rx="1" fill="white"/><rect x="51" y="11" width="8" height="8" rx="1" fill="#1A1614"/><rect x="5" y="45" width="20" height="20" rx="2" fill="#1A1614"/><rect x="8" y="48" width="14" height="14" rx="1" fill="white"/><rect x="11" y="51" width="8" height="8" rx="1" fill="#1A1614"/><rect x="30" y="5" width="5" height="5" rx="1" fill="#1A1614"/><rect x="38" y="5" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="12" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="38" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="45" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="52" y="30" width="5" height="5" rx="1" fill="#1A1614"/><rect x="30" y="38" width="5" height="5" rx="1" fill="#1A1614"/><rect x="52" y="38" width="5" height="5" rx="1" fill="#1A1614"/><rect x="45" y="60" width="5" height="5" rx="1" fill="#1A1614"/></svg><div style="font-size:9px;color:#A8A39E;text-align:center;line-height:1.4">They scan this in 10 seconds<br>and see Sophie&#39;s profile instantly</div></div>
-          </div>
-          <div class="g-scene" id="g-sc-m3" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column">
-            <div style="font-size:7.5px;font-weight:700;color:#A8A39E;letter-spacing:.5px;text-align:center;padding:5px;flex-shrink:0">YOUR PHONE — INTRO SENT</div>
-            <div style="margin:0 7px 6px;background:var(--p1);border-radius:8px;padding:7px 8px;display:flex;gap:6px;align-items:flex-start;flex-shrink:0"><span style="font-size:13px;flex-shrink:0">✅</span><div style="font-size:8px;color:var(--p8);line-height:1.35;font-weight:500">Introduction sent! Thomas is interested in Sophie. Waiting for her reply.</div></div>
-            <div style="margin:0 7px;background:var(--p1);border-radius:10px;padding:9px;display:flex;flex-direction:column;gap:5px;flex:1"><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">📊</span><span style="font-size:8px;font-weight:600;color:var(--tx)">1 introduction made for Sophie</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">⏳</span><span style="font-size:8px;font-weight:600;color:var(--tx)">Sophie is reviewing Thomas&#39;s profile</span></div><div style="background:#fff;border-radius:6px;padding:5px 7px;display:flex;align-items:center;gap:7px"><span style="font-size:11px">🔔</span><span style="font-size:8px;font-weight:600;color:var(--tx)">You&#39;ll be notified if they match</span></div></div>
-          </div>
-          <div class="g-scene" id="g-sc-m4" style="position:absolute;inset:0;opacity:0;pointer-events:none;transition:opacity .3s;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:16px">
-            <div style="font-size:44px;margin-bottom:9px">🎊</div>
-            <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px">Sophie &amp; Thomas matched!</div>
-            <div style="font-size:11px;color:var(--tx2);line-height:1.55;padding:0 4px">You made it happen. Your friend will thank you forever — that&#39;s what being a Matchmaker feels like.</div>
-          </div>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-top:14px">
-        <button id="g-sf-back" onclick="gSimNav(-1)" style="padding:9px 16px;border-radius:100px;font-size:11px;font-weight:600;background:var(--bg2);color:var(--tx2);border:none;cursor:pointer;font-family:inherit">‹ Back to steps</button>
-        <button id="g-sf-next" onclick="gSimNav(1)" style="padding:9px 16px;border-radius:100px;font-size:11px;font-weight:700;background:var(--p);color:#fff;border:none;cursor:pointer;font-family:inherit">Next →</button>
-      </div>
-    </div>
-
   </div>
   <div id="how-circle-body" class="p20" style="padding-bottom:36px;display:none"></div>
 </div>
-
-
 <!-- MODAL: INTRODUCE PICKER -->
 <div class="modal-ov" id="modal-intro-picker">
   <div class="modal-sheet" style="padding-bottom:max(24px,var(--safe))">
@@ -3046,7 +2999,7 @@ var _gSimData={
   }
 };
 function gGoView(v){
-  ['g-picker','g-steps','g-sim'].forEach(function(id){
+  ['g-picker','g-steps'].forEach(function(id){
     var el=document.getElementById(id);
     if(el)el.style.display=(id==='g-'+v)?'flex':'none';
   });
@@ -3068,40 +3021,26 @@ function gRenderStep(){
   if(prev)prev.style.visibility=_gStep>0?'visible':'hidden';
   var isLast=_gStep===total-1;
   var nb=document.getElementById('g-btn-next');
-  if(nb){nb.textContent=isLast?'Watch the simulation \u2192':'Next \u2192';nb.style.background=isLast?'#1A1614':'var(--p)';}
+  if(nb){nb.textContent=isLast?'Done \u2714':'Next \u2192';nb.style.background='var(--p)';}
   var dots=document.getElementById('g-dots');
   if(dots)dots.innerHTML=_gStepsData[_gPath].map(function(_,i){var on=i===_gStep;return '<div style="width:'+(on?18:7)+'px;height:7px;border-radius:'+(on?4:50)+'%;background:'+(on?'var(--p)':'#E8E4E0')+';transition:all .2s"></div>';}).join('');
 }
 function gStepNav(d){
   var total=_gStepsData[_gPath].length;
-  if(d===1&&_gStep===total-1){gStartSim();return;}
+  if(d===1&&_gStep===total-1){gGoView('picker');return;}
   _gStep=Math.max(0,Math.min(total-1,_gStep+d));
   gRenderStep();
 }
-function gStartSim(){
-  _gSimStep=0;
-  var st=document.getElementById('g-sim-title');
-  if(st)st.textContent=_gSimData[_gPath].title;
-  gRenderSim();gGoView('sim');
+function togWhy(id){
+  var c=document.getElementById(id);if(!c)return;
+  var isOpen=c.classList.contains('is-open');
+  ['why-c1','why-c2','why-c3','why-c4'].forEach(function(cid){var el=document.getElementById(cid);if(el)el.classList.remove('is-open');});
+  if(!isOpen){c.classList.add('is-open');setTimeout(function(){c.scrollIntoView&&c.scrollIntoView({behavior:'smooth',block:'nearest'});},60);}
 }
-function gRenderSim(){
-  var sim=_gSimData[_gPath],total=sim.scenes.length,cap=sim.caps[_gSimStep],e;
-  if((e=document.getElementById('g-sim-num')))e.textContent=(_gSimStep+1)+' / '+total;
-  if((e=document.getElementById('g-prog')))e.style.width=(((_gSimStep+1)/total)*100)+'%';
-  if((e=document.getElementById('g-cap-t')))e.textContent=cap.t;
-  if((e=document.getElementById('g-cap-s')))e.textContent=cap.s;
-  document.querySelectorAll('.g-scene').forEach(function(s){s.style.opacity='0';s.style.pointerEvents='none';});
-  var sc=document.getElementById(sim.scenes[_gSimStep]);
-  if(sc){sc.style.opacity='1';sc.style.pointerEvents='all';}
-  if((e=document.getElementById('g-sf-back')))e.textContent=_gSimStep===0?'\u2039 Back to steps':'\u2190 Back';
-  if((e=document.getElementById('g-sf-next')))e.textContent=_gSimStep===total-1?'Try other path \u21ba':'Next \u2192';
-}
-function gSimNav(d){
-  var sim=_gSimData[_gPath],total=sim.scenes.length;
-  if(d===1&&_gSimStep===total-1){_gPath=_gPath==='love'?'mm':'love';_gStep=0;gRenderStep();gGoView('steps');return;}
-  if(d===-1&&_gSimStep===0){gGoView('steps');return;}
-  _gSimStep=Math.max(0,Math.min(total-1,_gSimStep+d));
-  gRenderSim();
+function nextWhy(cur,nxt){
+  var c=document.getElementById(cur);if(c)c.classList.remove('is-open');
+  if(nxt){var n=document.getElementById(nxt);if(n){n.classList.add('is-open');setTimeout(function(){n.scrollIntoView&&n.scrollIntoView({behavior:'smooth',block:'nearest'});},60);}}
+  else{var cl=document.getElementById('why-closing');if(cl)setTimeout(function(){cl.scrollIntoView&&cl.scrollIntoView({behavior:'smooth',block:'nearest'});},60);}
 }
 function switchGuideTab(tab) {
   var tabs = ['how','why'];
@@ -3169,35 +3108,56 @@ function renderGuideTab(tab) {
     var guide=document.getElementById('g-guide');
     if(guide)guide.style.display='none';
     body.style.display='';
-    var rows=[
-      ['Endless swiping, no real results',       'Curated intros from people you trust'],
-      ['Strangers \u2014 no context, no trust',  'Every intro comes via a friend'],
-      ['Algorithms miss real chemistry',          'Humans use intuition \u0026 empathy'],
-      ['Introducing people feels awkward',        'QR makes it instant \u0026 natural'],
-      ['No accountability \u2014 ghosting',      'Friends create mutual accountability'],
-      ['Nobody helps you find love',              'Your whole network works for you'],
-      ['Traditional matchmaking requires sharing your phone/Instagram before you\u2019re comfortable', 'Just show a QR \u2014 no personal details needed upfront'],
-      ['Matchmakers juggle back-and-forth coordination', 'No coordination \u2014 matchmaker selects, shows QR, done'],
-      ['Exchanging contacts creates pressure to respond', 'Profiles shared first; engagement only when genuinely interested'],
-    ];
-    var tRows=rows.map(function(r,i){
-      var last=i===rows.length-1;
-      var bBot=last?'none':'0.5px solid';
-      return '<tr>'
-        +'<td style="padding:11px 13px;font-size:13px;color:#7f1d1d;background:#FFFAFA;border-bottom:'+bBot+' #FEE2E2;border-right:1px solid #F0EDE9;vertical-align:top;line-height:1.45;font-weight:500">'+r[0]+'</td>'
-        +'<td style="padding:11px 13px;font-size:13px;color:#1B5E20;background:#FAFFF9;border-bottom:'+bBot+' #DCFCE7;vertical-align:top;line-height:1.45;font-weight:500">'+r[1]+'</td>'
-        +'</tr>';
-    }).join('');
+    var CHK='<svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-7" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var CHV='<svg width="16" height="16" viewBox="0 0 16 16" fill="none" class="why-chev"><path d="M3 5.5l5 5 5-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var ARR='<svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 7h10M7 2l5 5-5 5" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    function wCard(id,num,hook,prob,sol,nxt,isLast){
+      var btn=isLast
+        ?'<button class="why-btn-d" onclick="nextWhy(\''+id+'\',null)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><path d="M2 7l4 4 6-7" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Got it</button>'
+        :'<button class="why-btn-n" onclick="nextWhy(\''+id+'\',\''+nxt+'\')">Next '+ARR+'</button>';
+      return '<div class="why-card" id="'+id+'">'
+        +'<div class="why-head" onclick="togWhy(\''+id+'\')">'
+        +'<div class="why-num">'+num+'</div>'
+        +'<div class="why-hook">'+hook+'</div>'
+        +CHV
+        +'</div>'
+        +'<div class="why-body"><div class="why-inner">'
+        +'<div class="why-plabel">The problem</div>'
+        +'<div class="why-ptext">'+prob+'</div>'
+        +'<div class="why-divider"></div>'
+        +'<div class="why-alabel">'+CHK+' Circle changes this</div>'
+        +'<div class="why-atext">'+sol+'</div>'
+        +'<div class="why-btns">'+btn+'</div>'
+        +'</div></div>'
+        +'</div>';
+    }
     body.innerHTML=
-      '<div style="overflow:hidden;border-radius:var(--r2);border:.5px solid var(--bd2)">'
-      +'<table style="width:100%;border-collapse:collapse">'
-      +'<thead><tr>'
-      +'<th style="background:#FFF0F0;padding:10px 13px;font-size:11px;font-weight:700;color:#B71C1C;text-align:left;border-bottom:1px solid #FECDD3;border-right:1px solid #F0EDE9">\u2717\u2002Dating apps</th>'
-      +'<th style="background:#F0FAF4;padding:10px 13px;font-size:11px;font-weight:700;color:#1B5E20;text-align:left;border-bottom:1px solid #BBF7D0">\u2713\u2002Circle</th>'
-      +'</tr></thead>'
-      +'<tbody>'+tRows+'</tbody>'
-      +'</table></div>'
-      +'<div style="height:20px"></div>';
+      '<div style="padding:4px 0 16px">'
+      +'<div style="font-size:9.5px;font-weight:700;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Why it matters</div>'
+      +'<div style="font-size:20px;font-weight:800;color:var(--tx);line-height:1.28;letter-spacing:-.5px;margin-bottom:5px">Dating apps gave you choice.<br><span style="color:var(--p)">Not someone to vouch for you.</span></div>'
+      +'<div style="font-size:11.5px;color:var(--tx2);line-height:1.6">4 real reasons Circle changes everything. Tap each one.</div>'
+      +'</div>'
+      +wCard('why-c1','01','Countless swipes. Been on 4 real dates.',
+        'You\u2019ve spent hours swiping through strangers who feel no obligation to show up \u2014 emotionally or physically. They ghost, disappear, and you restart from zero every time. Volume was never the answer.',
+        'No more strangers. Every intro is curated by someone who knows you both. Accountability is built in \u2014 on both sides.',
+        'why-c2',false)
+      +wCard('why-c2','02','Compatible on paper. Nothing to talk about.',
+        'No algorithm can feel the spark between two people \u2014 the shared energy in a room, the way someone laughs, the things they\u2019d never write in a bio. Chemistry can\u2019t be computed.',
+        'Your friends and family know you best. Their instinct beats any algorithm, every time. Circle gives them a simple way to act on that instinct \u2014 and introduce you to someone they genuinely believe you\u2019d connect with.',
+        'why-c3',false)
+      +wCard('why-c3','03','You want to introduce two friends. But it feels too weird.',
+        'And if you do? You become the messenger, the coordinator, awkwardly texting both sides. One wrong word and it gets weird for everyone.',
+        'Now you can. Show a QR code. They scan, express interest privately. No orchestrating, no back-and-forth. Done in 10 seconds.',
+        'why-c4',false)
+      +wCard('why-c4','04','Sharing your personal information feels like too much, too soon.',
+        'Traditional matchmaking asks you to hand over your Instagram or phone number before you know if you\u2019re even interested. Once contact is exchanged, there\u2019s an unspoken pressure to respond \u2014 even when you\u2019re not sure.',
+        'With Circle, no conversation starts until both sides have seen each other\u2019s profile and said yes. Profiles first. Contact only when both are genuinely interested. Zero pressure, on either side.',
+        null,true)
+      +'<div class="why-closing" id="why-closing">'
+      +'<div class="why-cq">\u201cThe best love stories don\u2019t start with a swipe.\u201d</div>'
+      +'<div class="why-cb">They start with a friend saying \u2014<br><span class="why-cem">\u201cI know someone you need to meet.\u201d</span><br>Circle gives that friend a way to make it happen.</div>'
+      +'</div>'
+      +'<div style="height:24px"></div>';
   }
   body.scrollTop = 0;
 }
