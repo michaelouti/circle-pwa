@@ -75,9 +75,19 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .home-v-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px 16px;display:flex;flex-direction:column;gap:0;min-height:0;scrollbar-width:none}
 .home-v-scroll::-webkit-scrollbar{display:none}
 #h-singles-scroll{display:flex;flex-direction:column;gap:28px}
-.home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.08)}
-.home-v-photo{height:230px;position:relative;overflow:hidden;background:var(--bg3)}
-.home-v-photo-grad{position:absolute;bottom:0;left:0;right:0;height:100px;background:linear-gradient(to top,rgba(0,0,0,.78),transparent)}
+.home-v-card{border-radius:var(--r3);overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);flex-shrink:0;box-shadow:0 2px 12px rgba(0,0,0,.08);display:flex}
+.home-v-photo{width:86px;flex-shrink:0;position:relative;overflow:hidden;background:var(--bg3);align-self:stretch}
+.home-v-photo img,.home-v-photo>div{position:absolute;inset:0;width:100%;height:100%}
+.home-v-photo-grad{display:none}
+.hvc-right{flex:1;min-width:0;padding:10px 11px 10px;display:flex;flex-direction:column;justify-content:space-between;background:var(--bg)}
+.hvc-name-line{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.15px;line-height:1.2}
+.hvc-meta-line{font-size:10.5px;color:var(--tx2);margin-top:4px;line-height:1.35}
+.hvc-job-line{font-size:10px;color:var(--tx3);margin-top:2px}
+.hvc-foot-row{display:flex;align-items:center;justify-content:space-between;margin-top:8px}
+.hvc-badge-strip{position:absolute;bottom:0;left:0;right:0;padding:3px 4px;font-size:7.5px;font-weight:700;color:#fff;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hvc-strip-orange{background:rgba(216,90,48,.88)}
+.hvc-strip-green{background:rgba(34,197,94,.88)}
+.hvc-strip-grey{background:rgba(0,0,0,.42)}
 .home-v-name-row{position:absolute;bottom:10px;left:13px}
 .home-v-name{font-size:18px;font-weight:700;color:#fff;letter-spacing:-.3px}
 .home-v-sub{font-size:10.5px;color:rgba(255,255,255,.8);margin-top:1px}
@@ -1506,13 +1516,13 @@ function initHome(){
     var recent=si.filter(function(i){return i.ts&&i.ts>weekAgo;});
     var interested=si.filter(function(i){return i.status==='matched'||i.status==='accepted';});
     if(recent.length){
-      return {cls:'hvc-badge-green',text:recent.length+' intro'+(recent.length>1?'s':'')+' this week'+(interested.length?' \u00b7 '+interested.length+' \u2665':'')};
+      return {strip:'hvc-strip-green',text:recent.length+' intro'+(recent.length>1?'s':'')+' this week'+(interested.length?' \u00b7 '+interested.length+' \u2665':'')};
     } else if(!si.length){
-      return {cls:'hvc-badge-orange',text:'No intro yet'};
+      return {strip:'hvc-strip-orange',text:'No intro yet'};
     } else {
       var last=si.reduce(function(a,b){return(a.ts||0)>(b.ts||0)?a:b;},si[0]);
       var dAgo=last.ts?Math.floor((now-last.ts)/86400000):0;
-      return {cls:'hvc-badge-grey',text:si.length+' intro'+(si.length!==1?'s':'')+(dAgo>0?' \u00b7 '+dAgo+'d ago':'')};
+      return {strip:'hvc-strip-grey',text:si.length+' intro'+(si.length!==1?'s':'')+(dAgo>0?' \u00b7 '+dAgo+'d ago':'')};
     }
   }
   var QR_SVG='<svg width="12" height="12" viewBox="0 0 22 22" fill="none" stroke="white" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="4.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="3" width="6" height="6" rx="1"/><rect x="14.5" y="4.5" width="3" height="3" fill="white" stroke="none"/><rect x="3" y="13" width="6" height="6" rx="1"/><rect x="4.5" y="14.5" width="3" height="3" fill="white" stroke="none"/><rect x="13" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="16.5" y="13" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/><rect x="13" y="16.5" width="2.5" height="2.5" rx=".4" fill="white" stroke="none"/></svg>';
@@ -1520,21 +1530,23 @@ function initHome(){
     var st=_hvStatus(s);
     var col=AVCOLS[s.ci%AVCOLS.length];
     var ph=s.photos&&s.photos.length
-      ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:center;display:block">'
-      :'<div style="width:100%;height:100%;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:64px;font-weight:800;color:'+col.tc+';opacity:.35">'+ini(s.name)+'</span></div>';
-    var dot='<button class="hvc-dot" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>';
+      ?'<img src="'+s.photos[0]+'" style="object-fit:cover;object-position:50% 15%;display:block">'
+      :'<div style="background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><span style="font-size:40px;font-weight:800;color:'+col.tc+';opacity:.35">'+ini(s.name)+'</span></div>';
     var metaParts=[s.loc];
     if(s.height)metaParts.push(s.height+' cm');
     if(s.religion)metaParts.push(s.religion);
+    var dot='<button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>';
     return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')">'
       +'<div class="home-v-photo">'+ph
-      +'<div class="hvc-top"><span class="hvc-badge '+st.cls+'">'+st.text+'</span>'+dot+'</div>'
-      +'<div class="hvc-bottom">'
-      +'<div class="hvc-info">'
-      +'<div class="home-v-name" style="text-shadow:0 1px 6px rgba(0,0,0,.6)">'+s.name+', '+s.age+'</div>'
-      +'<div class="hvc-meta" style="color:rgba(255,255,255,.9);text-shadow:0 1px 4px rgba(0,0,0,.55)">'+metaParts.join(' \u00b7 ')+'</div>'
-      +'<div class="hvc-job" style="margin-top:1px;text-shadow:0 1px 4px rgba(0,0,0,.55)">'+s.job+'</div>'
+      +'<div class="hvc-badge-strip '+st.strip+'">'+st.text+'</div>'
       +'</div>'
+      +'<div class="hvc-right">'
+      +'<div>'
+      +'<div class="hvc-name-line">'+s.name+', '+s.age+'</div>'
+      +'<div class="hvc-meta-line">'+metaParts.join(' \u00b7 ')+'</div>'
+      +'<div class="hvc-job-line">'+s.job+'</div>'
+      +'</div>'
+      +'<div class="hvc-foot-row">'+dot
       +'<button class="hvc-intro" onclick="event.stopPropagation();startIntroForSingle(\''+s.id+'\')">'+QR_SVG+' Introduce</button>'
       +'</div>'
       +'</div>'
