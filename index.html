@@ -125,6 +125,31 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .hvc-job{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px}
 .hvc-intro{flex:1;background:var(--p);color:#fff;border:none;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:8px 4px}
 .hvc-intro:active{opacity:.85}
+/* Co-matchmaker styles */
+.comm-card{background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;transition:box-shadow .15s}
+.comm-card:active{box-shadow:0 2px 10px rgba(216,90,48,.12)}
+.comm-card-pending{opacity:.88}
+.comm-av{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:700;flex-shrink:0}
+.comm-info{flex:1;min-width:0}
+.comm-name{font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.1px}
+.comm-sub{font-size:11px;color:var(--tx2);margin-top:2px}
+.comm-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:12px;border:.5px solid;flex-shrink:0}
+.comm-badge-pending{background:#FFF8E1;color:#D97706;border-color:#FDE68A}
+.comm-badge-active{background:#F0FAF4;color:#16A34A;border-color:#BBF7D0}
+.comm-empty{text-align:center;padding:48px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.comm-empty-ico{width:58px;height:58px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center}
+.comm-empty-title{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
+.comm-empty-sub{font-size:13px;color:var(--tx2);line-height:1.6;max-width:260px}
+.comm-perm-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:.5px solid var(--bd)}
+.comm-perm-av{width:36px;height:36px;border-radius:50%;flex-shrink:0;overflow:hidden;background:var(--bg3)}
+.comm-perm-av img{width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block}
+.comm-perm-name{flex:1;font-size:13px;font-weight:600;color:var(--tx)}
+.comm-tog{width:40px;height:24px;border-radius:12px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.comm-tog.on{background:var(--p)}
+.comm-tog.off{background:var(--bd2)}
+.comm-tog::after{content:'';position:absolute;top:4px;width:16px;height:16px;border-radius:50%;background:#fff;transition:left .2s;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.comm-tog.on::after{left:calc(100% - 20px)}
+.comm-tog.off::after{left:4px}
 .why-card{border-radius:var(--r3);background:var(--bg);border:.5px solid var(--bd2);overflow:hidden;transition:border-color .25s,box-shadow .25s;margin-bottom:10px}
 .why-card.is-open{border-color:var(--p);box-shadow:0 4px 18px rgba(216,90,48,.1)}
 .why-head{padding:13px 13px;display:flex;align-items:center;gap:11px;cursor:pointer;user-select:none;-webkit-tap-highlight-color:transparent}
@@ -489,11 +514,13 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div class="mc-tab-bar">
     <button class="mc-tab on" id="mc-t-singles" onclick="mcSwitchTab('singles')">Singles I'm helping</button>
     <button class="mc-tab" id="mc-t-mms" onclick="mcSwitchTab('mms')">My Matchmakers</button>
+    <button class="mc-tab" id="mc-t-comms" onclick="mcSwitchTab('comms')">Co-matchmakers</button>
   </div>
   <div id="mc-counter" class="mc-counter"></div>
   <!-- Grids -->
   <div id="mc-singles-grid" class="mc-grid"></div>
   <div id="mc-mms-grid" class="mc-grid" style="display:none"></div>
+  <div id="mc-comms-grid" class="mc-grid" style="display:none"></div>
   <!-- Floating action button -->
   <div class="mc-fab" id="mc-fab">
     <button class="btn btn-p" id="mc-fab-btn" style="border-radius:100px;box-shadow:0 4px 18px rgba(216,90,48,.38);gap:10px" onclick="mcFabAction()">
@@ -501,6 +528,18 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <span id="mc-fab-label">Introduce</span>
     </button>
   </div>
+</div>
+
+<!-- CO-MATCHMAKER DETAIL -->
+<div id="s-comm-detail" class="screen" style="display:none;padding-top:0;flex-direction:column">
+  <div style="background:var(--bg);border-bottom:.5px solid var(--bd);display:flex;align-items:center;padding:0 8px 0 4px;height:52px;flex-shrink:0;padding-top:max(0px,var(--sat))">
+    <button onclick="back()" style="width:40px;height:40px;display:flex;align-items:center;justify-content:center;background:none;border:none;cursor:pointer">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="var(--p)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+    <span id="comm-detail-name" style="font-size:17px;font-weight:700;color:var(--tx);flex:1;text-align:center;letter-spacing:-.3px"></span>
+    <div style="width:40px"></div>
+  </div>
+  <div id="comm-detail-body" style="flex:1;overflow-y:auto;padding:16px 14px 40px;scrollbar-width:none"></div>
 </div>
 
 <!-- INTROS -->
@@ -809,6 +848,67 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div id="dash-body" class="p20"></div>
 </div>
 
+<!-- MODAL: CO-MATCHMAKER ADD OPTIONS -->
+<div class="modal-ov" id="modal-comm-add">
+  <div class="modal-sheet" style="padding:24px 20px 20px">
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px">Add Co-matchmaker</div>
+    <p style="font-size:13px;color:var(--tx2);margin-bottom:20px;line-height:1.5">Connect with another matchmaker to suggest introductions between your singles.</p>
+    <button onclick="closeModal('modal-comm-add');showCoMmQR()" style="background:var(--bg2);border:.5px solid var(--bd2);border-radius:12px;width:100%;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;font-size:14px;font-weight:600;color:var(--tx)">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="13" y="3" width="6" height="6" rx="1"/><rect x="3" y="13" width="6" height="6" rx="1"/><rect x="13" y="13" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/><rect x="16.5" y="13" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/><rect x="13" y="16.5" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/></svg></div>
+      Share my QR code
+    </button>
+    <button onclick="closeModal('modal-comm-add');scanCoMmQR()" style="background:var(--bg2);border:.5px solid var(--bd2);border-radius:12px;width:100%;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:20px;font-size:14px;font-weight:600;color:var(--tx)">
+      <div style="width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.9" stroke-linecap="round"><path d="M4 6V4h4"/><path d="M20 6V4h-4"/><path d="M4 18v2h4"/><path d="M20 18v2h-4"/><rect x="7" y="7" width="4" height="4" rx=".5"/><rect x="13" y="7" width="4" height="4" rx=".5"/><rect x="7" y="13" width="4" height="4" rx=".5"/><path d="M13 13h4v4"/></svg></div>
+      Scan a QR code
+    </button>
+    <button onclick="closeModal('modal-comm-add')" style="background:none;border:none;color:var(--tx3);font-size:14px;font-weight:600;cursor:pointer;width:100%;padding:8px">Cancel</button>
+  </div>
+</div>
+
+<!-- MODAL: CO-MATCHMAKER QR -->
+<div class="modal-ov" id="modal-comm-qr">
+  <div class="modal-sheet" style="padding:24px 20px 20px;position:relative">
+    <button onclick="closeModal('modal-comm-qr')" style="position:absolute;top:14px;right:14px;background:var(--bg3);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--tx2)">✕</button>
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Your Co-matchmaker Code</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.5;margin-bottom:20px">Share this with other matchmakers to connect and suggest introductions between your singles.</p>
+    <div id="comm-qr-out" style="display:flex;justify-content:center;margin-bottom:20px"></div>
+    <button onclick="shareCoMmQR()" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px">Share my code</button>
+  </div>
+</div>
+
+<!-- MODAL: CO-MATCHMAKER CONFIRM ADD -->
+<div class="modal-ov" id="modal-comm-confirm">
+  <div class="modal-sheet" style="padding:28px 20px 24px;text-align:center">
+    <div id="comm-confirm-av" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 10px"></div>
+    <div id="comm-confirm-name" style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px"></div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">By connecting as co-matchmakers, you\u2019ll each be able to view each other\u2019s singles and suggest introductions.<br><br>You control who sees which of your singles at any time.</p>
+    <button id="comm-confirm-btn" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;margin-bottom:10px"></button>
+    <button onclick="closeModal('modal-comm-confirm')" style="background:none;border:none;color:var(--tx3);font-size:14px;font-weight:600;cursor:pointer;width:100%;padding:8px">Cancel</button>
+  </div>
+</div>
+
+<!-- MODAL: CO-MATCHMAKER INCOMING INVITE -->
+<div class="modal-ov" id="modal-comm-invite">
+  <div class="modal-sheet" style="padding:28px 20px 24px;text-align:center">
+    <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Co-matchmaker Invitation</div>
+    <div id="comm-invite-av" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 10px"></div>
+    <div id="comm-invite-name" style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px"></div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">wants to connect with you as a co-matchmaker. If you accept, you\u2019ll each be able to view each other\u2019s singles and suggest introductions between them.</p>
+    <button id="comm-invite-accept-btn" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;margin-bottom:10px">Accept</button>
+    <button id="comm-invite-decline-btn" style="background:none;border:none;color:var(--tx3);font-size:14px;font-weight:600;cursor:pointer;width:100%;padding:8px">Decline</button>
+  </div>
+</div>
+
+<!-- MODAL: CO-MATCHMAKER CONNECTED CONFIRMATION -->
+<div class="modal-ov" id="modal-comm-connected">
+  <div class="modal-sheet" style="padding:32px 20px 28px;text-align:center">
+    <div style="font-size:40px;margin-bottom:14px">\uD83C\uDF89</div>
+    <div id="comm-connected-title" style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:10px"></div>
+    <p id="comm-connected-body" style="font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:24px"></p>
+    <button onclick="closeModal('modal-comm-connected');renderCoMmsGrid()" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px">Got it</button>
+  </div>
+</div>
+
 <!-- MODAL: SHARE INTRO CARD -->
 <div class="modal-ov" id="modal-share-intro">
   <div class="modal-sheet">
@@ -1027,7 +1127,7 @@ const QS=[{id:'intent',q:'Relationship intent',a:['A serious relationship','Some
 const RELIGIONS=['Christian','Catholic','Muslim','Jewish','Buddhist','Hindu','Sikh','Agnostic','Atheist','Spiritual','Other','No preference'];
 const AVCOLS=[{bg:'#FDF0EB',tc:'#993C1D'},{bg:'#E3F2E8',tc:'#1B5E20'},{bg:'#EDE7F6',tc:'#4527A0'},{bg:'#E3F4FD',tc:'#0D47A1'},{bg:'#FFF8E1',tc:'#E65100'},{bg:'#FCE4EC',tc:'#880E4F'},{bg:'#E8F5E9',tc:'#2E7D32'},{bg:'#E0F7FA',tc:'#006064'}];
 let S={screen:'splash',stack:[],user:null,setup:{photos:[],tags:[],qs:{},prefs:{}},dob:{d:15,m:6,y:1995},hUnit:'cm',htVal:170,carIdx:0,introSingle:null,introId:null,currentIntro:null,currentMatch:null,scanId:null,obPage:0,fbIntroId:null};
-const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)}};
+const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)},commConnections:()=>DB.g('comm_connections')||[],setCommConnections:v=>DB.s('comm_connections',v),commPerms:()=>DB.g('comm_perms')||[],setCommPerms:v=>DB.s('comm_perms',v)};
 let toastT;
 function toast(msg,ms=2500){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),ms)}
 function av(i,ci,sz=40){const c=AVCOLS[ci%AVCOLS.length];return `<div class="av" style="width:${sz}px;height:${sz}px;background:${c.bg};color:${c.tc};font-size:${Math.round(sz*.36)}px;font-weight:700">${i}</div>`}
@@ -1039,14 +1139,14 @@ function addPts(n){const u=DB.user();if(!u)return;u.points=(u.points||0)+n;DB.se
 function showModal(id){document.getElementById(id).classList.add('on')}
 function closeModal(id){document.getElementById(id).classList.remove('on')}
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('on')})});
-const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup']);
+const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
 function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
 function back(){if(!S.stack.length)return;var _prev=S.stack[S.stack.length-1];var _onb=['ob','login','signup','verify','path-choice','setup'];if(!DB.user()&&_onb.indexOf(_prev)===-1)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
 function navTo(id){S.stack=[];go(id)}
 function _el(id){return document.getElementById('s-'+id)}
 function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.has(id)?bnav.classList.add('on'):bnav.classList.remove('on');document.querySelectorAll('.nbt').forEach(b=>b.classList.remove('on'));const act=NAV_MAP[id];if(act)document.getElementById(act)?.classList.add('on');const pend=DB.intros().filter(i=>i.status==='pending').length;const bd=document.getElementById('nb-badge'),pb=document.getElementById('pb-badge');if(bd){bd.textContent=pend;bd.style.display=pend>0?'flex':'none'}if(pb){pb.textContent=pend;pb.style.display=pend>0?'':'none'}}
-const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'setup':initSetup,'scan':initScan,'levels-rewards':initLevelsRewards,'how-circle-works':initHowCircleWorks};
+const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'setup':initSetup,'scan':initScan,'levels-rewards':initLevelsRewards,'how-circle-works':initHowCircleWorks,'comm-detail':initCommDetail};
 function _init(id){const fn=INIT_FNS[id.replace(/^s-/,'')];if(fn){try{fn()}catch(e){console.error('_init error for '+id+':',e)}}}
 (function(){
   function _nav(){const u=DB.user();if(u){S.user=u;go('home')}else{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan')}else go('ob')}}
@@ -1594,18 +1694,25 @@ let mcTab = 'singles';
 function mcSwitchTab(tab) {
   mcTab = tab;
   document.getElementById('mc-t-singles').classList.toggle('on', tab === 'singles');
-  document.getElementById('mc-t-mms').classList.toggle('on', tab === 'mms');
+  var mmsBtn = document.getElementById('mc-t-mms');
+  if (mmsBtn) mmsBtn.classList.toggle('on', tab === 'mms');
+  document.getElementById('mc-t-comms').classList.toggle('on', tab === 'comms');
   document.getElementById('mc-singles-grid').style.display = tab === 'singles' ? '' : 'none';
   document.getElementById('mc-mms-grid').style.display = tab === 'mms' ? '' : 'none';
+  document.getElementById('mc-comms-grid').style.display = tab === 'comms' ? '' : 'none';
   const fabLabel = document.getElementById('mc-fab-label');
   const fabBtn = document.getElementById('mc-fab-btn');
   if (tab === 'singles') {
     fabLabel.textContent = 'Introduce';
     fabBtn.querySelector('svg').style.display = '';
+  } else if (tab === 'comms') {
+    fabLabel.textContent = 'Add co-matchmaker';
+    fabBtn.querySelector('svg').style.display = 'none';
   } else {
     fabLabel.textContent = 'Add to your Team';
     fabBtn.querySelector('svg').style.display = 'none';
   }
+  if (tab === 'comms') renderCoMmsGrid();
   renderMcCounter();
 }
 
@@ -1626,17 +1733,254 @@ function renderMcCounter() {
 
 function mcFabAction() {
   if (mcTab === 'singles') inviteSingle();
+  else if (mcTab === 'comms') addCoMatchmaker();
   else inviteMatchmaker();
+}
+
+// ── CO-MATCHMAKERS ──────────────────────────────────────────────────
+
+function seedCoMmDemo(){
+  if(DB.commConnections().length>0)return;
+  var conns=[
+    {id:'comm_demo_paul',name:'Paul',ci:2,status:'active',initiatedBy:'them',
+     createdAt:Date.now()-86400000*5,acceptedAt:Date.now()-86400000*4,
+     theirSingles:[
+       {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,photos:['https://randomuser.me/api/portraits/men/18.jpg']},
+       {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,photos:['https://randomuser.me/api/portraits/women/28.jpg']}
+     ]},
+    {id:'comm_demo_lea',name:'L\u00e9a',ci:1,status:'pending',initiatedBy:'them',createdAt:Date.now()-3600000*4}
+  ];
+  DB.setCommConnections(conns);
+  var perms=[];
+  DB.singles().forEach(function(s){perms.push({connId:'comm_demo_paul',singleId:s.id,hidden:false});});
+  DB.setCommPerms(perms);
+}
+
+function renderCoMmsGrid(){
+  var comms=DB.commConnections();
+  var grid=document.getElementById('mc-comms-grid');
+  if(!grid)return;
+  if(!comms.length){
+    grid.innerHTML='<div class="comm-empty">'
+      +'<div class="comm-empty-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.85"/></svg></div>'
+      +'<div class="comm-empty-title">No co-matchmakers yet</div>'
+      +'<p class="comm-empty-sub">Connect with other matchmakers to suggest introductions between your singles.</p>'
+      +'<button class="btn btn-p" style="border-radius:100px;gap:8px" onclick="addCoMatchmaker()">'
+      +'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>'
+      +'Add a co-matchmaker</button></div>';
+    return;
+  }
+  var html='';
+  comms.forEach(function(conn){
+    var col=AVCOLS[(conn.ci||0)%AVCOLS.length];
+    var isPending=conn.status==='pending';
+    var isIncoming=isPending&&conn.initiatedBy==='them';
+    var action=isPending&&isIncoming?'showCommInvite(\''+conn.id+'\')':isPending?'':('goCommDetail(\''+conn.id+'\')');
+    html+='<div class="comm-card '+(isPending?'comm-card-pending':'')+'" onclick="'+action+'">'
+      +'<div class="comm-av" style="background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
+      +'<div class="comm-info"><div class="comm-name">'+conn.name+'</div>'
+      +'<div class="comm-sub">'+(isPending?(isIncoming?'Invited you \u00b7 Tap to respond':'Waiting for their response'):(conn.theirSingles?conn.theirSingles.length:0)+' singles shared')+'</div></div>'
+      +(isPending&&!isIncoming
+        ?'<button class="comm-badge comm-badge-pending" style="border:none;cursor:pointer" onclick="event.stopPropagation();cancelCommPending(\''+conn.id+'\')">Cancel</button>'
+        :isPending&&isIncoming
+        ?'<span class="comm-badge comm-badge-pending">Invited you</span>'
+        :'<div style="color:var(--tx3);font-size:20px;padding:0 2px">\u203a</div>'
+      )+'</div>';
+  });
+  html+='<div style="text-align:center;padding-top:6px">'
+    +'<button style="background:none;border:none;color:var(--p);font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:8px 12px" onclick="addCoMatchmaker()">'
+    +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="var(--p)" stroke-width="2" stroke-linecap="round"/></svg>'
+    +'Add a co-matchmaker</button></div>';
+  grid.innerHTML=html;
+}
+
+function addCoMatchmaker(){showModal('modal-comm-add');}
+
+function showCoMmQR(){
+  var u=DB.user()||{name:'You',ci:0};
+  var out=document.getElementById('comm-qr-out');
+  if(out){
+    out.innerHTML='';
+    var data=JSON.stringify({t:'cm',n:u.name,ci:u.ci||0});
+    try{new QRCode(out,{text:data,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});}
+    catch(e){out.innerHTML='<div style="width:200px;height:200px;background:var(--bg3);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--tx3)">QR code</div>';}
+  }
+  closeModal('modal-comm-add');showModal('modal-comm-qr');
+}
+
+function shareCoMmQR(){
+  var u=DB.user()||{name:'a friend'};
+  var msg='Hi! I\u2019m on Circle, a matchmaking app. Let\u2019s connect as co-matchmakers to suggest introductions between our singles \uD83D\uDE0A circle-appp.netlify.app';
+  if(navigator.share){navigator.share({text:msg}).catch(function(){});}
+  else{toast('Copy this link: circle-appp.netlify.app');}
+}
+
+function scanCoMmQR(){
+  closeModal('modal-comm-add');
+  // Demo: simulate scanning Camille's QR
+  setTimeout(function(){_showCommConfirm({name:'Camille',ci:6,id:'demo_camille'});},400);
+}
+
+function _showCommConfirm(person){
+  var col=AVCOLS[(person.ci||0)%AVCOLS.length];
+  var av=document.getElementById('comm-confirm-av');
+  var nm=document.getElementById('comm-confirm-name');
+  var btn=document.getElementById('comm-confirm-btn');
+  if(av){av.style.background=col.bg;av.style.color=col.tc;av.textContent=ini(person.name);}
+  if(nm)nm.textContent=person.name;
+  if(btn){btn.textContent='Send invitation to '+person.name;btn.onclick=function(){closeModal('modal-comm-confirm');_sendCommInvite(person);};}
+  showModal('modal-comm-confirm');
+}
+
+function _sendCommInvite(person){
+  var comms=DB.commConnections();
+  if(comms.find(function(c){return c.name===person.name;})){toast(person.name+' is already in your network');return;}
+  comms.push({id:'comm_'+Date.now(),name:person.name,ci:person.ci||0,status:'pending',initiatedBy:'me',createdAt:Date.now()});
+  DB.setCommConnections(comms);
+  renderCoMmsGrid();
+  toast('Invitation sent to '+person.name);
+}
+
+function cancelCommPending(connId){
+  DB.setCommConnections(DB.commConnections().filter(function(c){return c.id!==connId;}));
+  renderCoMmsGrid();toast('Invitation cancelled');
+}
+
+function showCommInvite(connId){
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  if(!conn)return;
+  var col=AVCOLS[(conn.ci||0)%AVCOLS.length];
+  var av=document.getElementById('comm-invite-av');
+  var nm=document.getElementById('comm-invite-name');
+  var acc=document.getElementById('comm-invite-accept-btn');
+  var dec=document.getElementById('comm-invite-decline-btn');
+  if(av){av.style.background=col.bg;av.style.color=col.tc;av.textContent=ini(conn.name);}
+  if(nm)nm.textContent=conn.name;
+  if(acc)acc.onclick=function(){closeModal('modal-comm-invite');acceptCommInvite(connId);};
+  if(dec)dec.onclick=function(){closeModal('modal-comm-invite');declineCommInvite(connId);};
+  showModal('modal-comm-invite');
+}
+
+function acceptCommInvite(connId){
+  var comms=DB.commConnections();
+  var conn=comms.find(function(c){return c.id===connId;});
+  if(!conn)return;
+  conn.status='active';conn.acceptedAt=Date.now();
+  if(!conn.theirSingles){
+    conn.theirSingles=[
+      {id:'cs_'+connId+'_1',name:'Marc',age:31,job:'Engineer',loc:'Bordeaux, France',bio:'Trail runner and photography enthusiast.',ci:3,photos:['https://randomuser.me/api/portraits/men/41.jpg']}
+    ];
+  }
+  DB.setCommConnections(comms);
+  var perms=DB.commPerms();
+  DB.singles().forEach(function(s){
+    if(!perms.find(function(p){return p.connId===connId&&p.singleId===s.id;})){
+      perms.push({connId:connId,singleId:s.id,hidden:false});
+    }
+  });
+  DB.setCommPerms(perms);
+  renderCoMmsGrid();
+  var ti=document.getElementById('comm-connected-title');
+  var bd=document.getElementById('comm-connected-body');
+  if(ti)ti.textContent='You\u2019re now co-matchmakers with '+conn.name+'!';
+  if(bd)bd.textContent='You can now view each other\u2019s singles and suggest introductions. By default, all your singles are visible to '+conn.name+'. You can change this at any time by tapping their name.';
+  showModal('modal-comm-connected');
+}
+
+function declineCommInvite(connId){
+  DB.setCommConnections(DB.commConnections().filter(function(c){return c.id!==connId;}));
+  renderCoMmsGrid();toast('Invitation declined');
+}
+
+function removeCoMm(connId){
+  if(!confirm('Remove this co-matchmaker? They will no longer be able to view your singles.'))return;
+  DB.setCommConnections(DB.commConnections().filter(function(c){return c.id!==connId;}));
+  DB.setCommPerms(DB.commPerms().filter(function(p){return p.connId!==connId;}));
+  back();renderCoMmsGrid();toast('Co-matchmaker removed');
+}
+
+function toggleCommSingleVis(connId,singleId){
+  var perms=DB.commPerms();
+  var p=perms.find(function(x){return x.connId===connId&&x.singleId===singleId;});
+  if(p){p.hidden=!p.hidden;}else{perms.push({connId:connId,singleId:singleId,hidden:true});}
+  DB.setCommPerms(perms);renderCommDetail(connId);
+}
+
+function goCommDetail(connId){S._commDetailId=connId;go('comm-detail');}
+
+function initCommDetail(){
+  var connId=S._commDetailId;if(!connId)return;renderCommDetail(connId);
+}
+
+function renderCommDetail(connId){
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  if(!conn)return;
+  var nameEl=document.getElementById('comm-detail-name');
+  if(nameEl)nameEl.textContent=conn.name;
+  var body=document.getElementById('comm-detail-body');
+  if(!body)return;
+  var perms=DB.commPerms();var singles=DB.singles();
+  // Their singles
+  var html='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">'+conn.name+'\u2019s singles</div>';
+  if(conn.theirSingles&&conn.theirSingles.length){
+    conn.theirSingles.forEach(function(s){
+      var col=AVCOLS[(s.ci||0)%AVCOLS.length];
+      var ph=s.photos&&s.photos.length
+        ?'<img src="'+s.photos[0]+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+        :'<div style="position:absolute;inset:0;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
+      html+='<div style="border-radius:12px;overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);display:flex;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06)">'
+        +'<div style="width:72px;height:82px;flex-shrink:0;position:relative;overflow:hidden">'+ph+'</div>'
+        +'<div style="flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center">'
+        +'<div style="font-size:13.5px;font-weight:700;color:var(--tx)">'+s.name+', '+s.age+'</div>'
+        +'<div style="font-size:10px;color:var(--tx2);margin-top:2px">'+s.loc+'</div>'
+        +'<div style="font-size:10px;color:var(--tx3);margin-top:1px">'+s.job+'</div>'
+        +(s.bio?'<div style="font-size:9px;color:var(--tx2);margin-top:4px;font-style:italic">\u201c'+s.bio.substring(0,55)+(s.bio.length>55?'\u2026':'')+'\u201d</div>':'')
+        +'</div>'
+        +'<div style="padding:10px 12px;display:flex;align-items:center">'
+        +'<button style="background:var(--p);opacity:.4;color:#fff;border:none;border-radius:8px;padding:7px 11px;font-size:10px;font-weight:700;cursor:not-allowed" title="Coming in Phase 2">Suggest</button>'
+        +'</div></div>';
+    });
+  }else{html+='<div style="text-align:center;padding:20px 0;color:var(--tx3);font-size:13px">No singles shared yet</div>';}
+  // Permission controls
+  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>'
+    +'<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
+  if(singles.length){
+    singles.forEach(function(s){
+      var perm=perms.find(function(p){return p.connId===connId&&p.singleId===s.id;});
+      var isVis=!perm||!perm.hidden;
+      var col=AVCOLS[(s.ci||0)%AVCOLS.length];
+      var ph=s.photos&&s.photos.length
+        ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+        :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
+      html+='<div class="comm-perm-row"><div class="comm-perm-av">'+ph+'</div>'
+        +'<div class="comm-perm-name">'+s.name+'</div>'
+        +'<span style="font-size:11px;color:'+(isVis?'var(--ok)':'var(--tx3)')+';margin-right:8px;min-width:40px;text-align:right">'+(isVis?'Visible':'Hidden')+'</span>'
+        +'<button class="comm-tog '+(isVis?'on':'off')+'" onclick="toggleCommSingleVis(\''+connId+'\',\''+s.id+'\')"></button></div>';
+    });
+  }else{html+='<div style="color:var(--tx3);font-size:13px;padding:12px 0">No singles added yet</div>';}
+  // Actions
+  html+='<div style="margin-top:24px;padding-top:16px;border-top:.5px solid var(--bd)">'
+    +'<button onclick="removeCoMm(\''+connId+'\')" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
+    +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
+    +'Remove co-matchmaker</button></div>';
+  body.innerHTML=html;
 }
 
 function initMyCircle() {
   const _u = DB.user(); if(_u) S.user=_u;
+  const isOpen = _u ? _u.isOpen !== false : true;
+  // Show/hide My Matchmakers tab (only for singles open to intros)
+  const mmsBtn = document.getElementById('mc-t-mms');
+  if (mmsBtn) mmsBtn.style.display = isOpen ? '' : 'none';
   mcTab = 'singles';
   document.getElementById('mc-t-singles').classList.add('on');
-  document.getElementById('mc-t-mms').classList.remove('on');
+  if (mmsBtn) mmsBtn.classList.remove('on');
+  document.getElementById('mc-t-comms').classList.remove('on');
   document.getElementById('mc-singles-grid').style.display = '';
   document.getElementById('mc-mms-grid').style.display = 'none';
+  document.getElementById('mc-comms-grid').style.display = 'none';
   document.getElementById('mc-fab-label').textContent = 'Introduce';
+  seedCoMmDemo();
   renderMcSinglesGrid();
   renderMcMmsGrid();
   renderMcCounter();
