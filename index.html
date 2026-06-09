@@ -387,7 +387,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <button class="btn btn-s btn-sm mb4" onclick="document.getElementById('ph-input-setup').click()">+ Add photos</button>
         <p class="tiny" id="ph-count">0/6 added (3 required)</p>
       </div>
-      <button class="btn btn-p mt16" id="basics-btn" onclick="saveBasicAndNext()" disabled>Next: Tags →</button>
+      <button class="btn btn-p mt16" id="basics-btn" onclick="saveBasicAndNext()" style="opacity:.65;pointer-events:none">Next: Tags →</button>
       <div style="height:16px"></div>
     </div>
 
@@ -399,7 +399,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <textarea id="su-bio" rows="4" placeholder="e.g. I'm a morning person who somehow always ends up at midnight concerts. Big fan of terrible puns and great pasta..." oninput="updTagCount()" style="resize:vertical;min-height:80px"></textarea>
         <div class="row between mt4"><span class="tiny" id="bio-count" style="color:var(--tx3)">0 / 20 min</span></div>
       </div>
-      <button class="btn btn-p mt16" id="tags-btn" onclick="saveTagsAndNext()" disabled>Next: Q&amp;A →</button>
+      <button class="btn btn-p mt16" id="tags-btn" onclick="saveTagsAndNext()" style="opacity:.65;pointer-events:none">Next: Q&amp;A →</button>
       <div style="height:16px"></div>
     </div>
 
@@ -408,7 +408,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <h3 class="mb4">A bit about you</h3>
       <p class="cap mb20">Shown to people before they accept an introduction.</p>
       <div id="q-list"></div>
-      <button class="btn btn-p" id="q-btn" onclick="saveQsAndNext()" disabled>Next: Preferences →</button>
+      <button class="btn btn-p" id="q-btn" onclick="saveQsAndNext()" style="opacity:.65;pointer-events:none">Next: Preferences →</button>
       <div style="height:16px"></div>
     </div>
 
@@ -416,7 +416,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <div class="ep-pane" id="su-pane-prefs" style="padding-top:16px">
       <h3 class="mb4">Your preferences</h3>
       <p class="cap mb4">Private — visible only to your matchmakers.</p>
-      <div style="background:var(--p1);border-radius:var(--r);padding:10px 12px;margin-bottom:20px"><p class="tiny" style="color:var(--p6)">🔒 Never shown to QR scanners or strangers</p></div>
+      <div style="background:var(--p1);border-radius:var(--r);padding:10px 12px;margin-bottom:20px"><p class="tiny" style="color:var(--p6)">🔒 Never shown to QR scanners</p></div>
       <div class="igrp"><label class="lbl">I want to meet a...</label>
         <div class="opills" id="pref-gender">
           <button class="opill" onclick="selOpt(this,'pref_gender','Man')">Man</button>
@@ -440,7 +440,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
         <p class="tiny mb8" style="color:var(--tx3);line-height:1.5;margin-top:4px">Anything else to help your matchmaker find a great match for you</p>
         <textarea id="pref-note" rows="3" placeholder="e.g. I'm looking for someone who loves sport and outdoor adventures, ideally between 28 and 38"></textarea>
       </div>
-      <button class="btn btn-p mt8" id="prefs-btn" onclick="savePrefs()" disabled>Complete my profile 🎉</button>
+      <button class="btn btn-p mt8" id="prefs-btn" onclick="savePrefs()" style="opacity:.65;pointer-events:none">Complete my profile 🎉</button>
       <div style="height:16px"></div>
     </div>
 
@@ -788,7 +788,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <!-- PREFS -->
     <div class="ep-pane" id="ep-pane-prefs">
       <div class="sec-hd" style="padding-top:16px">Dating preferences</div>
-      <p class="cap mb16">Private — only visible to your matchmakers, never to strangers.</p>
+      <p class="cap mb16">Never shown to QR scanners.</p>
       <div style="background:var(--p1);border-radius:var(--r);padding:10px 12px;margin-bottom:20px"><p class="tiny" style="color:var(--p6)">🔒 Never shown to QR scanners</p></div>
       <div class="igrp"><label class="lbl">I want to meet a...</label>
         <div class="opills" id="ep-pref-gender">
@@ -1355,7 +1355,38 @@ function _bindPhotoTouch(grid, photos, mode){
     },{passive:true});
   });
 }
-function photosAdded(e,mode){const files=Array.from(e.target.files),arr=mode==='setup'?S.setup.photos:editPhotos,rem=6-arr.length,toAdd=files.slice(0,rem);let done=0;if(!toAdd.length){toast('Maximum 6 photos');return}toAdd.forEach(f=>{const r=new FileReader();r.onload=ev=>{arr.push(ev.target.result);done++;if(done===toAdd.length){if(mode==='setup')renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');else renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit')}};r.readAsDataURL(f)});e.target.value=''}
+function _compressPhoto(file,cb){
+  var img=new Image();
+  var url=URL.createObjectURL(file);
+  img.onload=function(){
+    URL.revokeObjectURL(url);
+    var MAX=1024,w=img.width,h=img.height;
+    if(w>MAX||h>MAX){var s=MAX/Math.max(w,h);w=Math.round(w*s);h=Math.round(h*s);}
+    var c=document.createElement('canvas');c.width=w;c.height=h;
+    var ctx=c.getContext('2d');ctx.drawImage(img,0,0,w,h);
+    cb(c.toDataURL('image/jpeg',0.72));
+  };
+  img.onerror=function(){var r=new FileReader();r.onload=function(ev){cb(ev.target.result);};r.readAsDataURL(file);};
+  img.src=url;
+}
+function photosAdded(e,mode){
+  const files=Array.from(e.target.files),
+    arr=mode==='setup'?S.setup.photos:editPhotos,
+    rem=6-arr.length,
+    toAdd=files.slice(0,rem);
+  let done=0;
+  if(!toAdd.length){toast('Maximum 6 photos');return;}
+  toAdd.forEach(function(f){
+    _compressPhoto(f,function(dataUrl){
+      arr.push(dataUrl);done++;
+      if(done===toAdd.length){
+        if(mode==='setup')renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');
+        else renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit');
+      }
+    });
+  });
+  e.target.value='';
+}
 function rmPhoto(idx,mode){const arr=mode==='setup'?S.setup.photos:editPhotos;arr.splice(idx,1);if(mode==='setup')renderPhotoGrid('pg-setup',S.setup.photos,'ph-input-setup','setup');else renderPhotoGrid('pg-edit',editPhotos,'ph-input-edit','edit')}
 function savePhotos(){if(S.setup.photos.length<3){toast('Add at least 3 photos');return}go('setup')}
 function htSlide(){S.htVal=parseInt(document.getElementById('ht-slider').value);dispHeight()}
@@ -1400,16 +1431,16 @@ function updTagCount(){
   var bioLen=bioEl?bioEl.value.length:0;
   var bioCount=document.getElementById('bio-count');
   if(bioCount){bioCount.textContent=bioLen+' / 20 min';bioCount.style.color=bio.length>=20?'var(--ok)':bioLen>0?'var(--err)':'var(--tx3)';}
-  document.getElementById('tags-btn').disabled=bio.length<20;
+  var _tb=document.getElementById('tags-btn');if(_tb){var _tok=bio.length>=20;_tb.style.opacity=_tok?'1':'.65';_tb.style.pointerEvents=_tok?'auto':'none';}
 }
 function saveTags(){if(S.setup.tags.length!==3){toast('Select exactly 3 tags');return}go('setup')}
 function initQs(){const l=document.getElementById('q-list');if(!l)return;l.innerHTML=QS.map(q=>`<div class="qblock"><div class="qttl">${q.q}</div><div class="qopts">${q.a.map(o=>`<button class="qopt ${S.setup.qs[q.id]===o?'sel':''}" onclick="selQ(this,'${q.id}','${o.replace(/'/g,"\\'")}')">${o}</button>`).join('')}</div></div>`).join('');updQBtn()}
 function selQ(btn,qid,val){S.setup.qs[qid]=val;btn.closest('.qopts').querySelectorAll('.qopt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');updQBtn()}
-function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementById('q-btn');if(b){b.disabled=n<QS.length;b.textContent=`Continue (${n}/${QS.length}) →`}}
+function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementById('q-btn');if(b){var _qok=n>=QS.length;b.style.opacity=_qok?'1':'.65';b.style.pointerEvents=_qok?'auto':'none';b.textContent=`Continue (${n}/${QS.length}) →`}}
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('');checkPrefsBtn();}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:S.setup.prefs.religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:(S.setup.prefs||{}).religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
@@ -3296,12 +3327,12 @@ function checkBasicsBtn(){
     (S.setup.photos||[]).length>=3
   );
   var btn=document.getElementById('basics-btn');
-  if(btn)btn.disabled=!ok;
+  if(btn){btn.style.opacity=ok?'1':'.65';btn.style.pointerEvents=ok?'auto':'none';}
 }
 function checkPrefsBtn(){
   var ok=!!(S.setup.pref_gender);
   var btn=document.getElementById('prefs-btn');
-  if(btn)btn.disabled=!ok;
+  if(btn){btn.style.opacity=ok?'1':'.65';btn.style.pointerEvents=ok?'auto':'none';}
 }
 function chooseSetupPath(path){
   S.setup=S.setup||{};
@@ -3991,7 +4022,7 @@ function initSetup(){
     var prog=document.getElementById('setup-prog');
     if(prog)prog.style.width='100%';
     var btn=document.getElementById('basics-btn');
-    if(btn){btn.textContent='Get started →';btn.disabled=false;}
+    if(btn){btn.textContent='Get started \u2192';btn.disabled=false;btn.style.opacity='1';btn.style.pointerEvents='auto';}
     // Hide fields not needed for short path
     var htEl=document.getElementById('ht-display');
     if(htEl&&htEl.closest('.igrp'))htEl.closest('.igrp').style.display='none';
