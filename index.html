@@ -848,6 +848,58 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div id="dash-body" class="p20"></div>
 </div>
 
+<!-- MODAL: SUGGEST — PICK SINGLE -->
+<div class="modal-ov" id="modal-suggest-pick">
+  <div class="modal-sheet" style="padding:0;max-height:82vh;display:flex;flex-direction:column;border-radius:var(--r3) var(--r3) 0 0;overflow:hidden">
+    <div style="padding:20px 20px 12px;border-bottom:.5px solid var(--bd);flex-shrink:0">
+      <div style="font-size:17px;font-weight:700;color:var(--tx)">Introduce to <span id="sug-their-name" style="color:var(--p)"></span></div>
+      <div style="font-size:13px;color:var(--tx2);margin-top:4px">Which of your singles would you like to introduce?</div>
+    </div>
+    <div id="sug-pick-list" style="overflow-y:auto;padding:12px 16px;flex:1"></div>
+    <div style="padding:12px 16px 20px;border-top:.5px solid var(--bd);flex-shrink:0">
+      <button id="sug-pick-btn" onclick="openSuggestNote()" disabled class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;opacity:.45">Continue →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUGGEST — NOTE -->
+<div class="modal-ov" id="modal-suggest-note">
+  <div class="modal-sheet" style="padding:24px 20px">
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Add a note?</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:16px">Optional — give your single some context about why you think this is a great match.</p>
+    <textarea id="sug-note-txt" placeholder="E.g. You both love hiking, value family…" style="width:100%;height:96px;border:.5px solid var(--bd2);border-radius:10px;padding:12px;font-size:14px;color:var(--tx);background:var(--bg);resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="sendSuggestion('')" class="btn btn-s flex1" style="justify-content:center">Skip</button>
+      <button onclick="sendSuggestion(document.getElementById('sug-note-txt').value)" class="btn btn-p flex1" style="justify-content:center">Send suggestion</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUGGEST — DECLINE FEEDBACK -->
+<div class="modal-ov" id="modal-suggest-feedback">
+  <div class="modal-sheet" style="padding:24px 20px">
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Leave feedback?</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:16px">Optional — help your matchmaker make better suggestions for you.</p>
+    <textarea id="sug-feedback-txt" placeholder="E.g. Not quite my type, but I appreciate the thought…" style="width:100%;height:88px;border:.5px solid var(--bd2);border-radius:10px;padding:12px;font-size:14px;color:var(--tx);background:var(--bg);resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button id="sug-feedback-skip" class="btn btn-s flex1" style="justify-content:center">Skip</button>
+      <button id="sug-feedback-send" class="btn btn-p flex1" style="justify-content:center">Send feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SUGGEST — INTERESTED CONFIRMATION -->
+<div class="modal-ov" id="modal-suggest-interested">
+  <div class="modal-sheet" style="padding:32px 20px 28px;text-align:center">
+    <div style="width:56px;height:56px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L19 7"/></svg>
+    </div>
+    <div style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px">Great!</div>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.65;margin-bottom:24px">Your interest has been noted. Your matchmaker will now ask their contact to review the introduction.</p>
+    <button onclick="closeModal('modal-suggest-interested')" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px">Got it</button>
+  </div>
+</div>
+
 <!-- MODAL: CO-MATCHMAKER ADD OPTIONS -->
 <div class="modal-ov" id="modal-comm-add">
   <div class="modal-sheet" style="padding:24px 20px 20px">
@@ -1127,7 +1179,7 @@ const QS=[{id:'intent',q:'Relationship intent',a:['A serious relationship','Some
 const RELIGIONS=['Christian','Catholic','Muslim','Jewish','Buddhist','Hindu','Sikh','Agnostic','Atheist','Spiritual','Other','No preference'];
 const AVCOLS=[{bg:'#FDF0EB',tc:'#993C1D'},{bg:'#E3F2E8',tc:'#1B5E20'},{bg:'#EDE7F6',tc:'#4527A0'},{bg:'#E3F4FD',tc:'#0D47A1'},{bg:'#FFF8E1',tc:'#E65100'},{bg:'#FCE4EC',tc:'#880E4F'},{bg:'#E8F5E9',tc:'#2E7D32'},{bg:'#E0F7FA',tc:'#006064'}];
 let S={screen:'splash',stack:[],user:null,setup:{photos:[],tags:[],qs:{},prefs:{}},dob:{d:15,m:6,y:1995},hUnit:'cm',htVal:170,carIdx:0,introSingle:null,introId:null,currentIntro:null,currentMatch:null,scanId:null,obPage:0,fbIntroId:null};
-const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)},commConnections:()=>DB.g('comm_connections')||[],setCommConnections:v=>DB.s('comm_connections',v),commPerms:()=>DB.g('comm_perms')||[],setCommPerms:v=>DB.s('comm_perms',v)};
+const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)},commConnections:()=>DB.g('comm_connections')||[],setCommConnections:v=>DB.s('comm_connections',v),commPerms:()=>DB.g('comm_perms')||[],setCommPerms:v=>DB.s('comm_perms',v),suggestions:()=>DB.g('suggestions')||[],setSuggestions:v=>DB.s('suggestions',v)};
 let toastT;
 function toast(msg,ms=2500){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),ms)}
 function av(i,ci,sz=40){const c=AVCOLS[ci%AVCOLS.length];return `<div class="av" style="width:${sz}px;height:${sz}px;background:${c.bg};color:${c.tc};font-size:${Math.round(sz*.36)}px;font-weight:700">${i}</div>`}
@@ -1739,6 +1791,143 @@ function mcFabAction() {
 
 // ── CO-MATCHMAKERS ──────────────────────────────────────────────────
 
+// ── PHASE 2: SUGGEST FLOW ────────────────────────────────────────────
+
+function openSuggestFlow(connId,theirSingleId,theirSingleName){
+  S._sugConnId=connId;S._sugTheirSingleId=theirSingleId;S._sugTheirSingleName=theirSingleName;
+  S._sugMySingleId=null;S._sugMySingleName=null;
+  var nameEl=document.getElementById('sug-their-name');
+  if(nameEl)nameEl.textContent=theirSingleName;
+  var list=document.getElementById('sug-pick-list');
+  if(list){
+    var singles=DB.singles();
+    if(!singles.length){
+      list.innerHTML='<div style="text-align:center;padding:24px;color:var(--tx3);font-size:13px">No singles in your circle yet.</div>';
+    } else {
+      list.innerHTML=singles.map(function(s){
+        var col=AVCOLS[(s.ci||0)%AVCOLS.length];
+        var ph=s.photos&&s.photos.length
+          ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+          :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
+        return '<div id="sug-pick-'+s.id+'" data-sid="'+s.id+'" data-sname="'+s.name+'" onclick="selectSuggestSingle(this.dataset.sid,this.dataset.sname)" style="display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;cursor:pointer;border:1.5px solid var(--bd2);margin-bottom:8px;transition:border-color .15s,background .15s">'
+          +'<div style="width:48px;height:48px;border-radius:50%;flex-shrink:0;overflow:hidden">'+ph+'</div>'
+          +'<div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--tx)">'+s.name+', '+s.age+'</div>'
+          +'<div style="font-size:11px;color:var(--tx2);margin-top:1px">'+s.job+' \u00b7 '+s.loc+'</div></div>'
+          +'<div class="sug-pick-check" style="width:22px;height:22px;border-radius:50%;border:2px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0"></div>'
+          +'</div>';
+      }).join('');
+    }
+  }
+  var btn=document.getElementById('sug-pick-btn');
+  if(btn){btn.disabled=true;btn.style.opacity='.45';}
+  showModal('modal-suggest-pick');
+}
+
+function selectSuggestSingle(singleId,singleName){
+  S._sugMySingleId=singleId;S._sugMySingleName=singleName;
+  document.querySelectorAll('[id^="sug-pick-"]').forEach(function(el){
+    var sel=el.dataset.sid===singleId;
+    el.style.borderColor=sel?'var(--p)':'var(--bd2)';
+    el.style.background=sel?'var(--p1)':'';
+    var ch=el.querySelector('.sug-pick-check');
+    if(ch){ch.style.borderColor=sel?'var(--p)':'var(--bd2)';ch.style.background=sel?'var(--p)':'';ch.innerHTML=sel?'<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5l2.5 2.5L8 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'';}
+  });
+  var btn=document.getElementById('sug-pick-btn');
+  if(btn){btn.disabled=false;btn.style.opacity='1';}
+}
+
+function openSuggestNote(){
+  var txt=document.getElementById('sug-note-txt');
+  if(txt)txt.value='';
+  closeModal('modal-suggest-pick');
+  showModal('modal-suggest-note');
+}
+
+function sendSuggestion(note){
+  closeModal('modal-suggest-note');
+  if(!S._sugConnId||!S._sugMySingleId)return;
+  var conn=DB.commConnections().find(function(c){return c.id===S._sugConnId;});
+  if(!conn)return;
+  var ts=conn.theirSingles?conn.theirSingles.find(function(s){return s.id===S._sugTheirSingleId;}):null;
+  var ms=DB.singles().find(function(s){return s.id===S._sugMySingleId;});
+  if(!ts||!ms)return;
+  var sug={id:'sug_'+Date.now(),connId:S._sugConnId,
+    theirSingleId:S._sugTheirSingleId,theirSingleName:ts.name,theirSingleAge:ts.age,
+    theirSingleJob:ts.job||'',theirSingleLoc:ts.loc||'',theirSingleCi:ts.ci||0,
+    theirSinglePhotos:ts.photos||[],
+    mySingleId:S._sugMySingleId,mySingleName:ms.name,commName:conn.name,
+    note:note||'',status:'pending_their_single',feedback:'',createdAt:Date.now()};
+  var sugs=DB.suggestions();sugs.push(sug);DB.setSuggestions(sugs);
+  renderPending();
+  renderCommDetail(S._sugConnId);
+  toast('Suggestion sent to '+ms.name);
+}
+
+function _sugStatusLabel(sug){
+  return {'pending_their_single':'Awaiting your response',
+    'their_single_interested':'You expressed interest \u2014 awaiting matchmaker review',
+    'closed_declined':'You passed on this suggestion',
+    'closed_accepted':'Introduction created'}[sug.status]||sug.status;
+}
+
+function openSuggestionProfile(sugId){
+  var sug=DB.suggestions().find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  S._viewingSugId=sugId;
+  window._profPhotos=sug.theirSinglePhotos||[];
+  var col=AVCOLS[(sug.theirSingleCi||0)%AVCOLS.length];
+  var heroHtml=sug.theirSinglePhotos&&sug.theirSinglePhotos.length
+    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+sug.theirSinglePhotos.map(function(p,i){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;cursor:pointer" onclick="openLightbox('+i+')"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;pointer-events:none"></div>';}).join('')+'</div>'
+    :'<div style="height:320px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:'+col.tc+';border:2.5px solid rgba(255,255,255,.3)">'+ini(sug.theirSingleName)+'</div></div>';
+  var overlay='<div style="position:absolute;bottom:0;left:0;right:0;padding:40px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.75),transparent)"><div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:8px">'+sug.theirSingleName+(sug.theirSingleAge?', '+sug.theirSingleAge:'')+'</div>'+(sug.theirSingleJob?'<div style="font-size:12.5px;color:rgba(255,255,255,.9)">'+sug.theirSingleJob+'</div>':'')+'</div>';
+  var noteHtml=sug.note?'<div style="background:var(--p1);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Note from '+sug.commName+'</div><p style="font-size:13px;color:var(--tx);line-height:1.65">\u201c'+sug.note+'\u201d</p></div>':'';
+  var canAct=sug.status==='pending_their_single';
+  var actHtml=canAct
+    ?'<div style="display:flex;gap:10px;margin-top:16px"><button data-sid="'+sugId+'" onclick="suggestionDeclined(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center">Not interested</button><button data-sid="'+sugId+'" onclick="suggestionInterested(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center">Interested \u2192</button></div>'
+    :'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;margin-top:16px;text-align:center;font-size:12px;color:var(--tx2)">'+_sugStatusLabel(sug)+'</div>';
+  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+noteHtml+actHtml;
+  var titleEl=document.getElementById('prof-preview-title');
+  if(titleEl)titleEl.textContent=sug.theirSingleName+"'s profile";
+  go('prof-preview');
+}
+
+function suggestionInterested(sugId){
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  sug.status='their_single_interested';
+  DB.setSuggestions(sugs);
+  back();
+  showModal('modal-suggest-interested');
+  renderPending();
+  if(S._commDetailId)renderCommDetail(S._commDetailId);
+}
+
+function suggestionDeclined(sugId){
+  S._declSugId=sugId;
+  var txt=document.getElementById('sug-feedback-txt');
+  if(txt)txt.value='';
+  var skip=document.getElementById('sug-feedback-skip');
+  var send=document.getElementById('sug-feedback-send');
+  if(skip)skip.onclick=function(){sendDeclineFeedback(sugId,'');};
+  if(send)send.onclick=function(){sendDeclineFeedback(sugId,document.getElementById('sug-feedback-txt').value);};
+  showModal('modal-suggest-feedback');
+}
+
+function sendDeclineFeedback(sugId,feedback){
+  closeModal('modal-suggest-feedback');
+  // Back from profile view if we came from there
+  if(S.screen==='prof-preview')back();
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  sug.status='closed_declined';sug.feedback=feedback||'';
+  DB.setSuggestions(sugs);
+  renderPending();
+  if(S._commDetailId)renderCommDetail(S._commDetailId);
+  toast('Suggestion closed');
+}
+
 function seedCoMmDemo(){
   var _enrichedPaulSingles=[
     {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,
@@ -2082,7 +2271,7 @@ function renderCommDetail(connId){
   if(!body)return;
   var perms=DB.commPerms();var singles=DB.singles();
 
-  // ── Their singles (clickable) ──────────────────────────
+  // ── Their singles (clickable + Suggest button) ─────────────────────
   var html='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">'+conn.name+'\u2019s singles</div>';
   if(conn.theirSingles&&conn.theirSingles.length){
     conn.theirSingles.forEach(function(s){
@@ -2090,23 +2279,25 @@ function renderCommDetail(connId){
       var ph=s.photos&&s.photos.length
         ?'<img src="'+s.photos[0]+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
         :'<div style="position:absolute;inset:0;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
-      // Single data-cnn + data-sid → single onclick, no duplicates
       html+='<div data-cnn="'+connId+'" data-sid="'+s.id+'" onclick="viewCoMmSingle(this.dataset.cnn,this.dataset.sid)" style="border-radius:12px;overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);display:flex;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer">'
-        +'<div style="width:72px;height:82px;flex-shrink:0;position:relative;overflow:hidden">'+ph+'</div>'
+        +'<div style="width:72px;height:90px;flex-shrink:0;position:relative;overflow:hidden">'+ph+'</div>'
         +'<div style="flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center">'
         +'<div style="font-size:13.5px;font-weight:700;color:var(--tx)">'+s.name+', '+s.age+'</div>'
         +'<div style="font-size:10px;color:var(--tx2);margin-top:2px">'+s.loc+'</div>'
         +'<div style="font-size:10px;color:var(--tx3);margin-top:1px">'+s.job+'</div>'
         +(s.bio?'<div style="font-size:9px;color:var(--tx2);margin-top:4px;font-style:italic">\u201c'+s.bio.substring(0,55)+(s.bio.length>55?'\u2026':'')+'\u201d</div>':'')
         +'</div>'
-        +'<div style="padding:0 12px;display:flex;align-items:center;color:var(--tx3);font-size:18px">\u203a</div>'
+        +'<div style="padding:8px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px">'
+        +'<button data-cnn="'+connId+'" data-sid="'+s.id+'" data-sname="'+s.name+'" onclick="event.stopPropagation();openSuggestFlow(this.dataset.cnn,this.dataset.sid,this.dataset.sname)" style="background:var(--p);color:#fff;border:none;border-radius:8px;padding:6px 10px;font-size:9.5px;font-weight:700;cursor:pointer;white-space:nowrap">Suggest</button>'
+        +'<div style="color:var(--tx3);font-size:16px">\u203a</div>'
+        +'</div>'
         +'</div>';
     });
   } else {
     html+='<div style="text-align:center;padding:20px 0;color:var(--tx3);font-size:13px">No singles shared yet</div>';
   }
 
-  // ── Your singles permissions (photo+name tappable, toggle separate) ──
+  // ── Your singles permissions ───────────────────────────────────────
   html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>'
     +'<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
   if(singles.length){
@@ -2118,12 +2309,10 @@ function renderCommDetail(connId){
         ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
         :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
       html+='<div class="comm-perm-row">'
-        // Left: avatar + name → clickable to view profile
         +'<div data-sid="'+s.id+'" onclick="viewSingleProfile(this.dataset.sid)" style="display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent">'
         +'<div class="comm-perm-av">'+ph+'</div>'
         +'<div class="comm-perm-name">'+s.name+'</div>'
         +'</div>'
-        // Right: visibility label + toggle (stopPropagation so it doesn't trigger profile)
         +'<span style="font-size:11px;color:'+(isVis?'var(--ok)':'var(--tx3)')+';margin-right:8px;min-width:40px;text-align:right">'+(isVis?'Visible':'Hidden')+'</span>'
         +'<button class="comm-tog '+(isVis?'on':'off')+'" data-cid="'+connId+'" data-sid="'+s.id+'" onclick="event.stopPropagation();toggleCommSingleVis(this.dataset.cid,this.dataset.sid)"></button>'
         +'</div>';
@@ -2132,7 +2321,28 @@ function renderCommDetail(connId){
     html+='<div style="color:var(--tx3);font-size:13px;padding:12px 0">No singles added yet</div>';
   }
 
-  // ── Actions ───────────────────────────────────────────
+  // ── Suggestions section ────────────────────────────────────────────
+  var sugs=DB.suggestions().filter(function(sg){return sg.connId===connId;});
+  if(sugs.length){
+    html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 10px">Suggestions</div>';
+    sugs.forEach(function(sg){
+      var sTx={
+        'pending_their_single':'Awaiting '+sg.mySingleName+'\u2019s response',
+        'their_single_interested':sg.mySingleName+' is interested \u2014 awaiting matchmaker review',
+        'closed_declined':'Closed \u2014 '+sg.mySingleName+' passed',
+        'closed_accepted':'Introduction created'
+      }[sg.status]||sg.status;
+      var sCol={'pending_their_single':'var(--tx2)','their_single_interested':'var(--ok)','closed_declined':'var(--tx3)','closed_accepted':'var(--ok)'}[sg.status]||'var(--tx2)';
+      html+='<div style="background:var(--bg2);border-radius:var(--r3);padding:12px 14px;margin-bottom:8px">'
+        +'<div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px">'+sg.theirSingleName+' \u2192 '+sg.mySingleName+'</div>'
+        +'<div style="font-size:11px;color:'+sCol+'">'+sTx+'</div>'
+        +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+ago(sg.createdAt)+'</div>'
+        +(sg.feedback?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Feedback: \u201c'+sg.feedback+'\u201d</div>':'')
+        +'</div>';
+    });
+  }
+
+  // ── Actions ────────────────────────────────────────────────────────
   html+='<div style="margin-top:24px;padding-top:16px;border-top:.5px solid var(--bd)">'
     +'<button data-cid="'+connId+'" onclick="removeCoMm(this.dataset.cid)" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
     +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
@@ -2284,7 +2494,38 @@ function mcCardTap(id) {viewSingleProfile(id);}
 
 function initIntros(){const _u=DB.user();if(_u)S.user=_u;renderPending();renderMatches();renderActivity()}
 function switchTab(t){['pending','matches','activity'].forEach(x=>{document.getElementById('t-'+x)?.classList.toggle('on',x===t);document.getElementById('tp-'+x)?.classList.toggle('on',x===t)});if(t==='pending')renderPending();if(t==='matches')renderMatches();if(t==='activity')renderActivity()}
-function renderPending(){const list=document.getElementById('pending-list');if(!list)return;const intros=DB.intros().filter(i=>i.status==='pending');if(!intros.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;return}list.innerHTML=intros.map(i=>`<div class="ic" onclick="openIntroDetail('${i.id}')"><div class="ic-accent"></div><div class="ic-body"><div class="between mb10"><span class="pill pill-new">New intro</span><span class="tiny">${ago(i.ts)}</span></div><div class="row gap8 mb10">${av(ini(i.sName),i.ci,50)}<div class="flex1"><div style="font-size:17px;font-weight:700">${i.sName}, ${i.sAge}</div><p class="tiny">${i.sJob} · ${i.sLoc}</p></div></div><div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From ${i.mmName} (${i.mmRel})</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${i.ctx||'No context yet'}"</p></div><div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro('${i.id}')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro('${i.id}')">Accept ✓</button></div></div></div>`).join('')}
+function renderPending(){
+  const list=document.getElementById('pending-list');
+  if(!list)return;
+  const intros=DB.intros().filter(i=>i.status==='pending');
+  const sugs=DB.suggestions().filter(function(s){return s.status==='pending_their_single'||s.status==='their_single_interested';});
+  if(!intros.length&&!sugs.length){
+    list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;
+    return;
+  }
+  // Suggestion cards
+  var sugHtml=sugs.map(function(sug){
+    var col=AVCOLS[(sug.theirSingleCi||0)%AVCOLS.length];
+    var ph=sug.theirSinglePhotos&&sug.theirSinglePhotos.length
+      ?'<img src="'+sug.theirSinglePhotos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+      :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:'+col.tc+'">'+ini(sug.theirSingleName)+'</div>';
+    var isPending=sug.status==='pending_their_single';
+    return '<div class="ic" onclick="openSuggestionProfile(\''+sug.id+'\')"><div class="ic-accent"></div><div class="ic-body">'
+      +'<div class="between mb10"><span class="pill" style="background:var(--p1);color:var(--p);border:.5px solid rgba(216,90,48,.35);font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:12px">Suggested by '+sug.commName+'</span><span class="tiny">'+ago(sug.createdAt)+'</span></div>'
+      +'<div class="row gap8 mb10">'
+      +'<div style="width:50px;height:50px;border-radius:50%;flex-shrink:0;overflow:hidden">'+ph+'</div>'
+      +'<div class="flex1"><div style="font-size:17px;font-weight:700">'+sug.theirSingleName+(sug.theirSingleAge?', '+sug.theirSingleAge:'')+'</div>'
+      +'<p class="tiny">'+sug.theirSingleJob+' \u00b7 '+sug.theirSingleLoc+'</p></div></div>'
+      +(sug.note?'<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From '+sug.commName+'</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">\u201c'+sug.note+'\u201d</p></div>':'')
+      +(isPending
+        ?'<div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();suggestionDeclined(\''+sug.id+'\')">Not interested</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();openSuggestionProfile(\''+sug.id+'\')">View profile \u2192</button></div>'
+        :'<div style="background:var(--bg2);border-radius:var(--r);padding:9px 12px;text-align:center;font-size:12px;color:var(--tx2)">'+_sugStatusLabel(sug)+'</div>')
+      +'</div></div>';
+  }).join('');
+  // Regular intro cards (unchanged)
+  var introHtml=intros.map(i=>`<div class="ic" onclick="openIntroDetail('${i.id}')"><div class="ic-accent"></div><div class="ic-body"><div class="between mb10"><span class="pill pill-new">New intro</span><span class="tiny">${ago(i.ts)}</span></div><div class="row gap8 mb10">${av(ini(i.sName),i.ci,50)}<div class="flex1"><div style="font-size:17px;font-weight:700">${i.sName}, ${i.sAge}</div><p class="tiny">${i.sJob} \u00b7 ${i.sLoc}</p></div></div><div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From ${i.mmName} (${i.mmRel})</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${i.ctx||'No context yet'}"</p></div><div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro('${i.id}')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro('${i.id}')">Accept ✓</button></div></div></div>`).join('');
+  list.innerHTML=sugHtml+introHtml;
+}
 function renderMatches(){const list=document.getElementById('matches-list');if(!list)return;const ms=DB.matches();if(!ms.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💬</div><h3>No matches yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Accept an intro to start a conversation</p></div>`;return}list.innerHTML=ms.map(m=>{const msgs=DB.msgs(m.id),last=msgs[msgs.length-1];return `<div class="card card-tap" style="padding:12px 14px" onclick="openChat('${m.id}')"><div class="row" style="gap:12px">${av(ini(m.oName),m.ci,50)}<div class="flex1" style="min-width:0"><div class="between"><div style="font-size:16px;font-weight:700">${m.oName}</div><div class="tiny">${last?ago(last.ts):''}</div></div><div class="row mt4" style="gap:6px">${m.unread?'<div class="unread"></div>':''}<p style="font-size:14px;color:${m.unread?'var(--tx)':'var(--tx3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:${m.unread?'600':'400'}">${last?last.text:'Matched via '+m.mmName}</p></div><p class="tiny mt4">Intro by ${m.mmName}</p></div></div></div>`}).join('')}
 function renderActivity(){
   const list=document.getElementById('activity-list');
