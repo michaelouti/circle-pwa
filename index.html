@@ -1825,7 +1825,7 @@ function openSuggestFlow(connId,theirSingleId,theirSingleName){
 
 function selectSuggestSingle(singleId,singleName){
   S._sugMySingleId=singleId;S._sugMySingleName=singleName;
-  document.querySelectorAll('[id^="sug-pick-"]').forEach(function(el){
+  document.querySelectorAll('[id^="sug-pick-"]:not(#sug-pick-btn)').forEach(function(el){
     var sel=el.dataset.sid===singleId;
     el.style.borderColor=sel?'var(--p)':'var(--bd2)';
     el.style.background=sel?'var(--p1)':'';
@@ -2256,7 +2256,9 @@ function viewCoMmSingle(connId,singleId){
   }
   // Privacy note (no personal matchmaker note per spec)
   var privNote='<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:flex-start;gap:9px;margin-bottom:4px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="5" r="2.5"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg><p style="font-size:12px;color:var(--tx2);line-height:1.55">Profile shared by <strong>'+conn.name+'</strong>. Personal matchmaker notes are private and not visible here.</p></div>';
-  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+bioHtml+vcQaHtml+privNote;
+  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'
+    +'<div style="margin-bottom:16px"><button data-cnn="'+connId+'" data-sid="'+s.id+'" data-sname="'+s.name+'" onclick="openSuggestFlow(this.dataset.cnn,this.dataset.sid,this.dataset.sname)" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;gap:8px;font-size:14px"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 4v12M4 10h12"/></svg>Suggest a match</button></div>'
+    +bioHtml+vcQaHtml+privNote;
   var titleEl=document.getElementById('prof-preview-title');
   if(titleEl)titleEl.textContent=s.name+"'s profile";
   go('prof-preview');
