@@ -2046,7 +2046,8 @@ function renderCommDetail(connId){
   var body=document.getElementById('comm-detail-body');
   if(!body)return;
   var perms=DB.commPerms();var singles=DB.singles();
-  // Their singles
+
+  // ── Their singles (clickable) ──────────────────────────
   var html='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">'+conn.name+'\u2019s singles</div>';
   if(conn.theirSingles&&conn.theirSingles.length){
     conn.theirSingles.forEach(function(s){
@@ -2054,7 +2055,8 @@ function renderCommDetail(connId){
       var ph=s.photos&&s.photos.length
         ?'<img src="'+s.photos[0]+'" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
         :'<div style="position:absolute;inset:0;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
-      html+='<div data-cid="'+connId+'" data-sid="'+s.id+'" onclick="viewCommSingle(this.dataset.cid,this.dataset.sid)" style="border-radius:12px;overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);display:flex;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer;transition:box-shadow .15s" data-cnn="'+connId+'" data-sid="'+s.id+'" onclick="viewCoMmSingle(this.dataset.cnn,this.dataset.sid)">'
+      // Single data-cnn + data-sid → single onclick, no duplicates
+      html+='<div data-cnn="'+connId+'" data-sid="'+s.id+'" onclick="viewCoMmSingle(this.dataset.cnn,this.dataset.sid)" style="border-radius:12px;overflow:hidden;background:var(--bg);border:.5px solid var(--bd2);display:flex;margin-bottom:10px;box-shadow:0 1px 6px rgba(0,0,0,.06);cursor:pointer">'
         +'<div style="width:72px;height:82px;flex-shrink:0;position:relative;overflow:hidden">'+ph+'</div>'
         +'<div style="flex:1;padding:10px 12px;display:flex;flex-direction:column;justify-content:center">'
         +'<div style="font-size:13.5px;font-weight:700;color:var(--tx)">'+s.name+', '+s.age+'</div>'
@@ -2065,8 +2067,11 @@ function renderCommDetail(connId){
         +'<div style="padding:0 12px;display:flex;align-items:center;color:var(--tx3);font-size:18px">\u203a</div>'
         +'</div>';
     });
-  }else{html+='<div style="text-align:center;padding:20px 0;color:var(--tx3);font-size:13px">No singles shared yet</div>';}
-  // Permission controls
+  } else {
+    html+='<div style="text-align:center;padding:20px 0;color:var(--tx3);font-size:13px">No singles shared yet</div>';
+  }
+
+  // ── Your singles permissions (photo+name tappable, toggle separate) ──
   html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>'
     +'<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
   if(singles.length){
@@ -2077,15 +2082,24 @@ function renderCommDetail(connId){
       var ph=s.photos&&s.photos.length
         ?'<img src="'+s.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
         :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:'+col.tc+'">'+ini(s.name)+'</div>';
-      html+='<div class="comm-perm-row"><div class="comm-perm-av">'+ph+'</div>'
+      html+='<div class="comm-perm-row">'
+        // Left: avatar + name → clickable to view profile
+        +'<div data-sid="'+s.id+'" onclick="viewSingleProfile(this.dataset.sid)" style="display:flex;align-items:center;gap:10px;flex:1;cursor:pointer;-webkit-tap-highlight-color:transparent">'
+        +'<div class="comm-perm-av">'+ph+'</div>'
         +'<div class="comm-perm-name">'+s.name+'</div>'
+        +'</div>'
+        // Right: visibility label + toggle (stopPropagation so it doesn't trigger profile)
         +'<span style="font-size:11px;color:'+(isVis?'var(--ok)':'var(--tx3)')+';margin-right:8px;min-width:40px;text-align:right">'+(isVis?'Visible':'Hidden')+'</span>'
-        +'<button class="comm-tog '+(isVis?'on':'off')+'" onclick="toggleCommSingleVis(\''+connId+'\',\''+s.id+'\')"></button></div>';
+        +'<button class="comm-tog '+(isVis?'on':'off')+'" data-cid="'+connId+'" data-sid="'+s.id+'" onclick="event.stopPropagation();toggleCommSingleVis(this.dataset.cid,this.dataset.sid)"></button>'
+        +'</div>';
     });
-  }else{html+='<div style="color:var(--tx3);font-size:13px;padding:12px 0">No singles added yet</div>';}
-  // Actions
+  } else {
+    html+='<div style="color:var(--tx3);font-size:13px;padding:12px 0">No singles added yet</div>';
+  }
+
+  // ── Actions ───────────────────────────────────────────
   html+='<div style="margin-top:24px;padding-top:16px;border-top:.5px solid var(--bd)">'
-    +'<button onclick="removeCoMm(\''+connId+'\')" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
+    +'<button data-cid="'+connId+'" onclick="removeCoMm(this.dataset.cid)" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
     +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
     +'Remove co-matchmaker</button></div>';
   body.innerHTML=html;
