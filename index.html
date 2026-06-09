@@ -1740,14 +1740,29 @@ function mcFabAction() {
 // ── CO-MATCHMAKERS ──────────────────────────────────────────────────
 
 function seedCoMmDemo(){
-  if(DB.commConnections().length>0)return;
+  var _enrichedPaulSingles=[
+    {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,
+     photos:['https://randomuser.me/api/portraits/men/18.jpg'],
+     religion:'Agnostic',height:182,
+     qs:{intent:'Looking for a serious relationship',location:'Open to moving for the right person',family:'Wants children one day',sport:'Loves hiking and rock climbing',travel:'Travels often, passionate about new cultures',food:'Loves trying new restaurants and cooking at home'}},
+    {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,
+     photos:['https://randomuser.me/api/portraits/women/28.jpg'],
+     religion:'Catholic',height:165,
+     qs:{intent:'Looking for a serious long-term relationship',location:'Would consider relocating',family:'Hopes to start a family',sport:'Yoga daily, enjoys swimming',travel:'Loves slow travel and off-the-beaten-path destinations',food:'Vegetarian, passionate about healthy cooking'}}
+  ];
+  var comms=DB.commConnections();
+  // Migrate: enrich Paul's demo singles if they lack the new fields (religion, height, qs)
+  var paul=comms.find(function(c){return c.id==='comm_demo_paul';});
+  if(paul&&paul.theirSingles&&paul.theirSingles[0]&&!paul.theirSingles[0].qs){
+    paul.theirSingles=_enrichedPaulSingles;
+    DB.setCommConnections(comms);
+  }
+  if(comms.length>0)return;
+  // First-time seed
   var conns=[
     {id:'comm_demo_paul',name:'Paul',ci:2,status:'active',initiatedBy:'them',
      createdAt:Date.now()-86400000*5,acceptedAt:Date.now()-86400000*4,
-     theirSingles:[
-       {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,photos:['https://randomuser.me/api/portraits/men/18.jpg'],religion:'Agnostic',height:182,qs:{intent:'Looking for a serious relationship',location:'Open to moving for the right person',family:'Wants children one day',sport:'Loves hiking and rock climbing',travel:'Travels often, passionate about new cultures',food:'Loves trying new restaurants and cooking at home'}},
-       {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,photos:['https://randomuser.me/api/portraits/women/28.jpg'],religion:'Catholic',height:165,qs:{intent:'Looking for a serious long-term relationship',location:'Would consider relocating',family:'Hopes to start a family',sport:'Yoga daily, enjoys swimming',travel:'Loves slow travel and off-the-beaten-path destinations',food:'Vegetarian, passionate about healthy cooking'}}
-     ]},
+     theirSingles:_enrichedPaulSingles},
     {id:'comm_demo_lea',name:'L\u00e9a',ci:1,status:'pending',initiatedBy:'them',createdAt:Date.now()-3600000*4}
   ];
   DB.setCommConnections(conns);
