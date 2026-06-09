@@ -1745,8 +1745,8 @@ function seedCoMmDemo(){
     {id:'comm_demo_paul',name:'Paul',ci:2,status:'active',initiatedBy:'them',
      createdAt:Date.now()-86400000*5,acceptedAt:Date.now()-86400000*4,
      theirSingles:[
-       {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,photos:['https://randomuser.me/api/portraits/men/18.jpg']},
-       {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,photos:['https://randomuser.me/api/portraits/women/28.jpg']}
+       {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,photos:['https://randomuser.me/api/portraits/men/18.jpg'],religion:'Agnostic',height:182,qs:{intent:'Looking for a serious relationship',location:'Open to moving for the right person',family:'Wants children one day',sport:'Loves hiking and rock climbing',travel:'Travels often, passionate about new cultures',food:'Loves trying new restaurants and cooking at home'}},
+       {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,photos:['https://randomuser.me/api/portraits/women/28.jpg'],religion:'Catholic',height:165,qs:{intent:'Looking for a serious long-term relationship',location:'Would consider relocating',family:'Hopes to start a family',sport:'Yoga daily, enjoys swimming',travel:'Loves slow travel and off-the-beaten-path destinations',food:'Vegetarian, passionate about healthy cooking'}}
      ]},
     {id:'comm_demo_lea',name:'L\u00e9a',ci:1,status:'pending',initiatedBy:'them',createdAt:Date.now()-3600000*4}
   ];
@@ -2016,8 +2016,9 @@ function viewCoMmSingle(connId,singleId){
   if(!s)return;
   var col=AVCOLS[(s.ci||0)%AVCOLS.length];
   // Build hero - same design as viewSingleProfile
+  window._profPhotos=s.photos||[];
   var heroHtml=(s.photos&&s.photos.length)
-    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+s.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block"></div>';}).join('')+'</div>'
+    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+s.photos.map(function(p,i){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;cursor:pointer" onclick="openLightbox('+i+')"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;pointer-events:none"></div>';}).join('')+'</div>'
     :'<div style="height:320px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:'+col.tc+';border:2.5px solid rgba(255,255,255,.3)">'+ini(s.name)+'</div></div>';
   // Meta icons (same as viewSingleProfile)
   var _is='width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.88)" stroke-width="1.5" stroke-linecap="round"';
@@ -2030,9 +2031,28 @@ function viewCoMmSingle(connId,singleId){
   var overlay='<div style="position:absolute;bottom:0;left:0;right:0;padding:40px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%)"><div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:8px">'+s.name+(s.age?', '+s.age:'')+'</div><div style="display:flex;flex-wrap:wrap;gap:8px 16px">'+_metaHtml+'</div></div>';
   // Bio
   var bioHtml=s.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+s.name+'</div><p style="font-size:15px;color:var(--tx);line-height:1.65">'+s.bio+'</p></div>':'';
+  // Q&A tiles (same config as viewSingleProfile, notes excluded per spec)
+  var vcQC={intent:{label:'Looking for',color:'#E07060'},location:{label:'Location flexibility',color:'#E07060'},family:{label:'Family',color:'#E07060'},sport:{label:'Physical activity',color:'#E07060'},travel:{label:'Travel',color:'#E07060'},food:{label:'Food lifestyle',color:'#E07060'}};
+  var vcQP={intent:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',family:'<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',sport:'<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',travel:'<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',food:'<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>'};
+  var vcQaHtml='';
+  if(s.qs&&Object.keys(s.qs).length){
+    var vcEntries=Object.entries(s.qs);
+    vcQaHtml='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+      +vcEntries.map(function(kv,idx){
+        var cfg=vcQC[kv[0]]||{label:kv[0],color:'#E07060'};
+        var iconKey=kv[0]==='intent'?'intent':kv[0]==='location'?'location':kv[0]==='family'?'family':kv[0]==='sport'?'sport':kv[0]==='travel'?'travel':'food';
+        var icon='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="'+cfg.color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+vcQP[iconKey]+'</svg>';
+        var span=vcEntries.length%2!==0&&idx===vcEntries.length-1?'grid-column:span 2':'';
+        return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'">'
+          +'<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">'
+          +'<div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div>'
+          +'<span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div>'
+          +'<div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+kv[1]+'</div></div>';
+      }).join('')+'</div>';
+  }
   // Privacy note (no personal matchmaker note per spec)
   var privNote='<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:flex-start;gap:9px;margin-bottom:4px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="5" r="2.5"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg><p style="font-size:12px;color:var(--tx2);line-height:1.55">Profile shared by <strong>'+conn.name+'</strong>. Personal matchmaker notes are private and not visible here.</p></div>';
-  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+bioHtml+privNote;
+  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+bioHtml+vcQaHtml+privNote;
   var titleEl=document.getElementById('prof-preview-title');
   if(titleEl)titleEl.textContent=s.name+"'s profile";
   go('prof-preview');
@@ -2735,8 +2755,9 @@ function viewSingleProfile(sid) {
   if(!s)return;
   var col=AVCOLS[s.ci%AVCOLS.length];
   window._viewSid=sid;
+  window._profPhotos=s.photos||[];
   var heroHtml=(s.photos&&s.photos.length)
-    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">${s.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>`).join('')}</div>`
+    ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">${s.photos.map((p,i)=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;cursor:pointer" onclick="openLightbox(${i})"><img src="${p}" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;pointer-events:none"></div>`).join('')}</div>`
     :`<div style="height:320px;background:linear-gradient(145deg,${col.bg},${col.bg}bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:${col.tc};border:2.5px solid rgba(255,255,255,.3)">${ini(s.name)}</div></div>`;
   var bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
   var ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
