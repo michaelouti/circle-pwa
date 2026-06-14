@@ -125,7 +125,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .hvc-job{font-size:10.5px;color:rgba(255,255,255,.65);margin-top:2px}
 .hvc-intro{flex:1;background:var(--p);color:#fff;border:none;border-radius:11px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer;padding:8px 4px}
 .hvc-intro:active{opacity:.85}
-/* Co-matchmaker styles */
+/* Matchmaker network styles */
 .comm-card{background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);padding:13px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;transition:box-shadow .15s}
 .comm-card:active{box-shadow:0 2px 10px rgba(216,90,48,.12)}
 .comm-card-pending{opacity:.88}
@@ -136,6 +136,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .comm-badge{font-size:9.5px;font-weight:700;padding:3px 9px;border-radius:12px;border:.5px solid;flex-shrink:0}
 .comm-badge-pending{background:#FFF8E1;color:#D97706;border-color:#FDE68A}
 .comm-badge-active{background:#F0FAF4;color:#16A34A;border-color:#BBF7D0}
+.comm-explainer{background:var(--bg2);border-radius:var(--r3);padding:14px 16px;margin:12px 16px 0;position:relative}
 .comm-empty{text-align:center;padding:48px 20px 32px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .comm-empty-ico{width:58px;height:58px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center}
 .comm-empty-title{font-size:16px;font-weight:700;color:var(--tx);letter-spacing:-.2px}
@@ -514,12 +515,17 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div class="mc-tab-bar">
     <button class="mc-tab on" id="mc-t-singles" onclick="mcSwitchTab('singles')">Singles I'm helping</button>
     <button class="mc-tab" id="mc-t-mms" onclick="mcSwitchTab('mms')">My Matchmakers</button>
-    <button class="mc-tab" id="mc-t-comms" onclick="mcSwitchTab('comms')">Co-matchmakers</button>
+    <button class="mc-tab" id="mc-t-comms" onclick="mcSwitchTab('comms')">Matchmaker Network</button>
   </div>
   <div id="mc-counter" class="mc-counter"></div>
   <!-- Grids -->
   <div id="mc-singles-grid" class="mc-grid"></div>
   <div id="mc-mms-grid" class="mc-grid" style="display:none"></div>
+  <div id="mm-network-explainer" class="comm-explainer" style="display:none">
+    <button onclick="dismissMmNetworkExplainer()" style="position:absolute;top:10px;right:10px;background:none;border:none;cursor:pointer;color:var(--tx3);padding:4px;line-height:0"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+    <div style="font-size:14px;font-weight:700;color:var(--tx);margin-bottom:4px;padding-right:24px">What's a Matchmaker Network?</div>
+    <p style="font-size:12.5px;color:var(--tx2);line-height:1.5;margin:0;padding-right:24px">Connect with other matchmakers — like friends who also help their friends find someone — to see each other's singles and suggest introductions across both your circles. You always control what's visible.</p>
+  </div>
   <div id="mc-comms-grid" class="mc-grid" style="display:none"></div>
   <!-- Floating action button -->
   <div class="mc-fab" id="mc-fab">
@@ -948,7 +954,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <!-- MODAL: CO-MATCHMAKER ADD OPTIONS -->
 <div class="modal-ov" id="modal-comm-add">
   <div class="modal-sheet" style="padding:24px 20px 20px">
-    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px">Add Co-matchmaker</div>
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px">Add a Connection</div>
     <p style="font-size:13px;color:var(--tx2);margin-bottom:20px;line-height:1.5">Connect with another matchmaker to suggest introductions between your singles.</p>
     <button onclick="closeModal('modal-comm-add');showCoMmQR()" style="background:var(--bg2);border:.5px solid var(--bd2);border-radius:12px;width:100%;padding:14px 16px;display:flex;align-items:center;gap:12px;cursor:pointer;margin-bottom:10px;font-size:14px;font-weight:600;color:var(--tx)">
       <div style="width:36px;height:36px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="16" height="16" viewBox="0 0 22 22" fill="none" stroke="var(--p)" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="13" y="3" width="6" height="6" rx="1"/><rect x="3" y="13" width="6" height="6" rx="1"/><rect x="13" y="13" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/><rect x="16.5" y="13" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/><rect x="13" y="16.5" width="2.5" height="2.5" rx=".4" fill="var(--p)" stroke="none"/></svg></div>
@@ -966,7 +972,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-comm-qr">
   <div class="modal-sheet" style="padding:24px 20px 20px;position:relative">
     <button onclick="closeModal('modal-comm-qr')" style="position:absolute;top:14px;right:14px;background:var(--bg3);border:none;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:14px;color:var(--tx2)">✕</button>
-    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Your Co-matchmaker Code</div>
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Your Connection Code</div>
     <p style="font-size:13px;color:var(--tx2);line-height:1.5;margin-bottom:20px">Share this with other matchmakers to connect and suggest introductions between your singles.</p>
     <div id="comm-qr-out" style="display:flex;justify-content:center;margin-bottom:20px"></div>
     <button onclick="shareCoMmQR()" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px">Share my code</button>
@@ -978,7 +984,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div class="modal-sheet" style="padding:28px 20px 24px;text-align:center">
     <div id="comm-confirm-av" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 10px"></div>
     <div id="comm-confirm-name" style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px"></div>
-    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">By connecting as co-matchmakers, you'll each be able to view each other's singles and suggest introductions.<br><br>You control who sees which of your singles at any time.</p>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">By connecting, you'll each be able to view each other's singles and suggest introductions.<br><br>You control who sees which of your singles at any time.</p>
     <button id="comm-confirm-btn" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;margin-bottom:10px"></button>
     <button onclick="closeModal('modal-comm-confirm')" style="background:none;border:none;color:var(--tx3);font-size:14px;font-weight:600;cursor:pointer;width:100%;padding:8px">Cancel</button>
   </div>
@@ -987,10 +993,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <!-- MODAL: CO-MATCHMAKER INCOMING INVITE -->
 <div class="modal-ov" id="modal-comm-invite">
   <div class="modal-sheet" style="padding:28px 20px 24px;text-align:center">
-    <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Co-matchmaker Invitation</div>
+    <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px">Connection Request</div>
     <div id="comm-invite-av" style="width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;margin:0 auto 10px"></div>
     <div id="comm-invite-name" style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px;margin-bottom:8px"></div>
-    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">wants to connect with you as a co-matchmaker. If you accept, you'll each be able to view each other's singles and suggest introductions between them.</p>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.6;margin-bottom:24px">wants to connect with you to share matchmaker networks. If you accept, you'll each be able to view each other's singles and suggest introductions between them.</p>
     <button id="comm-invite-accept-btn" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;margin-bottom:10px">Accept</button>
     <button id="comm-invite-decline-btn" style="background:none;border:none;color:var(--tx3);font-size:14px;font-weight:600;cursor:pointer;width:100%;padding:8px">Decline</button>
   </div>
@@ -1834,14 +1840,22 @@ function mcSwitchTab(tab) {
     fabLabel.textContent = 'Introduce';
     fabBtn.querySelector('svg').style.display = '';
   } else if (tab === 'comms') {
-    fabLabel.textContent = 'Add co-matchmaker';
+    fabLabel.textContent = 'Add connection';
     fabBtn.querySelector('svg').style.display = 'none';
   } else {
     fabLabel.textContent = 'Add to your Team';
     fabBtn.querySelector('svg').style.display = 'none';
   }
+  var mmExpl = document.getElementById('mm-network-explainer');
+  if (mmExpl) mmExpl.style.display = (tab === 'comms' && localStorage.getItem('c_seen_mm_network') !== '1') ? '' : 'none';
   if (tab === 'comms') renderCoMmsGrid();
   renderMcCounter();
+}
+
+function dismissMmNetworkExplainer(){
+  localStorage.setItem('c_seen_mm_network','1');
+  var mmExpl = document.getElementById('mm-network-explainer');
+  if (mmExpl) mmExpl.style.display = 'none';
 }
 
 function renderMcCounter() {
@@ -2166,7 +2180,7 @@ function openCoMmMenu(connId,btn){
   if(!conn)return;
   openCtxMenu(btn,[
     {label:'View details',action:function(){goCommDetail(connId);}},
-    {label:'Remove co-matchmaker',action:function(){removeCoMm(connId);},danger:true}
+    {label:'Remove connection',action:function(){removeCoMm(connId);},danger:true}
   ]);
 }
 
@@ -2177,11 +2191,11 @@ function renderCoMmsGrid(){
   if(!comms.length){
     grid.innerHTML='<div class="comm-empty">'
       +'<div class="comm-empty-ico"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--p)" stroke-width="1.8" stroke-linecap="round"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><path d="M16 3.13a4 4 0 010 7.75"/><path d="M21 21v-2a4 4 0 00-3-3.85"/></svg></div>'
-      +'<div class="comm-empty-title">No co-matchmakers yet</div>'
+      +'<div class="comm-empty-title">No connections yet</div>'
       +'<p class="comm-empty-sub">Connect with other matchmakers to suggest introductions between your singles.</p>'
       +'<button class="btn btn-p" style="border-radius:100px;gap:8px" onclick="addCoMatchmaker()">'
       +'<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>'
-      +'Add a co-matchmaker</button></div>';
+      +'Add a connection</button></div>';
     return;
   }
   var PSVG='<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity=".45"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg>';
@@ -2239,7 +2253,7 @@ function showCoMmQR(){
 
 function shareCoMmQR(){
   var u=DB.user()||{name:'a friend'};
-  var msg='Hi! I\u2019m on Circle, a matchmaking app. Let\u2019s connect as co-matchmakers to suggest introductions between our singles \uD83D\uDE0A circle-appp.netlify.app';
+  var msg='Hi! I\u2019m on Circle, a matchmaking app. Let\u2019s connect on Circle to share matchmaker networks \uD83D\uDE0A circle-appp.netlify.app';
   if(navigator.share){navigator.share({text:msg}).catch(function(){});}
   else{toast('Copy this link: circle-appp.netlify.app');}
 }
@@ -2311,7 +2325,7 @@ function acceptCommInvite(connId){
   renderCoMmsGrid();
   var ti=document.getElementById('comm-connected-title');
   var bd=document.getElementById('comm-connected-body');
-  if(ti)ti.textContent='You\u2019re now co-matchmakers with '+conn.name+'!';
+  if(ti)ti.textContent='You\u2019re now connected with '+conn.name+'!';
   if(bd)bd.textContent='You can now view each other\u2019s singles and suggest introductions. By default, all your singles are visible to '+conn.name+'. You can change this at any time by tapping their name.';
   showModal('modal-comm-connected');
 }
@@ -2322,10 +2336,10 @@ function declineCommInvite(connId){
 }
 
 function removeCoMm(connId){
-  if(!confirm('Remove this co-matchmaker? They will no longer be able to view your singles.'))return;
+  if(!confirm('Remove this connection? They will no longer be able to view your singles.'))return;
   DB.setCommConnections(DB.commConnections().filter(function(c){return c.id!==connId;}));
   DB.setCommPerms(DB.commPerms().filter(function(p){return p.connId!==connId;}));
-  back();renderCoMmsGrid();toast('Co-matchmaker removed');
+  back();renderCoMmsGrid();toast('Connection removed');
 }
 
 function toggleCommSingleVis(connId,singleId){
@@ -2566,7 +2580,7 @@ function renderCommDetail(connId){
   html+='<div style="margin-top:24px;padding-top:16px;border-top:.5px solid var(--bd)">'
     +'<button data-cid="'+connId+'" onclick="removeCoMm(this.dataset.cid)" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
     +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
-    +'Remove co-matchmaker</button></div>';
+    +'Remove connection</button></div>';
   body.innerHTML=html;
 }
 
