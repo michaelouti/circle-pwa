@@ -902,6 +902,49 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   </div>
 </div>
 
+<!-- MODAL: CO-MATCHMAKER REVIEW (Phase 3) -->
+<div class="modal-ov" id="modal-comm-review">
+  <div class="modal-sheet" style="padding:22px 20px calc(20px + var(--safe))">
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:14px"><span id="cr-comm-name"></span> is reviewing <span id="cr-single-name"></span>'s profile</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;padding:12px;background:var(--bg2);border-radius:12px">
+      <div id="cr-photo" style="width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0"></div>
+      <div style="min-width:0">
+        <div id="cr-name-age" style="font-size:14px;font-weight:700;color:var(--tx)"></div>
+        <div id="cr-job-loc" style="font-size:12px;color:var(--tx2);margin-top:1px"></div>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--tx2);margin-bottom:8px">Add a note for <span id="cr-their-name"></span>? (optional)</p>
+    <textarea id="comm-review-note" placeholder="E.g. I think you two would get along great…" style="width:100%;height:80px;border:.5px solid var(--bd2);border-radius:10px;padding:12px;font-size:14px;color:var(--tx);background:var(--bg);resize:none;font-family:inherit;box-sizing:border-box"></textarea>
+    <div style="display:flex;gap:10px;margin-top:16px">
+      <button onclick="commReviewDecline()" class="btn btn-s flex1" style="justify-content:center">Decline</button>
+      <button onclick="commReviewApprove()" class="btn btn-p flex1" style="justify-content:center">Approve →</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SINGLE'S RESPONSE TO CROSS-MATCHMAKER INTRO (Phase 3) -->
+<div class="modal-ov" id="modal-alex-response">
+  <div class="modal-sheet" style="padding:22px 20px calc(20px + var(--safe))">
+    <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:4px"><span id="ar-their-name"></span> is reviewing <span id="ar-single-name"></span>'s profile</div>
+    <div style="font-size:12px;color:var(--p);font-weight:700;margin-bottom:12px">Introduced through <span id="ar-comm-name"></span></div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;padding:12px;background:var(--bg2);border-radius:12px">
+      <div id="ar-photo" style="width:48px;height:48px;border-radius:50%;overflow:hidden;flex-shrink:0"></div>
+      <div style="min-width:0">
+        <div id="ar-name-age" style="font-size:14px;font-weight:700;color:var(--tx)"></div>
+        <div id="ar-job-loc" style="font-size:12px;color:var(--tx2);margin-top:1px"></div>
+      </div>
+    </div>
+    <div id="ar-note-wrap" style="display:none;background:var(--bg2);border-radius:10px;padding:12px;margin-bottom:14px">
+      <p style="font-size:13px;color:var(--tx);font-style:italic;margin:0" id="ar-note-txt"></p>
+      <p class="tiny mt4" id="ar-note-by" style="margin:4px 0 0"></p>
+    </div>
+    <div style="display:flex;gap:10px;margin-top:4px">
+      <button onclick="alexResponseResult(false)" class="btn btn-s flex1" style="justify-content:center">Not interested</button>
+      <button onclick="alexResponseResult(true)" class="btn btn-p flex1" style="justify-content:center">Interested →</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: CO-MATCHMAKER ADD OPTIONS -->
 <div class="modal-ov" id="modal-comm-add">
   <div class="modal-sheet" style="padding:24px 20px 20px">
@@ -1181,7 +1224,7 @@ const QS=[{id:'intent',q:'Relationship intent',a:['A serious relationship','Some
 const RELIGIONS=['Christian','Catholic','Muslim','Jewish','Buddhist','Hindu','Sikh','Agnostic','Atheist','Spiritual','Other','No preference'];
 const AVCOLS=[{bg:'#FDF0EB',tc:'#993C1D'},{bg:'#E3F2E8',tc:'#1B5E20'},{bg:'#EDE7F6',tc:'#4527A0'},{bg:'#E3F4FD',tc:'#0D47A1'},{bg:'#FFF8E1',tc:'#E65100'},{bg:'#FCE4EC',tc:'#880E4F'},{bg:'#E8F5E9',tc:'#2E7D32'},{bg:'#E0F7FA',tc:'#006064'}];
 let S={screen:'splash',stack:[],user:null,setup:{photos:[],tags:[],qs:{},prefs:{}},dob:{d:15,m:6,y:1995},hUnit:'cm',htVal:170,carIdx:0,introSingle:null,introId:null,currentIntro:null,currentMatch:null,scanId:null,obPage:0,fbIntroId:null};
-const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)},commConnections:()=>DB.g('comm_connections')||[],setCommConnections:v=>DB.s('comm_connections',v),commPerms:()=>DB.g('comm_perms')||[],setCommPerms:v=>DB.s('comm_perms',v),suggestions:()=>DB.g('suggestions')||[],setSuggestions:v=>DB.s('suggestions',v)};
+const DB={g:k=>{try{return JSON.parse(localStorage.getItem('c_'+k))}catch{return null}},s:(k,v)=>localStorage.setItem('c_'+k,JSON.stringify(v)),rm:k=>localStorage.removeItem('c_'+k),user:()=>DB.g('user'),setUser:u=>DB.s('user',u),singles:()=>DB.g('singles')||[],setSingles:v=>DB.s('singles',v),intros:()=>DB.g('intros')||[],setIntros:v=>DB.s('intros',v),matches:()=>DB.g('matches')||[],setMatches:v=>DB.s('matches',v),msgs:id=>DB.g('msgs_'+id)||[],setMsgs:(id,v)=>DB.s('msgs_'+id,v),addMsg:(id,m)=>{const ms=DB.msgs(id);ms.push(m);DB.setMsgs(id,ms)},notifs:()=>DB.g('notifs')||[],addNotif:n=>{const ns=DB.notifs();ns.unshift(n);DB.s('notifs',ns)},commConnections:()=>DB.g('comm_connections')||[],setCommConnections:v=>DB.s('comm_connections',v),commPerms:()=>DB.g('comm_perms')||[],setCommPerms:v=>DB.s('comm_perms',v),suggestions:()=>DB.g('suggestions')||[],setSuggestions:v=>DB.s('suggestions',v),activity:()=>DB.g('activity')||[],setActivity:v=>DB.s('activity',v),addActivity:a=>{const acts=DB.activity();acts.unshift(a);DB.s('activity',acts)}};
 let toastT;
 function toast(msg,ms=2500){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>el.classList.remove('on'),ms)}
 function av(i,ci,sz=40){const c=AVCOLS[ci%AVCOLS.length];return `<div class="av" style="width:${sz}px;height:${sz}px;background:${c.bg};color:${c.tc};font-size:${Math.round(sz*.36)}px;font-weight:700">${i}</div>`}
@@ -1890,8 +1933,9 @@ function sendSuggestion(note){
     theirSingleJob:ts.job||'',theirSingleLoc:ts.loc||'',theirSingleCi:ts.ci||0,
     theirSinglePhotos:ts.photos||[],
     mySingleId:S._sugMySingleId,mySingleName:ms.name,commName:conn.name,
-    note:note||'',status:'pending_their_single',feedback:'',createdAt:Date.now()};
+    note:note||'',status:'pending_their_single',feedback:'',commNote:'',reviewDeadline:null,createdAt:Date.now()};
   var sugs=DB.suggestions();sugs.push(sug);DB.setSuggestions(sugs);
+  DB.addActivity({ic:'\ud83d\udd17',t:sug.commName+' suggested introducing '+sug.mySingleName+' to '+sug.theirSingleName,ts:Date.now()});
   if(S.screen==='suggest-pick')back();
   renderPending();
   renderCommDetail(S._sugConnId);
@@ -1902,7 +1946,10 @@ function _sugStatusLabel(sug){
   return {'pending_their_single':'Awaiting your response',
     'their_single_interested':'You expressed interest \u2014 awaiting matchmaker review',
     'closed_declined':'You passed on this suggestion',
-    'closed_accepted':'Introduction created'}[sug.status]||sug.status;
+    'pending_alex_response':sug.theirSingleName+' is now reviewing '+sug.mySingleName+'\u2019s profile',
+    'closed_accepted':'Introduction created \u2014 you matched! \ud83c\udf89',
+    'closed_declined_comm':'This introduction didn\u2019t proceed.',
+    'closed_declined_alex':'This introduction didn\u2019t proceed.'}[sug.status]||sug.status;
 }
 
 function openSuggestionProfile(sugId){
@@ -1931,7 +1978,9 @@ function suggestionInterested(sugId){
   var sug=sugs.find(function(s){return s.id===sugId;});
   if(!sug)return;
   sug.status='their_single_interested';
+  sug.reviewDeadline=Date.now()+86400000;
   DB.setSuggestions(sugs);
+  DB.addActivity({ic:'\u2705',t:'You said '+sug.mySingleName+' is interested in '+sug.theirSingleName+' \u2014 sent to '+sug.commName+' for review',ts:Date.now()});
   back();
   showModal('modal-suggest-interested');
   renderPending();
@@ -1958,9 +2007,126 @@ function sendDeclineFeedback(sugId,feedback){
   if(!sug)return;
   sug.status='closed_declined';sug.feedback=feedback||'';
   DB.setSuggestions(sugs);
+  DB.addActivity({ic:'\u274c',t:'You said '+sug.mySingleName+' isn\u2019t interested in '+sug.theirSingleName,ts:Date.now()});
   renderPending();
   if(S._commDetailId)renderCommDetail(S._commDetailId);
   toast('Suggestion closed');
+}
+
+function _sugMiniProfile(prefix,ms){
+  var photoEl=document.getElementById(prefix+'-photo');
+  var nameEl=document.getElementById(prefix+'-name-age');
+  var jobEl=document.getElementById(prefix+'-job-loc');
+  if(!photoEl||!nameEl||!jobEl)return;
+  var col=AVCOLS[(ms.ci||0)%AVCOLS.length];
+  photoEl.innerHTML=ms.photos&&ms.photos.length
+    ?'<img src="'+ms.photos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+    :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:'+col.tc+'">'+ini(ms.name)+'</div>';
+  nameEl.textContent=ms.name+', '+ms.age;
+  jobEl.textContent=(ms.job||'')+' \u00b7 '+(ms.loc||'');
+}
+
+function openCommReview(sugId){
+  var sug=DB.suggestions().find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  S._commReviewSugId=sugId;
+  var ms=DB.singles().find(function(s){return s.id===sug.mySingleId;});
+  document.getElementById('cr-comm-name').textContent=sug.commName;
+  document.getElementById('cr-single-name').textContent=sug.mySingleName;
+  document.getElementById('cr-their-name').textContent=sug.theirSingleName;
+  var txt=document.getElementById('comm-review-note');
+  if(txt)txt.value='';
+  if(ms)_sugMiniProfile('cr',ms);
+  showModal('modal-comm-review');
+}
+
+function commReviewApprove(){
+  var sugId=S._commReviewSugId;
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  var note=(document.getElementById('comm-review-note')||{}).value||'';
+  sug.commNote=note;
+  sug.status='pending_alex_response';
+  DB.setSuggestions(sugs);
+  closeModal('modal-comm-review');
+  DB.addActivity({ic:'\ud83d\udc4d',t:sug.commName+' approved introducing '+sug.mySingleName+' to '+sug.theirSingleName+(note?' with a note':''),ts:Date.now()});
+  renderCommDetail(sug.connId);
+  renderActivity();
+  toast(sug.commName+' approved the introduction');
+}
+
+function commReviewDecline(){
+  var sugId=S._commReviewSugId;
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  sug.status='closed_declined_comm';
+  DB.setSuggestions(sugs);
+  closeModal('modal-comm-review');
+  DB.addActivity({ic:'\u274c',t:sug.commName+' decided not to proceed with introducing '+sug.mySingleName+' to '+sug.theirSingleName,ts:Date.now()});
+  renderCommDetail(sug.connId);
+  renderActivity();
+  toast('Introduction closed');
+}
+
+function simulateAutoApprove(sugId){
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  sug.commNote=sug.commNote||'';
+  sug.status='pending_alex_response';
+  DB.setSuggestions(sugs);
+  DB.addActivity({ic:'\u23f0',t:'24h passed \u2014 introduction of '+sug.mySingleName+' to '+sug.theirSingleName+' was auto-approved',ts:Date.now()});
+  renderCommDetail(sug.connId);
+  renderActivity();
+  toast('Auto-approved after 24h');
+}
+
+function openAlexResponse(sugId){
+  var sug=DB.suggestions().find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  S._alexRespSugId=sugId;
+  var ms=DB.singles().find(function(s){return s.id===sug.mySingleId;});
+  document.getElementById('ar-their-name').textContent=sug.theirSingleName;
+  document.getElementById('ar-single-name').textContent=sug.mySingleName;
+  document.getElementById('ar-comm-name').textContent=sug.commName;
+  if(ms)_sugMiniProfile('ar',ms);
+  var noteWrap=document.getElementById('ar-note-wrap');
+  if(sug.commNote){
+    document.getElementById('ar-note-txt').textContent='\u201c'+sug.commNote+'\u201d';
+    document.getElementById('ar-note-by').textContent='\u2014 '+sug.commName;
+    noteWrap.style.display='block';
+  } else {
+    noteWrap.style.display='none';
+  }
+  showModal('modal-alex-response');
+}
+
+function alexResponseResult(interested){
+  var sugId=S._alexRespSugId;
+  var sugs=DB.suggestions();
+  var sug=sugs.find(function(s){return s.id===sugId;});
+  if(!sug)return;
+  closeModal('modal-alex-response');
+  if(interested){
+    sug.status='closed_accepted';
+    DB.setSuggestions(sugs);
+    var m={id:'match_'+Date.now(),oName:sug.theirSingleName,oJob:sug.theirSingleJob,oLoc:sug.theirSingleLoc,mmName:sug.commName,ctx:sug.commNote||'',ts:Date.now(),ci:sug.theirSingleCi,unread:0};
+    var matches=DB.matches();matches.unshift(m);DB.setMatches(matches);
+    DB.addActivity({ic:'\u2728',t:'You matched with '+sug.theirSingleName+'! Intro by '+sug.commName,ts:Date.now()});
+    renderCommDetail(sug.connId);
+    renderActivity();
+    renderMatches();
+    toast('Matched with '+sug.theirSingleName+'! \ud83c\udf89');
+  } else {
+    sug.status='closed_declined_alex';
+    DB.setSuggestions(sugs);
+    DB.addActivity({ic:'\ud83d\udc94',t:sug.theirSingleName+' wasn\u2019t interested in '+sug.mySingleName,ts:Date.now()});
+    renderCommDetail(sug.connId);
+    renderActivity();
+    toast('Introduction closed');
+  }
 }
 
 function seedCoMmDemo(){
@@ -2365,16 +2531,33 @@ function renderCommDetail(connId){
     sugs.forEach(function(sg){
       var sTx={
         'pending_their_single':'Awaiting '+sg.mySingleName+'\u2019s response',
-        'their_single_interested':sg.mySingleName+' is interested \u2014 awaiting matchmaker review',
+        'their_single_interested':sg.mySingleName+' is interested \u2014 awaiting '+sg.commName+'\u2019s review',
+        'pending_alex_response':sg.theirSingleName+' is reviewing '+sg.mySingleName+'\u2019s profile',
         'closed_declined':'Closed \u2014 '+sg.mySingleName+' passed',
-        'closed_accepted':'Introduction created'
+        'closed_declined_comm':'This introduction didn\u2019t proceed.',
+        'closed_declined_alex':'This introduction didn\u2019t proceed.',
+        'closed_accepted':'Introduction created \u2014 you matched! \ud83c\udf89'
       }[sg.status]||sg.status;
-      var sCol={'pending_their_single':'var(--tx2)','their_single_interested':'var(--ok)','closed_declined':'var(--tx3)','closed_accepted':'var(--ok)'}[sg.status]||'var(--tx2)';
+      var sCol={'pending_their_single':'var(--tx2)','their_single_interested':'var(--ok)','pending_alex_response':'var(--ok)','closed_declined':'var(--tx3)','closed_declined_comm':'var(--tx3)','closed_declined_alex':'var(--tx3)','closed_accepted':'var(--ok)'}[sg.status]||'var(--tx2)';
+      var sActions='';
+      if(sg.status==='their_single_interested'){
+        sActions='<div style="display:flex;gap:8px;margin-top:10px">'
+          +'<button data-sid="'+sg.id+'" onclick="openCommReview(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center;padding:9px;font-size:12px">Simulate '+sg.commName+'\u2019s response</button>'
+          +'<button data-sid="'+sg.id+'" onclick="simulateAutoApprove(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center;padding:9px;font-size:12px">Simulate 24h \u2192</button>'
+          +'</div>'
+          +'<div style="font-size:10px;color:var(--tx3);margin-top:6px">Auto-approves in 24h if '+sg.commName+' doesn\u2019t respond</div>';
+      } else if(sg.status==='pending_alex_response'){
+        sActions='<div style="margin-top:10px">'
+          +'<button data-sid="'+sg.id+'" onclick="openAlexResponse(this.dataset.sid)" class="btn btn-p" style="justify-content:center;padding:9px;font-size:12px;width:100%">Simulate '+sg.theirSingleName+'\u2019s response</button>'
+          +'</div>';
+      }
       html+='<div style="background:var(--bg2);border-radius:var(--r3);padding:12px 14px;margin-bottom:8px">'
         +'<div style="font-size:13px;font-weight:700;color:var(--tx);margin-bottom:4px">'+sg.theirSingleName+' \u2192 '+sg.mySingleName+'</div>'
         +'<div style="font-size:11px;color:'+sCol+'">'+sTx+'</div>'
         +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+ago(sg.createdAt)+'</div>'
         +(sg.feedback?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Feedback: \u201c'+sg.feedback+'\u201d</div>':'')
+        +(sg.commNote&&sg.status!=='their_single_interested'?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Note to '+sg.theirSingleName+': \u201c'+sg.commNote+'\u201d</div>':'')
+        +sActions
         +'</div>';
     });
   }
@@ -2568,7 +2751,7 @@ function renderActivity(){
   const list=document.getElementById('activity-list');
   if(!list)return;
   const now=Date.now();
-  const acts=[
+  const staticActs=[
     {ic:'💌',t:'Marie introduced you to Thomas — 58h left to respond',ts:now-3600000*14},
     {ic:'📩',t:'Paul introduced you to Lea — 66h left to respond',ts:now-3600000*6},
     {ic:'🤝',t:'Julie introduced you to Hugo — new today!',ts:now-3600000*2},
@@ -2578,6 +2761,7 @@ function renderActivity(){
     {ic:'✨',t:'You matched with Julien — 3 matches total!',ts:now-3600000*120},
     {ic:'🔍',t:'Paul scanned a QR code for Sophie — 3 potential intros',ts:now-3600000*72}
   ];
+  const acts=DB.activity().concat(staticActs).sort(function(a,b){return b.ts-a.ts;});
   list.innerHTML=acts.map(a=>`<div class="tl-item"><div style="font-size:20px;flex-shrink:0">${a.ic}</div><div class="flex1"><p style="font-size:14px;color:var(--tx)">${a.t}</p><p class="tiny">${ago(a.ts)}</p></div></div>`).join('');
 }
 function openIntroDetail(id){
