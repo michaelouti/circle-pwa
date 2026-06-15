@@ -863,7 +863,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <span id="sug-pick-title" style="font-size:17px;font-weight:700;color:var(--tx);flex:1;text-align:center;letter-spacing:-.3px"></span>
     <div style="width:40px"></div>
   </div>
-  <div style="flex-shrink:0;padding:14px 16px 4px;font-size:13px;color:var(--tx2)">Which of your singles would you like to introduce?</div>
+  <div style="flex-shrink:0;padding:14px 16px 4px;font-size:13px;color:var(--tx2)">Which of your singles would you like to send <span id="sug-pick-their-name" style="font-weight:700;color:var(--tx)"></span>'s profile to?</div>
   <div id="sug-pick-list" style="flex:1;overflow-y:auto;padding:8px 16px;-webkit-overflow-scrolling:touch"></div>
   <div style="flex-shrink:0;padding:10px 16px 16px;border-top:.5px solid var(--bd)">
     <button id="sug-pick-btn" onclick="openSuggestNote()" class="btn btn-p" style="width:100%;justify-content:center;border-radius:12px;opacity:.45;pointer-events:none">Continue &#8594;</button>
@@ -1902,7 +1902,9 @@ function openSuggestFlow(connId,theirSingleId,theirSingleName){
 
 function initSuggestPick(){
   var titleEl=document.getElementById('sug-pick-title');
-  if(titleEl)titleEl.textContent='Introduce to '+(S._sugTheirSingleName||'');
+  if(titleEl)titleEl.textContent='Send '+(S._sugTheirSingleName||'')+"'s profile";
+  var subNameEl=document.getElementById('sug-pick-their-name');
+  if(subNameEl)subNameEl.textContent=S._sugTheirSingleName||'';
   var btn=document.getElementById('sug-pick-btn');
   if(btn){btn.style.opacity='.45';btn.style.pointerEvents='none';}
   var list=document.getElementById('sug-pick-list');
@@ -2673,9 +2675,8 @@ function renderCommDetail(connId){
 
   // ── Actions ────────────────────────────────────────────────────────
   html+='<div style="margin-top:24px;padding-top:16px;border-top:.5px solid var(--bd)">'
-    +'<button data-cid="'+connId+'" onclick="removeCoMm(this.dataset.cid)" style="background:none;border:none;color:#EF4444;font-size:13px;font-weight:600;cursor:pointer;padding:8px 0;display:flex;align-items:center;gap:6px">'
-    +'<svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M2 2l10 10M12 2L2 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>'
-    +'Remove connection</button></div>';
+    +'<button data-cid="'+connId+'" onclick="removeCoMm(this.dataset.cid)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">'
+    +'Remove '+conn.name+'</button></div>';
   body.innerHTML=html;
 }
 
