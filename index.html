@@ -1055,6 +1055,17 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   </div>
 </div>
 
+<!-- MODAL: PAUSE CONNECTION -->
+<div class="modal-ov" id="modal-pause-comm">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb8">Pause this connection?</h3>
+    <p class="cap mb20" id="pause-comm-msg">This connection won't be able to view your singles or suggest introductions while paused.</p>
+    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseComm()">Yes, pause</button>
+    <button class="btn btn-s" onclick="closeModal('modal-pause-comm')">Cancel</button>
+  </div>
+</div>
+
 <!-- MODAL: REMOVE MATCHMAKER -->
 <div class="modal-ov" id="modal-remove-mm">
   <div class="modal-sheet">
@@ -2479,6 +2490,70 @@ function viewCoMmSingle(connId,singleId){
   go('prof-preview');
 }
 
+function openCommDash(connId){
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  if(!conn){toast('Connection not found');return;}
+  var col=AVCOLS[(conn.ci||0)%AVCOLS.length];
+  var sugs=DB.suggestions().filter(function(sg){return sg.connId===connId;});
+  var matchesN=sugs.filter(function(sg){return sg.status==='closed_accepted';}).length;
+  var pendingN=sugs.filter(function(sg){return sg.status.indexOf('closed_')!==0;}).length;
+  document.getElementById('dash-title').textContent=conn.name+"'s Dashboard";
+  function fmtDate(ts){return new Date(ts).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});}
+  var actHtml='';
+  var acts=sugs.map(function(sg){
+    return {label:'Suggested '+sg.theirSingleName+' to '+sg.mySingleName+(sg.status==='closed_accepted'?' \u2014 it\u2019s a match! \ud83c\udf89':''), ts:sg.createdAt};
+  }).sort(function(a,b){return b.ts-a.ts;});
+  var prevDate='';
+  acts.forEach(function(a){
+    var d=fmtDate(a.ts);
+    if(d!==prevDate){actHtml+='<div class="sec-hd" style="padding-top:12px">'+d+'</div>';prevDate=d;}
+    actHtml+='<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:.5px solid var(--bd)">'
+      +'<div style="width:36px;height:36px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;flex-shrink:0">'
+      +'<svg width="16" height="16" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round"><path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/></svg></div>'
+      +'<div><p style="font-size:14px;color:var(--tx)">'+a.label+'</p><p class="tiny">'+ago(a.ts)+'</p></div></div>';
+  });
+  if(!acts.length)actHtml='<p style="text-align:center;color:var(--tx3);font-size:14px;padding:20px 0">No activity yet \u2014 suggest an introduction to '+conn.name+'! \ud83d\ude04</p>';
+  document.getElementById('dash-body').innerHTML=
+    '<div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">'
+    +'<div class="av" style="width:72px;height:72px;font-size:24px;background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
+    +'<div><h2 style="margin-bottom:2px">'+conn.name+'</h2><p class="cap">Matchmaker connection</p></div></div>'
+    +'<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px">'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--p)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><circle cx="7.5" cy="7" r="3"/><path d="M2 17c0-3 2.5-5 5.5-5M13 12v4M11 14h4"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+sugs.length+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Suggestions</div></div>'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="var(--ok)" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M9 15s-6-3.8-6-7.5C3 4.8 5.2 3 9 5.8c3.8-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+matchesN+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Matches</div></div>'
+    +'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 8px;text-align:center"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#5B8EE6" stroke-width="1.6" stroke-linecap="round" style="display:block;margin:0 auto 4px"><path d="M16 2L10 9l-3-3-5 5"/></svg><div style="font-size:20px;font-weight:700;color:var(--tx)">'+pendingN+'</div><div style="font-size:10px;color:var(--tx3);font-weight:600">Pending</div></div>'
+    +'</div>'
+    +'<div class="sec-hd" style="padding-top:0">Activity</div>'
+    +actHtml;
+  go('single-dash');
+}
+
+function messageComm(connId){
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  if(!conn)return;
+  var chatId='comm_direct_'+connId;
+  var matches=DB.matches();
+  var existing=matches.find(function(m){return m.id===chatId;});
+  if(!existing){
+    matches.unshift({id:chatId,oName:conn.name,oJob:'',oLoc:'',mmName:'Direct',ctx:'',ts:Date.now(),ci:conn.ci||0,unread:0,isDirect:true});
+    DB.setMatches(matches);
+  }
+  openChat(chatId);
+}
+
+var pauseCommId=null;
+function openPauseComm(connId){
+  pauseCommId=connId;
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  document.getElementById('pause-comm-msg').textContent=conn
+    ? conn.name+' won\u2019t be able to view your singles or suggest introductions while paused.'
+    : 'This connection will be paused.';
+  showModal('modal-pause-comm');
+}
+function doPauseComm(){
+  closeModal('modal-pause-comm');
+  toast('Connection paused \u2014 they can\u2019t view your singles for now');
+}
+
 function renderCommDetail(connId){
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   if(!conn)return;
@@ -2488,8 +2563,28 @@ function renderCommDetail(connId){
   if(!body)return;
   var perms=DB.commPerms();var singles=DB.singles();
 
-  // ── Their singles (clickable + Suggest button) ─────────────────────
-  var html='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">'+conn.name+'\u2019s singles</div>';
+  // ── Header: avatar + name + connection meta ─────────────────────────
+  var col=AVCOLS[(conn.ci||0)%AVCOLS.length];
+  var sharedCount=conn.theirSingles?conn.theirSingles.length:0;
+  var connDate=new Date(conn.acceptedAt||conn.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  var html='<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'
+    +'<div class="av" style="width:64px;height:64px;font-size:22px;background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
+    +'<div><div style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px">'+conn.name+'</div>'
+    +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">Connected since '+connDate+' \u00b7 '+sharedCount+' single'+(sharedCount!==1?'s':'')+' shared</div></div>'
+    +'</div>';
+
+  // ── Action row: Dashboard / Message / Pause ──────────────────────────
+  var bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
+  var ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
+  var ss='width:20px;height:20px;stroke:var(--tx);stroke-width:1.6;fill:none;display:block;margin:0 auto';
+  html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">'
+    +'<button data-cid="'+connId+'" style="'+bs+'" onclick="openCommDash(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="'+ls+'">Dashboard</span></button>'
+    +'<button data-cid="'+connId+'" style="'+bs+'" onclick="messageComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="'+ls+'">Message</span></button>'
+    +'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="'+ls+'">Pause</span></button>'
+    +'</div>';
+
+  // ── Their singles (clickable + Suggest button) ───────────────────────
+  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">'+conn.name+'\u2019s singles</div>';
   if(conn.theirSingles&&conn.theirSingles.length){
     conn.theirSingles.forEach(function(s){
       var col=AVCOLS[(s.ci||0)%AVCOLS.length];
