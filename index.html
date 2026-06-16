@@ -1116,14 +1116,25 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-my-qr">
   <div class="modal-sheet">
     <div class="mhandle"></div>
-    <h3 class="mb4">My QR Code</h3>
-    <p class="cap mb16">Let anyone scan this to see your profile and get introduced to you.</p>
-    <div style="background:var(--bg2);border-radius:var(--r3);padding:22px;margin-bottom:14px;display:flex;align-items:center;justify-content:center"><div id="my-qr-out"></div></div>
-    <button class="btn btn-p mb8" onclick="shareMyQR()">
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="13" r="1.5"/><circle cx="3.5" cy="8" r="1.5"/><path d="M5 7.3l5.5-3M5 8.7l5.5 3"/></svg>
-      Share my QR
-    </button>
-    <button class="btn btn-s" onclick="closeModal('modal-my-qr')">Close</button>
+    <div id="my-qr-step1">
+      <h3 class="mb4">My QR Code</h3>
+      <p class="cap mb14">What would you like this QR code to do?</p>
+      <div id="my-qr-options"></div>
+      <button class="btn btn-s mt4" onclick="closeModal('modal-my-qr')">Cancel</button>
+    </div>
+    <div id="my-qr-step2" style="display:none">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px">
+        <button onclick="showMyQRStep1()" style="background:none;border:none;cursor:pointer;color:var(--p);font-size:13px;font-weight:600;padding:0;font-family:inherit">← Back</button>
+        <h3 id="my-qr-purpose-title" style="flex:1;font-size:16px"></h3>
+      </div>
+      <p class="cap mb14" id="my-qr-purpose-desc"></p>
+      <div style="background:var(--bg2);border-radius:var(--r3);padding:22px;margin-bottom:14px;display:flex;align-items:center;justify-content:center"><div id="my-qr-out"></div></div>
+      <button class="btn btn-p mb8" onclick="sharePersonalQR()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="white" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="13" r="1.5"/><circle cx="3.5" cy="8" r="1.5"/><path d="M5 7.3l5.5-3M5 8.7l5.5 3"/></svg>
+        Share link instead
+      </button>
+      <button class="btn btn-s" onclick="closeModal('modal-my-qr')">Close</button>
+    </div>
   </div>
 </div>
 
@@ -1263,7 +1274,7 @@ function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.ha
 const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'setup':initSetup,'scan':initScan,'levels-rewards':initLevelsRewards,'how-circle-works':initHowCircleWorks,'comm-detail':initCommDetail,'suggest-pick':initSuggestPick};
 function _init(id){const fn=INIT_FNS[id.replace(/^s-/,'')];if(fn){try{fn()}catch(e){console.error('_init error for '+id+':',e)}}}
 (function(){
-  function _nav(){const u=DB.user();if(u){S.user=u;go('home')}else{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan')}else go('ob')}}
+  function _nav(){const u=DB.user();if(u){S.user=u;go('home')}else{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan');}else if(h.startsWith('#personal/')){var _hp=h.slice(10).split('/');S.personalScanPurpose=_hp[0];S.personalScanUserId=_hp[1];go('scan');}else go('ob')}}
   const arc=document.getElementById('sp-arc');
   if(!arc){setTimeout(_nav,50);return;}
   const circ=2*Math.PI*40,speed=circ/30;let p=0;
@@ -2962,6 +2973,19 @@ function initScan(){
   var body=document.getElementById('scan-body');if(!body)return;
   addPts(3);
 
+  // ── Personal QR routing ────────────────────────────────────
+  if(S.personalScanPurpose&&S.personalScanUserId){
+    var _purpose=S.personalScanPurpose,_uid=S.personalScanUserId;
+    S.personalScanPurpose=null;S.personalScanUserId=null;
+    var _pdata=null;
+    try{_pdata=JSON.parse(localStorage.getItem('c_personal_'+_uid)||'null');}catch(e){}
+    if(_pdata){
+      if(_purpose==='s'){S.introSingle=_pdata;}
+      else if(_purpose==='mm_req'){body.innerHTML=_scanMmRequestHtml(_pdata);return;}
+      else if(_purpose==='cm'){back();setTimeout(function(){showCommInvite({name:_pdata.name,ci:_pdata.ci||0,id:'comm_scanned_'+Date.now()});},200);return;}
+    }
+  }
+
   // ── Data lookup ──────────────────────────────────────────────
   var profile=null;
   if(S.scanId){try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}}
@@ -3254,7 +3278,7 @@ function sendInvite(){const name=document.getElementById('inv-name').value.trim(
 function confirmLogout(){if(confirm('Sign out of Circle?')){S.user=null;document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Signed out')}}
 function showDeleteModal(){showModal('modal-delete');document.getElementById('del-confirm').value='';document.getElementById('del-btn').disabled=true;document.getElementById('del-confirm').oninput=function(){document.getElementById('del-btn').disabled=this.value!=='DELETE'}}
 function deleteAccount(){['user','singles','intros','matches','notifs'].forEach(k=>DB.rm(k));S.user=null;closeModal('modal-delete');document.getElementById('bnav').classList.remove('on');document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>s.classList.remove('active','prev'));go('ob');toast('Account deleted')}
-window.addEventListener('hashchange',()=>{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan')}});
+window.addEventListener('hashchange',()=>{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan');}else if(h.startsWith('#personal/')){var _hp=h.slice(10).split('/');S.personalScanPurpose=_hp[0];S.personalScanUserId=_hp[1];go('scan');}});
 // buildPicker() is now called inside initSetup()
 if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 let deferredPrompt;
@@ -3925,29 +3949,90 @@ function getReligionIcon(rel) {
 }
 
 // ── MY QR CODE ────────────────────────────────────────────────────
-function showMyQR() {
-  const u = DB.user(); if (!u) return;
-  const qrOut = document.getElementById('my-qr-out');
-  qrOut.innerHTML = '';
-  const url = location.origin + location.pathname + '#profile/' + (u.id || 'me');
-  try {
-    new QRCode(qrOut, {text:url, width:200, height:200, colorDark:'#1A1614', colorLight:'#FFFFFF', correctLevel:QRCode.CorrectLevel.H});
-  } catch(e) {
-    qrOut.innerHTML = '<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready</div>';
-  }
+function showMyQR(){
+  var u=DB.user();if(!u)return;
+  showMyQRStep1();
   showModal('modal-my-qr');
 }
-
-function shareMyQR() {
-  const u = DB.user(); if (!u) return;
-  const url = location.origin + location.pathname + '#profile/' + (u.id||'me');
-  if (navigator.share) navigator.share({title: 'My Circle profile — ' + u.name, url: url});
-  else if (navigator.clipboard) { navigator.clipboard.writeText(url); toast('Profile link copied! 📋'); }
-  else toast(url);
-  closeModal('modal-my-qr');
+function showMyQRStep1(){
+  var u=DB.user();if(!u)return;
+  var el1=document.getElementById('my-qr-step1'),el2=document.getElementById('my-qr-step2');
+  if(el1)el1.style.display='';if(el2)el2.style.display='none';
+  var isSingle=!!(u.age&&u.gender);
+  var opts=document.getElementById('my-qr-options');if(!opts)return;
+  var purposes=[].concat(
+    isSingle?[
+      {id:'s',title:'Introduce myself as a single',desc:'Show to someone you\u2019re interested in meeting',icon:'\u2764\uFE0F'},
+      {id:'mm_req',title:'Find a matchmaker',desc:'Show to someone who could become your matchmaker',icon:'\uD83E\uDD1D'},
+    ]:[],
+    [{id:'cm',title:'Connect matchmaker networks',desc:'Show to another matchmaker to share your circles',icon:'\uD83D\uDD17'}]
+  );
+  opts.innerHTML=purposes.map(function(p){
+    return '<button data-pid="'+p.id+'" onclick="generatePersonalQR(this.dataset.pid)" style="display:flex;align-items:center;gap:14px;padding:13px;background:var(--bg2);border-radius:var(--r2);margin-bottom:10px;width:100%;border:none;cursor:pointer;font-family:inherit;text-align:left">'
+      +'<div style="width:42px;height:42px;border-radius:50%;background:var(--p1);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px">'+p.icon+'</div>'
+      +'<div style="flex:1"><div style="font-size:14px;font-weight:700;color:var(--tx)">'+p.title+'</div>'
+      +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">'+p.desc+'</div></div>'
+      +'<svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.8" stroke-linecap="round"><path d="M5 3l4 4-4 4"/></svg>'
+      +'</button>';
+  }).join('');
 }
-
-// ── LEVELS & REWARDS SCREEN ───────────────────────────────────────
+function generatePersonalQR(purpose){
+  var u=DB.user();if(!u)return;
+  var el1=document.getElementById('my-qr-step1'),el2=document.getElementById('my-qr-step2');
+  if(el1)el1.style.display='none';if(el2)el2.style.display='';
+  var titles={s:'Introduce myself',mm_req:'Find a matchmaker',cm:'Connect networks'};
+  var descs={
+    s:'Show to someone you\u2019re interested in. They\u2019ll see your profile and can express interest.',
+    mm_req:'Show to someone who could become your matchmaker. They\u2019ll be prompted to add you to their singles.',
+    cm:'Show to another matchmaker to connect your networks and suggest introductions between your singles.',
+  };
+  var titleEl=document.getElementById('my-qr-purpose-title');
+  var descEl=document.getElementById('my-qr-purpose-desc');
+  if(titleEl)titleEl.textContent=titles[purpose]||purpose;
+  if(descEl)descEl.textContent=descs[purpose]||'';
+  S._personalQRPurpose=purpose;
+  var qrOut=document.getElementById('my-qr-out');if(!qrOut)return;
+  qrOut.innerHTML='';
+  var url=location.origin+location.pathname+'#personal/'+purpose+'/'+(u.id||'me');
+  var data={t:purpose,name:u.name,age:u.age||'',gender:u.gender||'',job:u.job||'',loc:u.loc||'',bio:u.bio||'',ci:u.ci||0,photos:u.photos||[],tags:u.tags||[],qs:u.qs||{},id:u.id||'me'};
+  localStorage.setItem('c_personal_'+(u.id||'me'),JSON.stringify(data));
+  try{new QRCode(qrOut,{text:url,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});}
+  catch(e){qrOut.innerHTML='<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;color:var(--tx3)">QR code</div>';}
+}
+function sharePersonalQR(){
+  var u=DB.user();if(!u)return;
+  var purpose=S._personalQRPurpose||'s';
+  var url=location.origin+location.pathname+'#personal/'+purpose+'/'+(u.id||'me');
+  if(navigator.share)navigator.share({title:'My Circle \u2014 '+u.name,url:url});
+  else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link copied!');}
+  else toast(url);
+}
+function _scanMmRequestHtml(p){
+  var col=AVCOLS[(p.ci||0)%AVCOLS.length];
+  var avHtml=p.photos&&p.photos.length
+    ?'<img src="'+p.photos[0]+'" style="width:80px;height:80px;object-fit:cover;object-position:50% 15%;border-radius:50%">'
+    :'<div class="av" style="width:80px;height:80px;font-size:28px;background:'+col.bg+';color:'+col.tc+'">'+ini(p.name)+'</div>';
+  var pKey='c_mmreq_'+Date.now();
+  localStorage.setItem(pKey,JSON.stringify(p));
+  return '<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;text-align:center">'
+    +'<div style="width:80px;height:80px;border-radius:50%;overflow:hidden;margin-bottom:16px">'+avHtml+'</div>'
+    +'<h2 style="margin-bottom:6px">'+p.name+' is looking for a matchmaker</h2>'
+    +'<p style="font-size:14px;color:var(--tx2);line-height:1.6;margin-bottom:8px">'+(p.age?p.age+' \u00b7 ':'')+''+(p.job||'')+(p.loc?' \u00b7 '+p.loc:'')+'</p>'
+    +'<p style="font-size:13px;color:var(--tx3);margin-bottom:28px">Would you like to add them to your singles and help them find a match?</p>'
+    +'<button onclick="scanMmRequest(\''+pKey+'\' )" class="btn btn-p mb8" style="max-width:260px;width:100%;justify-content:center">Yes, become their matchmaker</button>'
+    +'<button onclick="back()" class="btn btn-s" style="max-width:260px;width:100%">Not for me</button>'
+    +'</div>';
+}
+function scanMmRequest(pKey){
+  var p;try{p=JSON.parse(localStorage.getItem(pKey)||'null');}catch(e){return;}
+  if(!p){toast('Profile not found');return;}
+  var singles=DB.singles();
+  if(singles.find(function(s){return s.name===p.name;})){toast(p.name+' is already in your singles');back();return;}
+  var ns={id:'s_'+Date.now(),name:p.name,age:p.age||'',gender:p.gender||'',job:p.job||'',loc:p.loc||'',bio:p.bio||'',ci:p.ci||0,photos:p.photos||[],tags:p.tags||[],qs:p.qs||{},status:'active',createdAt:Date.now()};
+  singles.push(ns);DB.setSingles(singles);
+  DB.addActivity({ic:'\ud83e\udd1d',t:'You became '+p.name+'\'s matchmaker via QR scan',ts:Date.now()});
+  back();toast('Added '+p.name+' to your singles!');
+}
 function initLevelsRewards() {
   const u = DB.user();
   const pts = u ? (u.points||0) : 0;
