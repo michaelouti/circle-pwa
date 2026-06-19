@@ -1274,7 +1274,7 @@ function updateNav(id){const bnav=document.getElementById('bnav');NAV_SCREENS.ha
 const INIT_FNS={'home':initHome,'my-circle':initMyCircle,'intros':initIntros,'introduce':initIntroduce,'profile':initProfile,'setup-tags':initTags,'setup-qs':initQs,'setup-prefs':initPrefsScreen,'edit-profile':initEditProfile,'notifs':initNotifs,'setup-photos':initSetupPhotos,'setup':initSetup,'scan':initScan,'levels-rewards':initLevelsRewards,'how-circle-works':initHowCircleWorks,'comm-detail':initCommDetail,'suggest-pick':initSuggestPick};
 function _init(id){const fn=INIT_FNS[id.replace(/^s-/,'')];if(fn){try{fn()}catch(e){console.error('_init error for '+id+':',e)}}}
 (function(){
-  function _nav(){const u=DB.user();if(u){S.user=u;go('home')}else{const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);go('scan');}else if(h.startsWith('#personal/')){var _hp=h.slice(10).split('/');S.personalScanPurpose=_hp[0];S.personalScanUserId=_hp[1];go('scan');}else go('ob')}}
+  function _nav(){const h=location.hash;if(h.startsWith('#scan/')){S.scanId=h.slice(6);const u=DB.user();if(u)S.user=u;go('scan');return;}if(h.startsWith('#personal/')){const _hp=h.slice(10).split('/');S.personalScanPurpose=_hp[0];S.personalScanUserId=_hp[1];const u=DB.user();if(u)S.user=u;go('scan');return;}const u=DB.user();if(u){S.user=u;go('home');}else go('ob');}
   const arc=document.getElementById('sp-arc');
   if(!arc){setTimeout(_nav,50);return;}
   const circ=2*Math.PI*40,speed=circ/30;let p=0;
@@ -2929,13 +2929,14 @@ function startIntroFlow(){
   if(!s){toast('No singles to introduce');return;}
   S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
-  // Only include http photos (data: URLs are device-local and too large for a URL)
-  const _httpPhotos=(s.photos||[]).filter(function(p){return p.startsWith('http');});
-  const _profileData={name:s.name,age:s.age,gender:s.gender||'',job:s.job||'',loc:s.loc||'',bio:s.bio||'',
-    tags:s.tags||[],qs:s.qs||{},ci:s.ci||0,photos:_httpPhotos,
-    mmName:(_u&&_u.name)||'Your matchmaker',singleId:s.id};
-  // Encode profile in URL so the link works on any device (no localStorage dependency)
-  try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_profileData))));}catch(e){}
+  // Compact profile for URL encoding — short keys, no empty fields, no tags or singleId
+  const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
+  const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
+    j:s.job||'',l:s.loc||'',b:s.bio||'',q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
+  // Remove empty string fields to keep URL short
+  Object.keys(_compact).forEach(function(k){if(_compact[k]==='')delete _compact[k];});
+  // Encode compact profile in URL so the link works on any device
+  try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_compact))));}catch(e){}
   // Also cache locally for same-device fallback
   localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_profileData));
   document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;
@@ -2994,7 +2995,18 @@ function initScan(){
   var profile=null;
   if(S.scanId){
     if(S.scanId.startsWith('b64_')){
-      try{profile=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));}catch(e){}
+      try{
+        var _raw=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));
+        // Expand compact short-key format if needed
+        if(_raw.n&&!_raw.name){
+          profile={name:_raw.n,age:_raw.a||'',
+            gender:_raw.g==='W'?'Woman':_raw.g==='M'?'Man':(_raw.g||''),
+            job:_raw.j||'',loc:_raw.l||'',bio:_raw.b||'',tags:[],
+            qs:_raw.q||{},ci:_raw.c||0,
+            photos:_raw.p?[_raw.p]:[],
+            mmName:_raw.m||'Your matchmaker'};
+        } else { profile=_raw; } // legacy full-key format
+      }catch(e){}
     } else {
       try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}
     }
