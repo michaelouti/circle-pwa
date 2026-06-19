@@ -2932,7 +2932,8 @@ function startIntroFlow(){
   // Compact profile for URL encoding — short keys, no empty fields, no tags or singleId
   const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
   const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
-    j:s.job||'',l:s.loc||'',b:s.bio||'',q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
+    j:s.job||'',l:s.loc||'',b:s.bio||'',h:s.height||'',r:s.religion||'',
+    q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
   // Remove empty string fields to keep URL short
   Object.keys(_compact).forEach(function(k){if(_compact[k]==='')delete _compact[k];});
   // Encode compact profile in URL so the link works on any device
@@ -3002,6 +3003,7 @@ function initScan(){
           profile={name:_raw.n,age:_raw.a||'',
             gender:_raw.g==='W'?'Woman':_raw.g==='M'?'Man':(_raw.g||''),
             job:_raw.j||'',loc:_raw.l||'',bio:_raw.b||'',tags:[],
+            height:_raw.h||'',religion:_raw.r||'',
             qs:_raw.q||{},ci:_raw.c||0,
             photos:_raw.p?[_raw.p]:[],
             mmName:_raw.m||'Your matchmaker'};
@@ -3042,6 +3044,8 @@ function initScan(){
   var metaItems=[];
   if(profile.loc)metaItems.push(_scanMetaIcon('loc')+' <span>'+profile.loc+'</span>');
   if(profile.job)metaItems.push(_scanMetaIcon('job')+' <span>'+profile.job+'</span>');
+  if(profile.height)metaItems.push('<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round"><path d="M7 1v12M4 3l3-2 3 2M4 11l3 2 3-2"/></svg> <span>'+profile.height+' cm</span>');
+  if(profile.religion&&profile.religion!=='No religion'&&profile.religion!=='Prefer not to say')metaItems.push('<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2"/></svg> <span>'+profile.religion+'</span>');
   var metaHtml=metaItems.map(function(m){
     return '<div style="display:flex;align-items:center;gap:5px;font-size:13px;color:rgba(255,255,255,.92);font-weight:500">'+m+'</div>';
   }).join('');
