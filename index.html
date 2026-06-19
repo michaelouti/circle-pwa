@@ -2942,7 +2942,7 @@ function startIntroFlow(){
   go('qr');
 }
 function simScan(){go('scan');}
-function shareQR(){const url=`${location.origin}${location.pathname}#scan/${S.introId}`;if(navigator.share)navigator.share({title:'Meet '+S.introSingle?.name+' on Circle',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link copied! 📋')}else toast('Link: '+url)}
+function shareQR(){const url=`${location.origin}${location.pathname}#scan/${S.introId}`;const s=S.introSingle;const pronoun=s&&s.gender==='Woman'?'her':s&&s.gender==='Man'?'his':'their';const msg=`I'd love to introduce you to ${s?.name||'someone special'} \u2014 here's ${pronoun} Circle profile. Let me know what you think!\n${url}`;if(navigator.share)navigator.share({title:'Meet '+(s?.name||'someone')+' on Circle',text:msg,url});else if(navigator.clipboard){navigator.clipboard.writeText(msg);toast('Link copied! 📋')}else toast(msg)}
 function ctxChange(ta){const n=ta.value.length;document.getElementById('ctx-count').textContent=`${n}/240`;document.getElementById('ctx-hint').textContent=n<10?'Minimum 10 characters':'Looking good!';document.getElementById('ctx-hint').style.color=n>=10?'var(--ok)':'var(--tx3)';document.getElementById('ctx-btn').disabled=n<10}
 function sendIntro(){
   var s=S.introSingle,u=DB.user();
