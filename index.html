@@ -2938,7 +2938,7 @@ function startIntroFlow(){
   // Encode compact profile in URL so the link works on any device
   try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_compact))));}catch(e){}
   // Also cache locally for same-device fallback
-  localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_profileData));
+  localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_compact));
   document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;
   const qrout=document.getElementById('qr-out');qrout.innerHTML='';
   const url=`${location.origin}${location.pathname}#scan/${S.introId}`;
