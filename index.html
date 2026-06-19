@@ -3035,6 +3035,7 @@ function initScan(){
     var icons={
       loc:'<path d="M7 1a5 5 0 0 1 5 5c0 3.8-5 8-5 8S2 9.8 2 6a5 5 0 0 1 5-5z"/><circle cx="7" cy="6" r="2"/>',
       job:'<rect x="1" y="4" width="12" height="8" rx="1.5"/><path d="M4 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/>',
+      height:'<path d="M7 1v12M4 3l3-2 3 2M4 11l3 2 3-2"/>',
     };
     return '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round">'+(icons[type]||'')+'</svg>';
   }
@@ -3044,8 +3045,8 @@ function initScan(){
   var metaItems=[];
   if(profile.loc)metaItems.push(_scanMetaIcon('loc')+' <span>'+profile.loc+'</span>');
   if(profile.job)metaItems.push(_scanMetaIcon('job')+' <span>'+profile.job+'</span>');
-  if(profile.height)metaItems.push('<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round"><path d="M7 1v12M4 3l3-2 3 2M4 11l3 2 3-2"/></svg> <span>'+profile.height+' cm</span>');
-  if(profile.religion&&profile.religion!=='No religion'&&profile.religion!=='Prefer not to say')metaItems.push('<svg width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.85)" stroke-width="1.5" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="M7 4v3l2 2"/></svg> <span>'+profile.religion+'</span>');
+  if(profile.height){var _ins=profile.height/2.54,_ft=Math.floor(_ins/12),_inch=Math.round(_ins%12);metaItems.push(_scanMetaIcon('height')+' <span>'+_ft+"'"+_inch+'" ('+profile.height+' cm)</span>');}
+  if(profile.religion&&profile.religion!=='Prefer not to say')metaItems.push(getReligionIcon(profile.religion)+' <span>'+profile.religion+'</span>');
   var metaHtml=metaItems.map(function(m){
     return '<div style="display:flex;align-items:center;gap:5px;font-size:13px;color:rgba(255,255,255,.92);font-weight:500">'+m+'</div>';
   }).join('');
