@@ -2929,11 +2929,15 @@ function startIntroFlow(){
   if(!s){toast('No singles to introduce');return;}
   S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
-  localStorage.setItem('c_scan_'+S.introId,JSON.stringify({
-    name:s.name,age:s.age,gender:s.gender||'',job:s.job||'',loc:s.loc||'',bio:s.bio||'',
-    tags:s.tags||[],qs:s.qs||{},ci:s.ci||0,photos:s.photos||[],
-    mmName:(_u&&_u.name)||'Your matchmaker',singleId:s.id
-  }));
+  // Only include http photos (data: URLs are device-local and too large for a URL)
+  const _httpPhotos=(s.photos||[]).filter(function(p){return p.startsWith('http');});
+  const _profileData={name:s.name,age:s.age,gender:s.gender||'',job:s.job||'',loc:s.loc||'',bio:s.bio||'',
+    tags:s.tags||[],qs:s.qs||{},ci:s.ci||0,photos:_httpPhotos,
+    mmName:(_u&&_u.name)||'Your matchmaker',singleId:s.id};
+  // Encode profile in URL so the link works on any device (no localStorage dependency)
+  try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_profileData))));}catch(e){}
+  // Also cache locally for same-device fallback
+  localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_profileData));
   document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;
   const qrout=document.getElementById('qr-out');qrout.innerHTML='';
   const url=`${location.origin}${location.pathname}#scan/${S.introId}`;
@@ -2942,7 +2946,7 @@ function startIntroFlow(){
   go('qr');
 }
 function simScan(){go('scan');}
-function shareQR(){const url=`${location.origin}${location.pathname}#scan/${S.introId}`;const s=S.introSingle;const pronoun=s&&s.gender==='Woman'?'her':s&&s.gender==='Man'?'his':'their';const msg=`I'd love to introduce you to ${s?.name||'someone special'} \u2014 here's ${pronoun} Circle profile. Let me know what you think!\n${url}`;if(navigator.share)navigator.share({title:'Meet '+(s?.name||'someone')+' on Circle',text:msg,url});else if(navigator.clipboard){navigator.clipboard.writeText(msg);toast('Link copied! 📋')}else toast(msg)}
+function shareQR(){const url=`${location.origin}${location.pathname}#scan/${S.introId}`;const s=S.introSingle;const pronoun=s&&s.gender==='Woman'?'her':s&&s.gender==='Man'?'his':'their';const msg=`I'd love to introduce you to ${s?.name||'someone special'} \u2014 here's ${pronoun} Circle profile. Let me know what you think!`;if(navigator.share)navigator.share({title:'Meet '+(s?.name||'someone')+' on Circle',text:msg,url});else if(navigator.clipboard){navigator.clipboard.writeText(msg+'\n'+url);toast('Link copied! 📋')}else toast(msg+'\n'+url)}
 function ctxChange(ta){const n=ta.value.length;document.getElementById('ctx-count').textContent=`${n}/240`;document.getElementById('ctx-hint').textContent=n<10?'Minimum 10 characters':'Looking good!';document.getElementById('ctx-hint').style.color=n>=10?'var(--ok)':'var(--tx3)';document.getElementById('ctx-btn').disabled=n<10}
 function sendIntro(){
   var s=S.introSingle,u=DB.user();
@@ -2988,7 +2992,13 @@ function initScan(){
 
   // ── Data lookup ──────────────────────────────────────────────
   var profile=null;
-  if(S.scanId){try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}}
+  if(S.scanId){
+    if(S.scanId.startsWith('b64_')){
+      try{profile=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));}catch(e){}
+    } else {
+      try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}
+    }
+  }
   if(!profile&&S.introSingle){
     var _s=S.introSingle,_u=DB.user();
     profile={name:_s.name,age:_s.age,gender:_s.gender||'',job:_s.job||'',loc:_s.loc||'',
