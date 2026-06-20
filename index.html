@@ -220,7 +220,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 .tl-item{display:flex;gap:12px;padding:12px 0;border-bottom:.5px solid var(--bd)}.tl-item:last-child{border:none}.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0;margin-top:5px}
 .lvlbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}.lvlfill{height:100%;background:linear-gradient(to right,var(--p2),var(--p));border-radius:3px;transition:width .6s ease}
 #qr-out canvas,#qr-out img{display:block!important;border-radius:8px!important}
-.scan-actions{padding:16px;padding-bottom:max(16px,var(--safe));background:var(--bg);border-top:.5px solid var(--bd)}
+.scan-actions{padding:0 0 16px}
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .25s;pointer-events:none}.modal-ov.on{opacity:1;pointer-events:all}.modal-sheet{background:var(--bg);border-radius:24px 24px 0 0;padding:6px 20px calc(20px + var(--safe));max-width:430px;width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}.modal-ov.on .modal-sheet{transform:none}.mhandle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 16px}
 #toast{position:absolute;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:#1A1614;color:#fff;padding:11px 18px;border-radius:100px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none;max-width:88%}#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @keyframes pop{0%{transform:scale(.5);opacity:0}65%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}.pop{animation:pop .4s cubic-bezier(.34,1.56,.64,1) both}
@@ -3099,15 +3099,12 @@ function initScan(){
 
   // ── Render — flex column so buttons always pinned ─────────────
   body.innerHTML=
-    '<div style="height:100dvh;display:flex;flex-direction:column;overflow:hidden">'
-    +'<div style="flex:1;overflow-y:auto">'
-    +heroHtml
+    heroHtml
     +'<div style="padding:16px 20px 0">'
     +'<div style="height:16px"></div>'
     +(profile.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px">'+'<div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
-    +'<div style="height:4px"></div>'
-    +'</div></div>'
+    +'<div style="height:16px"></div>'
     +'<div class="scan-actions">'
     +'<button class="btn btn-p mb8" onclick="scanInterested()">&#128140; Send my profile</button>'
     +'<div class="row" style="gap:8px">'
