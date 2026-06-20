@@ -220,7 +220,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 .tl-item{display:flex;gap:12px;padding:12px 0;border-bottom:.5px solid var(--bd)}.tl-item:last-child{border:none}.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0;margin-top:5px}
 .lvlbar{height:6px;background:var(--bg3);border-radius:3px;overflow:hidden}.lvlfill{height:100%;background:linear-gradient(to right,var(--p2),var(--p));border-radius:3px;transition:width .6s ease}
 #qr-out canvas,#qr-out img{display:block!important;border-radius:8px!important}
-.scan-actions{position:sticky;bottom:80px;left:0;right:0;width:100%;padding:16px;padding-bottom:max(16px,var(--safe));background:rgba(255,255,255,.97);backdrop-filter:blur(12px);border-top:.5px solid var(--bd)}
+.scan-actions{padding:16px;padding-bottom:max(16px,var(--safe));background:var(--bg);border-top:.5px solid var(--bd)}
 .modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:500;display:flex;align-items:flex-end;justify-content:center;opacity:0;transition:opacity .25s;pointer-events:none}.modal-ov.on{opacity:1;pointer-events:all}.modal-sheet{background:var(--bg);border-radius:24px 24px 0 0;padding:6px 20px calc(20px + var(--safe));max-width:430px;width:100%;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}.modal-ov.on .modal-sheet{transform:none}.mhandle{width:36px;height:4px;border-radius:2px;background:var(--bg4);margin:0 auto 16px}
 #toast{position:absolute;bottom:80px;left:50%;transform:translateX(-50%) translateY(8px);background:#1A1614;color:#fff;padding:11px 18px;border-radius:100px;font-size:14px;font-weight:500;opacity:0;transition:all .25s;z-index:999;white-space:nowrap;pointer-events:none;max-width:88%}#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 @keyframes pop{0%{transform:scale(.5);opacity:0}65%{transform:scale(1.1)}100%{transform:scale(1);opacity:1}}.pop{animation:pop .4s cubic-bezier(.34,1.56,.64,1) both}
@@ -2927,7 +2927,7 @@ function carNav(dir){carJump(S.carIdx+dir)}
 function startIntroFlow(){
   const singles=DB.singles(),s=singles[S.carIdx];
   if(!s){toast('No singles to introduce');return;}
-  S.introSingle=s;S.introId='qi_'+Date.now();
+  S.scanId=null;S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
   const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
   const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
