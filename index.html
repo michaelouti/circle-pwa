@@ -689,7 +689,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 </div>
 
 <!-- SCAN -->
-<div id="s-scan" class="screen no-nav" style="padding-bottom:0;overflow-y:auto"><div id="scan-body"></div></div>
+<div id="s-scan" class="screen no-nav" style="padding-bottom:80px;overflow-y:auto"><div id="scan-body"></div></div>
 
 <!-- NOTIFS -->
 <div id="s-notifs" class="screen">
@@ -1264,7 +1264,7 @@ function addPts(n){const u=DB.user();if(!u)return;u.points=(u.points||0)+n;DB.se
 function showModal(id){document.getElementById(id).classList.add('on');var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='600';}
 function closeModal(id){document.getElementById(id).classList.remove('on');if(!document.querySelector('.modal-ov.on')){var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='';} }
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m)closeModal(m.id)})});
-const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick']);
+const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick','scan']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
 function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
 function back(){if(!S.stack.length)return;var _prev=S.stack[S.stack.length-1];var _onb=['ob','login','signup','verify','path-choice','setup'];if(!DB.user()&&_onb.indexOf(_prev)===-1)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
@@ -2929,22 +2929,13 @@ function startIntroFlow(){
   if(!s){toast('No singles to introduce');return;}
   S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
-  // Compact profile for URL encoding — short keys, no empty fields, no tags or singleId
   const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
   const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
     j:s.job||'',l:s.loc||'',b:s.bio||'',h:s.height||'',r:s.religion||'',
     q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
-  // Remove empty string fields to keep URL short
   Object.keys(_compact).forEach(function(k){if(_compact[k]==='')delete _compact[k];});
-  // Encode compact profile in URL so the link works on any device
   try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_compact))));}catch(e){}
-  // Also cache locally for same-device fallback
   localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_compact));
-  document.getElementById('qr-single-info').innerHTML=`${av(ini(s.name),s.ci,36)}<span style="font-size:15px;font-weight:600;color:var(--tx)">${s.name}, ${s.age}</span><span class="pill pill-ok">Open to intros</span>`;
-  const qrout=document.getElementById('qr-out');qrout.innerHTML='';
-  const url=`${location.origin}${location.pathname}#scan/${S.introId}`;
-  try{new QRCode(qrout,{text:url,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});}
-  catch(e){qrout.innerHTML=`<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready<br><span style="word-break:break-all;color:var(--p);margin-top:8px;display:block">${url}</span></div>`;}
   go('qr');
 }
 function simScan(){go('scan');}
@@ -2994,11 +2985,21 @@ function initScan(){
 
   // ── Data lookup ──────────────────────────────────────────────
   var profile=null;
+  if(S.personalScanPurpose&&S.personalScanUserId){
+    var _purpose=S.personalScanPurpose,_uid=S.personalScanUserId;
+    S.personalScanPurpose=null;S.personalScanUserId=null;
+    var _pdata=null;
+    try{_pdata=JSON.parse(localStorage.getItem('c_personal_'+_uid)||'null');}catch(e){}
+    if(_pdata){
+      if(_purpose==='s'){S.introSingle=_pdata;}
+      else if(_purpose==='mm_req'){body.innerHTML=_scanMmRequestHtml(_pdata);return;}
+      else if(_purpose==='cm'){back();setTimeout(function(){showCommInvite({name:_pdata.name,ci:_pdata.ci||0,id:'comm_scanned_'+Date.now()});},200);return;}
+    }
+  }
   if(S.scanId){
     if(S.scanId.startsWith('b64_')){
       try{
         var _raw=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));
-        // Expand compact short-key format if needed
         if(_raw.n&&!_raw.name){
           profile={name:_raw.n,age:_raw.a||'',
             gender:_raw.g==='W'?'Woman':_raw.g==='M'?'Man':(_raw.g||''),
@@ -3007,7 +3008,7 @@ function initScan(){
             qs:_raw.q||{},ci:_raw.c||0,
             photos:_raw.p?[_raw.p]:[],
             mmName:_raw.m||'Your matchmaker'};
-        } else { profile=_raw; } // legacy full-key format
+        } else { profile=_raw; }
       }catch(e){}
     } else {
       try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}
@@ -3056,8 +3057,8 @@ function initScan(){
   var _badge='<div style="position:absolute;top:max(14px,var(--sat));left:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 13px;display:flex;align-items:center;gap:5px"><div style="width:6px;height:6px;border-radius:50%;background:var(--p)"></div><span style="font-size:11px;font-weight:700;color:var(--tx)">circle intro</span></div></div>';
   var _timer='<div style="position:absolute;top:max(14px,var(--sat));right:16px"><div style="background:rgba(255,255,255,.92);backdrop-filter:blur(8px);border-radius:100px;padding:6px 11px"><span style="font-size:11px;font-weight:600;color:var(--tx2)">&#9201; 72h left</span></div></div>';
   var heroHtml=profile.photos&&profile.photos.length
-    ?'<div style="position:relative"><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
-    :'<div style="position:relative"><div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(profile.name)+'</div></div>'+_badge+_timer+_ovHtml+'</div>';
+    ?'<div style="position:relative"><button onclick="back()" style="position:absolute;top:12px;left:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.45);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 15l-5-5 5-5"/></svg></button><div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:400px">'+profile.photos.map(function(p){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>';}).join('')+'</div>'+_badge+_timer+_ovHtml+'</div>'
+    :'<div style="position:relative"><button onclick="back()" style="position:absolute;top:12px;left:12px;z-index:10;width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,.25);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.5 15l-5-5 5-5"/></svg></button><div style="height:360px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'cc);display:flex;align-items:center;justify-content:center"><div class="av" style="width:100px;height:100px;font-size:36px;background:'+col.bg+';color:'+col.tc+'">'+ini(profile.name)+'</div></div>'+_badge+_timer+_ovHtml+'</div>';
 
 
   // ── Q&A tiles — exact qIcon paths from previewProfile ─────────
