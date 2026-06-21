@@ -1735,7 +1735,7 @@ function migrateDemoPhotos(){
     'intro_3':'https://randomuser.me/api/portraits/men/41.jpg'
   };
   var singles=DB.singles();var sc=false;
-  singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}if(em[s.id]&&!s.height){s.height=em[s.id].height;s.religion=em[s.id].religion;sc=true;}});
+  singles.forEach(function(s){if(pm[s.id]&&(!s.photos||!s.photos.length)){s.photos=[pm[s.id]];sc=true;}if(em[s.id]){if(!s.height){s.height=em[s.id].height;sc=true;}if(!s.religion){s.religion=em[s.id].religion;sc=true;}}});
   if(sc)DB.setSingles(singles);
   // Migrate user matchmakers: reduce to 2 for demo (remove Raph if present)
   var du=DB.user();
@@ -2927,7 +2927,10 @@ function carNav(dir){carJump(S.carIdx+dir)}
 function startIntroFlow(){
   const singles=DB.singles(),s=singles[S.carIdx];
   if(!s){toast('No singles to introduce');return;}
-  S.scanId=null;S.introSingle=s;S.introId='qi_'+Date.now();
+  S.scanId=null;
+  var _em={'s1':{height:168,religion:'Agnostic'},'s2':{height:182,religion:'Catholic'},'s3':{height:165,religion:'Atheist'},'s4':{height:178,religion:'Agnostic'},'s5':{height:170,religion:'Christian'}};
+  if(s&&_em[s.id]){if(!s.height)s.height=_em[s.id].height;if(!s.religion)s.religion=_em[s.id].religion;}
+  S.introSingle=s;S.introId='qi_'+Date.now();
   const _u=DB.user();
   const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
   const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
@@ -3023,8 +3026,11 @@ function initScan(){
     var _s=S.introSingle,_u=DB.user();
     profile={name:_s.name,age:_s.age,gender:_s.gender||'',job:_s.job||'',loc:_s.loc||'',
       bio:_s.bio||'',tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
+      height:_s.height||'',religion:_s.religion||'',
       mmName:(_u&&_u.name)||'Your matchmaker',singleId:_s.id};
   }
+  // Safety: fill missing height/religion for known demo singles regardless of path
+  if(profile){var _pem={'s1':{height:168,religion:'Agnostic'},'s2':{height:182,religion:'Catholic'},'s3':{height:165,religion:'Atheist'},'s4':{height:178,religion:'Agnostic'},'s5':{height:170,religion:'Christian'}};var _pid=profile.singleId||profile.id||'';if(_pem[_pid]){if(!profile.height)profile.height=_pem[_pid].height;if(!profile.religion)profile.religion=_pem[_pid].religion;}}
   if(!profile){
     profile={name:'Sophie',age:28,gender:'Woman',job:'Architect',loc:'Paris, France',
       tags:['Creative','Adventurous','Authentic'],
