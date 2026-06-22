@@ -1059,9 +1059,9 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-pause-comm">
   <div class="modal-sheet">
     <div class="mhandle"></div>
-    <h3 class="mb8">Pause this connection?</h3>
+    <h3 class="mb8" id="pause-comm-title">Pause this connection?</h3>
     <p class="cap mb20" id="pause-comm-msg">This connection won't be able to view your singles or suggest introductions while paused.</p>
-    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseComm()">Yes, pause</button>
+    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseComm()" id="pause-comm-btn">Yes, pause</button>
     <button class="btn btn-s" onclick="closeModal('modal-pause-comm')">Cancel</button>
   </div>
 </div>
@@ -2232,13 +2232,17 @@ function renderCoMmsGrid(){
     var menuBtn=!isPending
       ?'<button class="mc-menu" data-cid="'+conn.id+'" onclick="event.stopPropagation();openCoMmMenu(this.dataset.cid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
       :'';
+    var isPaused=!isPending&&conn.status==='paused';
     var badge=isIncoming
       ?'<div style="position:absolute;top:8px;left:8px;background:rgba(217,166,0,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">Invited you</div>'
       :isPending
       ?'<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.4);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">Pending</div>'
+      :isPaused
+      ?'<div style="position:absolute;top:8px;left:8px;background:rgba(90,90,90,.85);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>'
       :'';
     var subText=isPending
       ?(isIncoming?'Tap to respond':'Awaiting response')
+      :isPaused?'Connection paused'
       :sharedCount+' single'+(sharedCount!==1?'s':'')+' shared';
     var action=isIncoming?'data-cid="'+conn.id+'" onclick="showCommInvite(this.dataset.cid)"'
       :isPending?'style="cursor:default"'
@@ -2557,14 +2561,30 @@ var pauseCommId=null;
 function openPauseComm(connId){
   pauseCommId=connId;
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
-  document.getElementById('pause-comm-msg').textContent=conn
-    ? conn.name+' won\u2019t be able to view your singles or suggest introductions while paused.'
-    : 'This connection will be paused.';
+  var _isP=conn&&conn.status==='paused';
+  var _ti=document.getElementById('pause-comm-title');
+  if(_ti)_ti.textContent=_isP?'Resume this connection?':'Pause this connection?';
+  var _msg=document.getElementById('pause-comm-msg');
+  if(_msg)_msg.textContent=_isP
+    ?(conn.name+' will be able to view your singles and suggest introductions again.')
+    :(conn?conn.name+'\u2019t be able to view your singles or suggest introductions while paused.':'This connection will be paused.');
+  var _btn=document.getElementById('pause-comm-btn');
+  if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
   showModal('modal-pause-comm');
 }
 function doPauseComm(){
   closeModal('modal-pause-comm');
-  toast('Connection paused \u2014 they can\u2019t view your singles for now');
+  if(!pauseCommId)return;
+  var comms=DB.commConnections();
+  var conn=comms.find(function(c){return c.id===pauseCommId;});
+  if(!conn)return;
+  var _wasP=conn.status==='paused';
+  conn.status=_wasP?'active':'paused';
+  DB.setCommConnections(comms);
+  renderCoMmsGrid();
+  if(S._commDetailId===pauseCommId)renderCommDetail(pauseCommId);
+  toast(_wasP?(conn.name+' resumed \u2014 they can view your singles again'):(conn.name+' paused \u2014 they can\u2019t view your singles for now'));
+  pauseCommId=null;
 }
 
 function renderCommDetail(connId){
@@ -2580,11 +2600,19 @@ function renderCommDetail(connId){
   var col=AVCOLS[(conn.ci||0)%AVCOLS.length];
   var sharedCount=conn.theirSingles?conn.theirSingles.length:0;
   var connDate=new Date(conn.acceptedAt||conn.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+  var _isPaused=conn.status==='paused';
+  var _pausedBanner=_isPaused
+    ?'<div style="background:#F5F5F5;border:1px solid #D0D0D0;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">'
+    +'<span style="font-size:18px">&#9646;&#9646;</span>'
+    +'<div><div style="font-size:13px;font-weight:700;color:#555">Connection paused</div>'
+    +'<div style="font-size:11px;color:#888;margin-top:1px">'+conn.name+' cannot view your singles or suggest intros</div></div></div>'
+    :'';
   var html='<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'
     +'<div class="av" style="width:64px;height:64px;font-size:22px;background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
     +'<div><div style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px">'+conn.name+'</div>'
     +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">Connected since '+connDate+' \u00b7 '+sharedCount+' single'+(sharedCount!==1?'s':'')+' shared</div></div>'
-    +'</div>';
+    +'</div>'
+    +_pausedBanner;
 
   // ── Action row: Dashboard / Message / Pause ──────────────────────────
   var bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
@@ -2593,7 +2621,9 @@ function renderCommDetail(connId){
   html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">'
     +'<button data-cid="'+connId+'" style="'+bs+'" onclick="openCommDash(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="'+ls+'">Dashboard</span></button>'
     +'<button data-cid="'+connId+'" style="'+bs+'" onclick="messageComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="'+ls+'">Message</span></button>'
-    +'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="'+ls+'">Pause</span></button>'
+    +(_isPaused
+      ?'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+';stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="'+ls+';color:var(--ok)">Resume</span></button>'
+      :'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="'+ls+'">Pause</span></button>')
     +'</div>';
 
   // ── Their singles (clickable + Suggest button) ───────────────────────
@@ -2623,9 +2653,16 @@ function renderCommDetail(connId){
   }
 
   // ── Your singles permissions ───────────────────────────────────────
-  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>'
-    +'<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
-  if(singles.length){
+  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>';
+  if(_isPaused){
+    html+='<div style="background:#F5F5F5;border:1px solid #D0D0D0;border-radius:10px;padding:14px;margin-bottom:10px;text-align:center">'
+      +'<div style="font-size:22px;margin-bottom:6px">&#128274;</div>'
+      +'<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:2px">All singles hidden</div>'
+      +'<div style="font-size:11px;color:#888">Resume the connection to restore visibility</div></div>';
+  } else {
+    html+='<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
+  }
+  if(!_isPaused&&singles.length){
     singles.forEach(function(s){
       var perm=perms.find(function(p){return p.connId===connId&&p.singleId===s.id;});
       var isVis=!perm||!perm.hidden;
@@ -2642,7 +2679,7 @@ function renderCommDetail(connId){
         +'<button class="comm-tog '+(isVis?'on':'off')+'" data-cid="'+connId+'" data-sid="'+s.id+'" onclick="event.stopPropagation();toggleCommSingleVis(this.dataset.cid,this.dataset.sid)"></button>'
         +'</div>';
     });
-  } else {
+  } else if(!_isPaused) {
     html+='<div style="color:var(--tx3);font-size:13px;padding:12px 0">No singles added yet</div>';
   }
 
