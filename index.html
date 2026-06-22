@@ -1235,7 +1235,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 </nav>
 
 <!-- CONTEXT MENU — outside screen-stack so position:fixed is not clipped -->
-<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none" onclick="closeCtxMenu()"></div>
+<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none"></div>
 <div id="ctx-menu" class="ctx-menu"></div>
 </div><!-- app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -3321,9 +3321,18 @@ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPro
 document.getElementById('screen-stack').querySelectorAll('.screen').forEach(scr=>{const tb=scr.querySelector('.topbar');if(tb)scr.addEventListener('scroll',()=>tb.classList.toggle('scroll-bd',scr.scrollTop>4),{passive:true})});
 
 // ── CONTEXT MENU ─────────────────────────────────────────────────
+// Global touch-coord capture (most reliable on Android)
+var _tapX=0,_tapY=0,_tapT=0,_ctxStamp=0;
+document.addEventListener('touchstart',function(e){
+  if(e.touches&&e.touches.length){_tapX=e.touches[0].clientX;_tapY=e.touches[0].clientY;_tapT=Date.now();}
+},{passive:true,capture:true});
 let ctxActive = null;
 
 function openCtxMenu(items, anchorOrEvent) {
+  // Debounce: ignore re-opens within 350ms (prevents synthetic-click double-fire)
+  var _now = Date.now();
+  if (_now - _ctxStamp < 350) return;
+  _ctxStamp = _now;
   closeCtxMenu();
   const menu = document.getElementById('ctx-menu');
   const overlay = document.getElementById('ctx-overlay');
@@ -3344,20 +3353,27 @@ function openCtxMenu(items, anchorOrEvent) {
       });
     }
   });
+  // Position: prefer recent touchstart coords — the only reliable source on Android
   const appRect = document.getElementById('app').getBoundingClientRect();
-  const menuW = 220; const menuH = 300;
-  let cx, cy;
-  if (anchorOrEvent && typeof anchorOrEvent.clientX === 'number') {
+  const menuW = 220, menuH = 300;
+  var cx, cy;
+  var _touchRecent = (_now - _tapT) < 600;
+  if (_touchRecent) {
+    cx = _tapX; cy = _tapY;
+  } else if (anchorOrEvent && typeof anchorOrEvent.clientX === 'number') {
     cx = anchorOrEvent.clientX; cy = anchorOrEvent.clientY;
   } else if (anchorOrEvent && anchorOrEvent.getBoundingClientRect) {
     const r = anchorOrEvent.getBoundingClientRect(); cx = r.left; cy = r.bottom;
-  } else { cx = appRect.left + 20; cy = 80; }
-  let left = cx; let top = cy + 6;
+  } else {
+    cx = appRect.left + 20; cy = 80;
+  }
+  var left = cx, top = cy + 6;
   if (left + menuW > appRect.right - 8) left = appRect.right - menuW - 8;
   if (left < appRect.left + 8) left = appRect.left + 8;
   if (top + menuH > window.innerHeight - 20) top = cy - menuH - 6;
   menu.style.top = top + 'px'; menu.style.left = left + 'px'; menu.style.right = 'auto';
   menu.classList.add('on');
+  // Delay overlay by one frame — prevents same-tap from closing instantly
   requestAnimationFrame(function(){ overlay.style.display = 'block'; });
   ctxActive = menu;
 }
