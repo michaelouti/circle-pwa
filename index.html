@@ -1235,7 +1235,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 </nav>
 
 <!-- CONTEXT MENU — outside screen-stack so position:fixed is not clipped -->
-<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none"></div>
+<div id="ctx-overlay" style="position:fixed;inset:0;z-index:790;display:none" onclick="if(Date.now()-_ctxOpenAt>350)closeCtxMenu()"></div>
 <div id="ctx-menu" class="ctx-menu"></div>
 </div><!-- app -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
@@ -1795,7 +1795,7 @@ function initHome(){
     var bio=s.bio?('\u201c'+s.bio.substring(0,65)+(s.bio.length>65?'\u2026':'')+'\u201d'):'';
     return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')">'
       +'<div class="home-v-photo">'+ph
-      +'<button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',event)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="#555"/><circle cx="7" cy="7" r="1.2" fill="#555"/><circle cx="7" cy="11.5" r="1.2" fill="#555"/></svg></button>'
+      +'<button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="#555"/><circle cx="7" cy="7" r="1.2" fill="#555"/><circle cx="7" cy="11.5" r="1.2" fill="#555"/></svg></button>'
       +'<div class="hvc-badge-strip '+st.strip+'">'+st.text+'</div>'
       +'</div>'
       +'<div class="hvc-right">'
@@ -2199,7 +2199,7 @@ function seedCoMmDemo(){
   DB.setCommPerms(perms);
 }
 
-function openCoMmMenu(connId,e){
+function openCoMmMenu(connId,anchorEl){
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   if(!conn)return;
   var _isP=conn.status==='paused';
@@ -2210,7 +2210,7 @@ function openCoMmMenu(connId,e){
     'sep',
     {label:_isP?'Resume':'Pause',icon:ICO_PAUSE,action:function(){openPauseComm(connId);}},
     {label:'Remove',      icon:ICO_REMOVE,action:function(){removeCoMm(connId);},danger:true}
-  ],e);
+  ],anchorEl);
 }
 
 function renderCoMmsGrid(){
@@ -2235,7 +2235,7 @@ function renderCoMmsGrid(){
     var isIncoming=isPending&&conn.initiatedBy==='them';
     var sharedCount=conn.theirSingles?conn.theirSingles.length:0;
     var menuBtn=!isPending
-      ?'<button class="mc-menu" data-cid="'+conn.id+'" onclick="event.stopPropagation();openCoMmMenu(this.dataset.cid,event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+      ?'<button class="mc-menu" data-cid="'+conn.id+'" onclick="event.stopPropagation();openCoMmMenu(this.dataset.cid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
       :'';
     var isPaused=!isPending&&conn.status==='paused';
     var badge=isIncoming
@@ -2748,7 +2748,7 @@ function renderMcSinglesGrid() {
         : '<div style="width:100%;height:100%;background:linear-gradient(145deg,' + c.bg + ',' + c.bg + 'cc);display:flex;align-items:center;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1.2" opacity=".5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>';
       html += '<div class="mc-card" data-sid="' + s.id + '" onclick="mcCardTap(this.dataset.sid)">'
             + inner
-            + '<button class="mc-menu" onclick="event.stopPropagation();openSingleMenu(this.closest(\'.mc-card\').dataset.sid,event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<button class="mc-menu" onclick="event.stopPropagation();openSingleMenu(this.closest(\'.mc-card\').dataset.sid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
             + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + s.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + s.loc + '</div></div>'
             + '</div>';
     } else {
@@ -2842,7 +2842,7 @@ function renderMcMmsGrid() {
       const _mmBadge = _mmPaused?'<div style="position:absolute;top:8px;right:8px;background:rgba(198,40,40,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>':'';
       const _mmSub = _mmPaused ? 'Paused' : (mm.loc || mm.rel || '');
       html += '<div class="mc-card" style="cursor:pointer;background:' + c.bg + ';position:relative" onclick="openMmProfile(' + i + ')">'
-            + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
             + _mmBadge
             + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity="' + (_mmPaused ? '.3' : '.45') + '"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
             + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:' + (_mmPaused ? 'rgba(255,160,160,.95)' : 'rgba(255,255,255,.8)') + ';margin-top:2px">' + _mmSub + '</div></div>'
@@ -3322,17 +3322,14 @@ document.getElementById('screen-stack').querySelectorAll('.screen').forEach(scr=
 
 // ── CONTEXT MENU ─────────────────────────────────────────────────
 // Global touch-coord capture (most reliable on Android)
-var _tapX=0,_tapY=0,_tapT=0,_ctxStamp=0;
-document.addEventListener('touchstart',function(e){
-  if(e.touches&&e.touches.length){_tapX=e.touches[0].clientX;_tapY=e.touches[0].clientY;_tapT=Date.now();}
-},{passive:true,capture:true});
+var _ctxOpenAt=0,_ctxStamp=0;
 let ctxActive = null;
 
-function openCtxMenu(items, anchorOrEvent) {
-  // Debounce: ignore re-opens within 350ms (prevents synthetic-click double-fire)
-  var _now = Date.now();
+function openCtxMenu(items, anchorEl) {
+  const _now = Date.now();
   if (_now - _ctxStamp < 350) return;
   _ctxStamp = _now;
+  _ctxOpenAt = _now;
   closeCtxMenu();
   const menu = document.getElementById('ctx-menu');
   const overlay = document.getElementById('ctx-overlay');
@@ -3353,28 +3350,31 @@ function openCtxMenu(items, anchorOrEvent) {
       });
     }
   });
-  // Position: prefer recent touchstart coords — the only reliable source on Android
+  // Measure actual height off-screen before positioning
+  menu.style.top = '-9999px';
+  menu.style.left = '0';
+  menu.style.visibility = 'hidden';
+  menu.classList.add('on');
+  const actualH = menu.offsetHeight || 220;
+  menu.classList.remove('on');
+  menu.style.visibility = '';
+  // Position relative to button element using getBoundingClientRect
   const appRect = document.getElementById('app').getBoundingClientRect();
-  const menuW = 220, menuH = 300;
-  var cx, cy;
-  var _touchRecent = (_now - _tapT) < 600;
-  if (_touchRecent) {
-    cx = _tapX; cy = _tapY;
-  } else if (anchorOrEvent && typeof anchorOrEvent.clientX === 'number') {
-    cx = anchorOrEvent.clientX; cy = anchorOrEvent.clientY;
-  } else if (anchorOrEvent && anchorOrEvent.getBoundingClientRect) {
-    const r = anchorOrEvent.getBoundingClientRect(); cx = r.left; cy = r.bottom;
-  } else {
-    cx = appRect.left + 20; cy = 80;
+  const menuW = 220;
+  let left = appRect.left + 20, top = 80;
+  if (anchorEl && typeof anchorEl.getBoundingClientRect === 'function') {
+    const r = anchorEl.getBoundingClientRect();
+    left = r.left;
+    top = r.bottom + 6;
+    if (top + actualH > window.innerHeight - 20) top = Math.max(6, r.top - actualH - 6);
   }
-  var left = cx, top = cy + 6;
   if (left + menuW > appRect.right - 8) left = appRect.right - menuW - 8;
   if (left < appRect.left + 8) left = appRect.left + 8;
-  if (top + menuH > window.innerHeight - 20) top = cy - menuH - 6;
-  menu.style.top = top + 'px'; menu.style.left = left + 'px'; menu.style.right = 'auto';
+  menu.style.top = top + 'px';
+  menu.style.left = left + 'px';
+  menu.style.right = 'auto';
   menu.classList.add('on');
-  // Delay overlay by one frame — prevents same-tap from closing instantly
-  requestAnimationFrame(function(){ overlay.style.display = 'block'; });
+  overlay.style.display = 'block';
   ctxActive = menu;
 }
 function closeCtxMenu() {
@@ -3397,7 +3397,7 @@ const ICO_REMOVE = '<path d="M3 9a6 6 0 1012 0A6 6 0 003 9zM6 6l6 6M12 6l-6 6"/>
 // ── SINGLES CONTEXT MENU ─────────────────────────────────────────
 let ctxSingleId = null;
 
-function openSingleMenu(sid, e) {
+function openSingleMenu(sid, anchorEl) {
   ctxSingleId = sid;
   openCtxMenu([
     {label:'View profile',        icon:ICO_EYE,   action:function(){ viewSingleProfile(sid); }},
@@ -3407,7 +3407,7 @@ function openSingleMenu(sid, e) {
     {label:'Message',             icon:ICO_MSG,   action:function(){ messageSingle(sid); }},
     'sep',
     {label:'Stop helping',        icon:ICO_STOP,  action:function(){ openStopHelping(sid); }, danger:true},
-  ], e);
+  ], anchorEl);
 }
 
 function viewSingleProfile(sid) {
@@ -3619,7 +3619,7 @@ function openMmDash(idx) {
     +actHtml;
   go('single-dash');
 }
-function openMmMenu(idx, e) {
+function openMmMenu(idx, anchorEl) {
   ctxMmIdx = idx;
   const u = DB.user();
   const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
@@ -3632,7 +3632,7 @@ function openMmMenu(idx, e) {
     'sep',
     {label:_isP?'Resume':'Pause', icon:ICO_PAUSE, action:function(){ openPauseMm(idx); }},
     {label:'Remove',       icon:ICO_REMOVE, action:function(){ openRemoveMm(idx); }, danger:true},
-  ], e);
+  ], anchorEl);
 }
 
 function messageMm(idx) {
