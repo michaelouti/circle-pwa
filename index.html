@@ -1795,7 +1795,7 @@ function initHome(){
     var bio=s.bio?('\u201c'+s.bio.substring(0,65)+(s.bio.length>65?'\u2026':'')+'\u201d'):'';
     return '<div class="home-v-card" onclick="viewSingleProfile(\''+s.id+'\')">'
       +'<div class="home-v-photo">'+ph
-      +'<button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',this)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="#555"/><circle cx="7" cy="7" r="1.2" fill="#555"/><circle cx="7" cy="11.5" r="1.2" fill="#555"/></svg></button>'
+      +'<button class="home-v-more" onclick="event.stopPropagation();openSingleMenu(\''+s.id+'\',event)"><svg width="11" height="11" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="#555"/><circle cx="7" cy="7" r="1.2" fill="#555"/><circle cx="7" cy="11.5" r="1.2" fill="#555"/></svg></button>'
       +'<div class="hvc-badge-strip '+st.strip+'">'+st.text+'</div>'
       +'</div>'
       +'<div class="hvc-right">'
@@ -2199,7 +2199,7 @@ function seedCoMmDemo(){
   DB.setCommPerms(perms);
 }
 
-function openCoMmMenu(connId,btn){
+function openCoMmMenu(connId,e){
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   if(!conn)return;
   var _isP=conn.status==='paused';
@@ -2210,7 +2210,7 @@ function openCoMmMenu(connId,btn){
     'sep',
     {label:_isP?'Resume':'Pause',icon:ICO_PAUSE,action:function(){openPauseComm(connId);}},
     {label:'Remove',      icon:ICO_REMOVE,action:function(){removeCoMm(connId);},danger:true}
-  ],btn);
+  ],e);
 }
 
 function renderCoMmsGrid(){
@@ -2235,7 +2235,7 @@ function renderCoMmsGrid(){
     var isIncoming=isPending&&conn.initiatedBy==='them';
     var sharedCount=conn.theirSingles?conn.theirSingles.length:0;
     var menuBtn=!isPending
-      ?'<button class="mc-menu" data-cid="'+conn.id+'" onclick="event.stopPropagation();openCoMmMenu(this.dataset.cid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+      ?'<button class="mc-menu" data-cid="'+conn.id+'" onclick="event.stopPropagation();openCoMmMenu(this.dataset.cid,event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
       :'';
     var isPaused=!isPending&&conn.status==='paused';
     var badge=isIncoming
@@ -2567,14 +2567,9 @@ function openPauseComm(connId){
   pauseCommId=connId;
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   var _isP=conn&&conn.status==='paused';
-  var _ti=document.getElementById('pause-comm-title');
-  if(_ti)_ti.textContent=_isP?'Resume this connection?':'Pause this connection?';
-  var _msg=document.getElementById('pause-comm-msg');
-  if(_msg)_msg.textContent=_isP
-    ?(conn.name+' will be able to view your singles and suggest introductions again.')
-    :(conn?conn.name+'\u2019t be able to view your singles or suggest introductions while paused.':'This connection will be paused.');
-  var _btn=document.getElementById('pause-comm-btn');
-  if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
+  var _ti=document.getElementById('pause-comm-title');if(_ti)_ti.textContent=_isP?'Resume this connection?':'Pause this connection?';
+  var _msg=document.getElementById('pause-comm-msg');if(_msg)_msg.textContent=_isP?(conn.name+' will be able to view your singles and suggest introductions again.'):(conn?conn.name+'\u2019t be able to view your singles or suggest introductions while paused.':'This connection will be paused.');
+  var _btn=document.getElementById('pause-comm-btn');if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
   showModal('modal-pause-comm');
 }
 function doPauseComm(){
@@ -2606,12 +2601,7 @@ function renderCommDetail(connId){
   var sharedCount=conn.theirSingles?conn.theirSingles.length:0;
   var connDate=new Date(conn.acceptedAt||conn.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   var _isPaused=conn.status==='paused';
-  var _pausedBanner=_isPaused
-    ?'<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">'
-    +'<span style="font-size:18px;color:#C62828">&#9646;&#9646;</span>'
-    +'<div><div style="font-size:13px;font-weight:700;color:#C62828">Connection paused</div>'
-    +'<div style="font-size:11px;color:#8B2E2E;margin-top:1px">'+conn.name+' cannot view your singles or suggest intros</div></div></div>'
-    :'';
+  var _pausedBanner=_isPaused?'<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="font-size:18px;color:#C62828">&#9646;&#9646;</span><div><div style="font-size:13px;font-weight:700;color:#C62828">Connection paused</div><div style="font-size:11px;color:#8B2E2E;margin-top:1px">'+conn.name+' cannot view your singles or suggest intros</div></div></div>':'';
   var html='<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'
     +'<div class="av" style="width:64px;height:64px;font-size:22px;background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
     +'<div><div style="font-size:19px;font-weight:800;color:var(--tx);letter-spacing:-.3px">'+conn.name+'</div>'
@@ -2626,9 +2616,7 @@ function renderCommDetail(connId){
   html+='<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px">'
     +'<button data-cid="'+connId+'" style="'+bs+'" onclick="openCommDash(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="'+ls+'">Dashboard</span></button>'
     +'<button data-cid="'+connId+'" style="'+bs+'" onclick="messageComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="'+ls+'">Message</span></button>'
-    +(_isPaused
-      ?'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+';stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="'+ls+';color:var(--ok)">Resume</span></button>'
-      :'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="'+ls+'">Pause</span></button>')
+    +(_isPaused?'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+';stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="'+ls+';color:var(--ok)">Resume</span></button>':'<button data-cid="'+connId+'" style="'+bs+'" onclick="openPauseComm(this.dataset.cid)"><svg viewBox="0 0 18 18" style="'+ss+'"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="'+ls+'">Pause</span></button>')
     +'</div>';
 
   // ── Their singles (clickable + Suggest button) ───────────────────────
@@ -2658,15 +2646,7 @@ function renderCommDetail(connId){
   }
 
   // ── Your singles permissions ───────────────────────────────────────
-  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>';
-  if(_isPaused){
-    html+='<div style="background:#F5F5F5;border:1px solid #D0D0D0;border-radius:10px;padding:14px;margin-bottom:10px;text-align:center">'
-      +'<div style="font-size:22px;margin-bottom:6px">&#128274;</div>'
-      +'<div style="font-size:13px;font-weight:600;color:#555;margin-bottom:2px">All singles hidden</div>'
-      +'<div style="font-size:11px;color:#888">Resume the connection to restore visibility</div></div>';
-  } else {
-    html+='<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';
-  }
+  html+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.06em;text-transform:uppercase;margin:20px 0 6px">Your singles visible to '+conn.name+'</div>';if(_isPaused){html+='<div style="background:#F5F5F5;border:1px solid #D0D0D0;border-radius:10px;padding:14px;margin-bottom:10px;text-align:center"><div style="font-size:22px;margin-bottom:6px">&#128274;</div><div style="font-size:13px;font-weight:600;color:#555;margin-bottom:2px">All singles hidden</div><div style="font-size:11px;color:#888">Resume the connection to restore visibility</div></div>';}else{html+='<p style="font-size:12px;color:var(--tx2);line-height:1.55;margin-bottom:10px">Control which of your singles '+conn.name+' can view and suggest introductions for.</p>';}
   if(!_isPaused&&singles.length){
     singles.forEach(function(s){
       var perm=perms.find(function(p){return p.connId===connId&&p.singleId===s.id;});
@@ -2768,7 +2748,7 @@ function renderMcSinglesGrid() {
         : '<div style="width:100%;height:100%;background:linear-gradient(145deg,' + c.bg + ',' + c.bg + 'cc);display:flex;align-items:center;justify-content:center"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1.2" opacity=".5"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>';
       html += '<div class="mc-card" data-sid="' + s.id + '" onclick="mcCardTap(this.dataset.sid)">'
             + inner
-            + '<button class="mc-menu" onclick="event.stopPropagation();openSingleMenu(this.closest(\'.mc-card\').dataset.sid,this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<button class="mc-menu" onclick="event.stopPropagation();openSingleMenu(this.closest(\'.mc-card\').dataset.sid,event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
             + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + s.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + s.loc + '</div></div>'
             + '</div>';
     } else {
@@ -2822,15 +2802,8 @@ function openMmProfile(idx) {
   const ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
   const ss='width:20px;height:20px;stroke:var(--tx);stroke-width:1.6;fill:none;display:block;margin:0 auto';
   const _mmIsP=mm.status==='paused';
-  const _pausedBannerMm=_mmIsP
-    ?`<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">`
-    +`<span style="font-size:18px;color:#C62828">&#9646;&#9646;</span>`
-    +`<div><div style="font-size:13px;font-weight:700;color:#C62828">Introductions paused</div>`
-    +`<div style="font-size:11px;color:#8B2E2E;margin-top:1px">${mm.name} won\u2019t send you new intros while paused</div></div></div>`
-    :'';
-  const _pauseBtn=_mmIsP
-    ?`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss};stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="${ls};color:var(--ok)">Resume</span></button>`
-    :`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="${ls}">Pause</span></button>`;
+  const _pausedBannerMm=_mmIsP?`<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px"><span style="font-size:18px;color:#C62828">&#9646;&#9646;</span><div><div style="font-size:13px;font-weight:700;color:#C62828">Introductions paused</div><div style="font-size:11px;color:#8B2E2E;margin-top:1px">${mm.name} won\u2019t send you new intros while paused</div></div></div>`:'';
+  const _pauseBtn=_mmIsP?`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss};stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="${ls};color:var(--ok)">Resume</span></button>`:`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="${ls}">Pause</span></button>`;
   const mmActionsHtml=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px"><button style="${bs}" onclick="openMmDash(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="${ls}">Dashboard</span></button><button style="${bs}" onclick="messageMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="${ls}">Message</span></button>${_pauseBtn}</div>`;
   const removeBtn=`<button onclick="openRemoveMm(window._viewMmIdx)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px">Remove ${mm.name}</button>`;
   document.getElementById('preview-body').innerHTML =
@@ -2866,12 +2839,10 @@ function renderMcMmsGrid() {
     if (mm) {
       const c = AVCOLS[mm.ci % AVCOLS.length];
       const _mmPaused = mm.status==='paused';
-      const _mmBadge = _mmPaused
-        ? '<div style="position:absolute;top:8px;right:8px;background:rgba(198,40,40,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>'
-        : '';
+      const _mmBadge = _mmPaused?'<div style="position:absolute;top:8px;right:8px;background:rgba(198,40,40,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>':'';
       const _mmSub = _mmPaused ? 'Paused' : (mm.loc || mm.rel || '');
       html += '<div class="mc-card" style="cursor:pointer;background:' + c.bg + ';position:relative" onclick="openMmProfile(' + i + ')">'
-            + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
+            + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',event)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
             + _mmBadge
             + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity="' + (_mmPaused ? '.3' : '.45') + '"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
             + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:' + (_mmPaused ? 'rgba(255,160,160,.95)' : 'rgba(255,255,255,.8)') + ';margin-top:2px">' + _mmSub + '</div></div>'
@@ -2988,12 +2959,9 @@ function startIntroFlow(){
   S.scanId=null;
   var _em={'s1':{height:168,religion:'Agnostic'},'s2':{height:182,religion:'Catholic'},'s3':{height:165,religion:'Atheist'},'s4':{height:178,religion:'Agnostic'},'s5':{height:170,religion:'Christian'}};
   if(s&&_em[s.id]){if(!s.height)s.height=_em[s.id].height;if(!s.religion)s.religion=_em[s.id].religion;}
-  S.introSingle=s;S.introId='qi_'+Date.now();
-  const _u=DB.user();
+  S.introSingle=s;S.introId='qi_'+Date.now();const _u=DB.user();
   const _httpPhoto=(s.photos||[]).find(function(p){return p.startsWith('http');})||'';
-  const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),
-    j:s.job||'',l:s.loc||'',b:s.bio||'',h:s.height||'',r:s.religion||'',
-    q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
+  const _compact={n:s.name,a:s.age,g:s.gender==='Woman'?'W':s.gender==='Man'?'M':(s.gender||''),j:s.job||'',l:s.loc||'',b:s.bio||'',h:s.height||'',r:s.religion||'',q:s.qs||{},c:s.ci||0,p:_httpPhoto,m:(_u&&_u.name)||'Your matchmaker'};
   Object.keys(_compact).forEach(function(k){if(_compact[k]==='')delete _compact[k];});
   try{S.introId='b64_'+btoa(unescape(encodeURIComponent(JSON.stringify(_compact))));}catch(e){}
   localStorage.setItem('c_scan_'+S.introId,JSON.stringify(_compact));
@@ -3175,7 +3143,7 @@ function scanInterested(){
 }
 function scanSaveLater(){const url=location.href;if(navigator.share)navigator.share({title:'Circle intro saved',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link saved! 📋')}else toast('Copy: '+url)}
 function scanDecline(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><h2 class="mb8">No worries</h2><p class="cap" style="max-width:240px">Sophie will not know you viewed this.</p><button class="btn-ghost primary mt24" onclick="history.back()">Close</button></div>`}
-function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent=m.isDirect?'':('Intro by '+m.mmName);document.getElementById('chat-sub').style.display=m.isDirect?'none':'';const _col=AVCOLS[(m.ci||0)%AVCOLS.length];const _av=document.getElementById('chat-av');if(_av){var _photo=m.oPhoto||'';if(!_photo){DB.singles().forEach(function(s){if(s.name===m.oName&&s.photos&&s.photos[0])_photo=s.photos[0];});}if(!_photo){var _u2=DB.user();if(_u2&&_u2.matchmakers)_u2.matchmakers.forEach(function(mm){if(mm.name===m.oName&&mm.photos&&mm.photos[0])_photo=mm.photos[0];});}if(_photo){_av.innerHTML='<img src="'+_photo+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;border-radius:50%">';}else{_av.innerHTML='';_av.style.background=_col.bg;_av.style.color=_col.tc;_av.textContent=ini(m.oName);}}const ctx=document.getElementById('chat-ctx');ctx.style.display='block';const _matchEl=document.getElementById('chat-ctx-match');if(!m.isDirect){if(_matchEl){const _d=new Date(m.ts).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});_matchEl.textContent='\u2728 You and '+m.oName+' matched on '+_d;}if(m.ctx){document.getElementById('chat-ctx-txt').textContent='\"'+m.ctx+'\"';document.getElementById('chat-ctx-by').textContent='\u2014 '+m.mmName;document.getElementById('chat-ctx-txt').style.display='';document.getElementById('chat-ctx-by').style.display='';}else{document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}}else{if(_matchEl)_matchEl.textContent='\uD83D\uDCAC Direct message';document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}renderMsgs(id);go('chat')}
+function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent=m.isDirect?'':('Intro by '+m.mmName);document.getElementById('chat-sub').style.display=m.isDirect?'none':'';const _col=AVCOLS[(m.ci||0)%AVCOLS.length];const _av=document.getElementById('chat-av');if(_av){var _photo=m.oPhoto||'';if(!_photo){DB.singles().forEach(function(s){if(s.name===m.oName&&s.photos&&s.photos[0])_photo=s.photos[0];});}if(!_photo){var _u2=DB.user();if(_u2&&_u2.matchmakers)_u2.matchmakers.forEach(function(mm){if(mm.name===m.oName&&mm.photos&&mm.photos[0])_photo=mm.photos[0];});}if(_photo){_av.innerHTML='<img src="'+_photo+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;border-radius:50%">';}else{_av.innerHTML='';_av.style.background=_col.bg;_av.style.color=_col.tc;_av.textContent=ini(m.oName);}}const ctx=document.getElementById('chat-ctx');ctx.style.display='block';const _matchEl=document.getElementById('chat-ctx-match');if(!m.isDirect){if(_matchEl){const _d=new Date(m.ts).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});_matchEl.textContent='\u2728 You and '+m.oName+' matched on '+_d;}if(m.ctx){document.getElementById('chat-ctx-txt').textContent='\"'+m.ctx+'\"';document.getElementById('chat-ctx-by').textContent='\u2014 '+m.mmName;document.getElementById('chat-ctx-txt').style.display='';document.getElementById('chat-ctx-by').style.display='';}else{document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}}else{if(_matchEl)_matchEl.textContent='\u2709 Direct message';document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}renderMsgs(id);go('chat')}
 function renderMsgs(matchId){const msgs=DB.msgs(matchId),el=document.getElementById('chat-msgs');if(!el)return;el.innerHTML=msgs.map(m=>`<div class="msg ${m.from==='me'?'msg-me':'msg-th'}"><div class="bubble ${m.from==='me'?'bubble-me':'bubble-th'}">${m.text}</div><div class="mts">${fmtTime(m.ts)}</div></div>`).join('');el.scrollTop=el.scrollHeight}
 function sendMsg(){if(!S.currentMatch)return;const el=document.getElementById('chat-in'),txt=el.value.trim();if(!txt)return;el.value='';const msg={id:Date.now(),from:'me',text:txt,ts:Date.now()};DB.addMsg(S.currentMatch.id,msg);renderMsgs(S.currentMatch.id);setTimeout(()=>{const replies=["That's really interesting!","Ha, I love that! 😄","Yes, exactly!","Tell me more.","Same here!"];const r={id:Date.now()+1,from:'them',text:replies[Math.floor(Math.random()*replies.length)],ts:Date.now()};DB.addMsg(S.currentMatch.id,r);renderMsgs(S.currentMatch.id)},1200+Math.random()*1000)}
 function showChatMenu(){const m=S.currentMatch;if(!m)return;if(confirm('Close conversation with '+m.oName+'?')){const matches=DB.matches(),idx=matches.findIndex(x=>x.id===m.id);if(idx!==-1){matches[idx].closed=true;DB.setMatches(matches)}go('intros');switchTab('matches');toast('Conversation closed')}}
@@ -3355,7 +3323,8 @@ document.getElementById('screen-stack').querySelectorAll('.screen').forEach(scr=
 // ── CONTEXT MENU ─────────────────────────────────────────────────
 let ctxActive = null;
 
-function openCtxMenu(items, anchorEl) {
+function openCtxMenu(items, anchorOrEvent) {
+  closeCtxMenu();
   const menu = document.getElementById('ctx-menu');
   const overlay = document.getElementById('ctx-overlay');
   menu.innerHTML = items.map(function(it, i) {
@@ -3375,26 +3344,23 @@ function openCtxMenu(items, anchorEl) {
       });
     }
   });
-  // Position near anchor — fixed within viewport
-  const rect = anchorEl.getBoundingClientRect();
   const appRect = document.getElementById('app').getBoundingClientRect();
-  const menuW = 220;
-  let top = rect.bottom + 6;
-  let left = rect.left;
-  // keep inside app bounds
+  const menuW = 220; const menuH = 300;
+  let cx, cy;
+  if (anchorOrEvent && typeof anchorOrEvent.clientX === 'number') {
+    cx = anchorOrEvent.clientX; cy = anchorOrEvent.clientY;
+  } else if (anchorOrEvent && anchorOrEvent.getBoundingClientRect) {
+    const r = anchorOrEvent.getBoundingClientRect(); cx = r.left; cy = r.bottom;
+  } else { cx = appRect.left + 20; cy = 80; }
+  let left = cx; let top = cy + 6;
   if (left + menuW > appRect.right - 8) left = appRect.right - menuW - 8;
   if (left < appRect.left + 8) left = appRect.left + 8;
-  // if menu would go off bottom, show above anchor
-  const menuH = 300;
-  if (top + menuH > window.innerHeight - 20) top = rect.top - menuH - 6;
-  menu.style.top = top + 'px';
-  menu.style.left = left + 'px';
-  menu.style.right = 'auto';
+  if (top + menuH > window.innerHeight - 20) top = cy - menuH - 6;
+  menu.style.top = top + 'px'; menu.style.left = left + 'px'; menu.style.right = 'auto';
   menu.classList.add('on');
-  overlay.style.display = 'block';
+  requestAnimationFrame(function(){ overlay.style.display = 'block'; });
   ctxActive = menu;
 }
-
 function closeCtxMenu() {
   const menu = document.getElementById('ctx-menu');
   const overlay = document.getElementById('ctx-overlay');
@@ -3415,7 +3381,7 @@ const ICO_REMOVE = '<path d="M3 9a6 6 0 1012 0A6 6 0 003 9zM6 6l6 6M12 6l-6 6"/>
 // ── SINGLES CONTEXT MENU ─────────────────────────────────────────
 let ctxSingleId = null;
 
-function openSingleMenu(sid, anchorEl) {
+function openSingleMenu(sid, e) {
   ctxSingleId = sid;
   openCtxMenu([
     {label:'View profile',        icon:ICO_EYE,   action:function(){ viewSingleProfile(sid); }},
@@ -3425,7 +3391,7 @@ function openSingleMenu(sid, anchorEl) {
     {label:'Message',             icon:ICO_MSG,   action:function(){ messageSingle(sid); }},
     'sep',
     {label:'Stop helping',        icon:ICO_STOP,  action:function(){ openStopHelping(sid); }, danger:true},
-  ], anchorEl);
+  ], e);
 }
 
 function viewSingleProfile(sid) {
@@ -3637,19 +3603,20 @@ function openMmDash(idx) {
     +actHtml;
   go('single-dash');
 }
-function openMmMenu(idx, anchorEl) {
+function openMmMenu(idx, e) {
   ctxMmIdx = idx;
   const u = DB.user();
   const mm = u && u.matchmakers ? u.matchmakers[idx] : null;
   if (!mm) return;
+  const _isP = mm.status === 'paused';
   openCtxMenu([
     {label:'View profile', icon:ICO_EYE,    action:function(){ openMmProfile(idx); }},
     {label:'Dashboard',    icon:ICO_DASH,   action:function(){ openMmDash(idx); }},
     {label:'Message',      icon:ICO_MSG,    action:function(){ messageMm(idx); }},
     'sep',
-    {label:'Pause',        icon:ICO_PAUSE,  action:function(){ openPauseMm(idx); }},
+    {label:_isP?'Resume':'Pause', icon:ICO_PAUSE, action:function(){ openPauseMm(idx); }},
     {label:'Remove',       icon:ICO_REMOVE, action:function(){ openRemoveMm(idx); }, danger:true},
-  ], anchorEl);
+  ], e);
 }
 
 function messageMm(idx) {
@@ -3671,14 +3638,9 @@ function openPauseMm(idx) {
   pauseMmIdx = idx;
   const u = DB.user(); const mm = u&&u.matchmakers?u.matchmakers[idx]:null;
   const _isP=mm&&mm.status==='paused';
-  const _ti=document.getElementById('pause-mm-title');
-  if(_ti)_ti.textContent=_isP?'Resume introductions?':'Pause introductions?';
-  const _msg=document.getElementById('pause-mm-msg');
-  if(_msg)_msg.textContent=_isP
-    ?(mm.name+' will be able to send you new introductions again.')
-    :(mm?mm.name+" won't be able to send you new introductions while paused.":'This matchmaker will be paused.');
-  const _btn=document.getElementById('pause-mm-btn');
-  if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
+  const _ti=document.getElementById('pause-mm-title');if(_ti)_ti.textContent=_isP?'Resume introductions?':'Pause introductions?';
+  const _msg=document.getElementById('pause-mm-msg');if(_msg)_msg.textContent=_isP?(mm.name+' will be able to send you new introductions again.'):(mm?mm.name+" won't be able to send you new introductions while paused.":'This matchmaker will be paused.');
+  const _btn=document.getElementById('pause-mm-btn');if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
   showModal('modal-pause-mm');
 }
 function doPauseMm() {
