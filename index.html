@@ -623,10 +623,10 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-chat" class="screen" style="padding-bottom:80px;display:flex;flex-direction:column;overflow:hidden">
   <div class="topbar between" id="chat-topbar" style="padding-top:max(12px,var(--sat))">
     <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="flex:1;text-align:center"><div id="chat-name" style="font-weight:700;font-size:16px"></div><p class="tiny" id="chat-sub" style="color:var(--p)"></p></div>
+    <div style="flex:1;display:flex;align-items:center;gap:10px;padding-left:4px;min-width:0"><div id="chat-av" style="width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700"></div><div style="min-width:0"><div id="chat-name" style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><p class="tiny" id="chat-sub" style="color:var(--p)"></p></div></div>
     <button class="btn-icon" onclick="showChatMenu()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="10" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="15" r="1.5" fill="var(--tx3)"/></svg></button>
   </div>
-  <div id="chat-ctx" style="display:none;background:var(--p1);border-bottom:.5px solid rgba(216,90,48,.15);padding:10px 16px"><p class="tiny" id="chat-ctx-txt" style="color:var(--p6);font-style:italic;line-height:1.55"></p><p class="tiny mt4" id="chat-ctx-by" style="color:var(--p);font-weight:600"></p></div>
+  <div id="chat-ctx" style="display:none;background:var(--p1);border-bottom:.5px solid rgba(216,90,48,.15);padding:10px 16px"><p class="tiny mb4" id="chat-ctx-match" style="color:var(--p);font-weight:600"></p><p class="tiny" id="chat-ctx-txt" style="color:var(--p6);font-style:italic;line-height:1.55"></p><p class="tiny mt4" id="chat-ctx-by" style="color:var(--p);font-weight:600"></p></div>
   <div id="chat-msgs" class="msgs"></div>
   <div class="chat-bar"><input class="chat-in" id="chat-in" placeholder="Message..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"><button class="send-btn" onclick="sendMsg()"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 8l12-4-4 12-2-5-6-3z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
 </div>
@@ -2943,7 +2943,7 @@ function startIntroFlow(){
   const qrout=document.getElementById('qr-out');qrout.innerHTML='';
   const url=`${location.origin}${location.pathname}#scan/${S.introId}`;
   try{new QRCode(qrout,{text:url,width:200,height:200,colorDark:'#1A1614',colorLight:'#FFFFFF',correctLevel:QRCode.CorrectLevel.H});}
-  catch(e){qrout.innerHTML=`<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;text-align:center;padding:16px;font-size:12px;color:var(--tx3)">QR ready<br><span style="word-break:break-all;color:var(--p);margin-top:8px;display:block">${url}</span></div>`;}
+  catch(e){qrout.innerHTML=`<div style="width:200px;height:200px;background:var(--bg3);display:flex;align-items:center;justify-content:center;border-radius:8px;font-size:12px;color:var(--tx3)">QR ready</div>`;}
   go('qr');
 }
 function simScan(){go('scan');}
@@ -2993,44 +2993,16 @@ function initScan(){
 
   // ── Data lookup ──────────────────────────────────────────────
   var profile=null;
-  if(S.personalScanPurpose&&S.personalScanUserId){
-    var _purpose=S.personalScanPurpose,_uid=S.personalScanUserId;
-    S.personalScanPurpose=null;S.personalScanUserId=null;
-    var _pdata=null;
-    try{_pdata=JSON.parse(localStorage.getItem('c_personal_'+_uid)||'null');}catch(e){}
-    if(_pdata){
-      if(_purpose==='s'){S.introSingle=_pdata;}
-      else if(_purpose==='mm_req'){body.innerHTML=_scanMmRequestHtml(_pdata);return;}
-      else if(_purpose==='cm'){back();setTimeout(function(){showCommInvite({name:_pdata.name,ci:_pdata.ci||0,id:'comm_scanned_'+Date.now()});},200);return;}
-    }
-  }
-  if(S.scanId){
-    if(S.scanId.startsWith('b64_')){
-      try{
-        var _raw=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));
-        if(_raw.n&&!_raw.name){
-          profile={name:_raw.n,age:_raw.a||'',
-            gender:_raw.g==='W'?'Woman':_raw.g==='M'?'Man':(_raw.g||''),
-            job:_raw.j||'',loc:_raw.l||'',bio:_raw.b||'',tags:[],
-            height:_raw.h||'',religion:_raw.r||'',
-            qs:_raw.q||{},ci:_raw.c||0,
-            photos:_raw.p?[_raw.p]:[],
-            mmName:_raw.m||'Your matchmaker'};
-        } else { profile=_raw; }
-      }catch(e){}
-    } else {
-      try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}
-    }
-  }
+  if(S.personalScanPurpose&&S.personalScanUserId){var _purpose=S.personalScanPurpose,_uid=S.personalScanUserId;S.personalScanPurpose=null;S.personalScanUserId=null;var _pdata=null;try{_pdata=JSON.parse(localStorage.getItem('c_personal_'+_uid)||'null');}catch(e){}if(_pdata){if(_purpose==='s'){S.introSingle=_pdata;}else if(_purpose==='mm_req'){body.innerHTML=_scanMmRequestHtml(_pdata);return;}else if(_purpose==='cm'){back();setTimeout(function(){showCommInvite({name:_pdata.name,ci:_pdata.ci||0,id:'comm_scanned_'+Date.now()});},200);return;}}}
+  if(S.scanId){if(S.scanId.startsWith('b64_')){try{var _raw=JSON.parse(decodeURIComponent(escape(atob(S.scanId.slice(4)))));if(_raw.n&&!_raw.name){profile={name:_raw.n,age:_raw.a||'',gender:_raw.g==='W'?'Woman':_raw.g==='M'?'Man':(_raw.g||''),job:_raw.j||'',loc:_raw.l||'',bio:_raw.b||'',tags:[],height:_raw.h||'',religion:_raw.r||'',qs:_raw.q||{},ci:_raw.c||0,photos:_raw.p?[_raw.p]:[],mmName:_raw.m||'Your matchmaker'};}else{profile=_raw;}}catch(e){}}else{try{profile=JSON.parse(localStorage.getItem('c_scan_'+S.scanId)||'null');}catch(e){}}}
   if(!profile&&S.introSingle){
     var _s=S.introSingle,_u=DB.user();
     profile={name:_s.name,age:_s.age,gender:_s.gender||'',job:_s.job||'',loc:_s.loc||'',
       bio:_s.bio||'',tags:_s.tags||[],qs:_s.qs||{},ci:_s.ci||0,photos:_s.photos||[],
       height:_s.height||'',religion:_s.religion||'',
       mmName:(_u&&_u.name)||'Your matchmaker',singleId:_s.id};
-  }
-  // Safety: fill missing height/religion for known demo singles regardless of path
   if(profile){var _pem={'s1':{height:168,religion:'Agnostic'},'s2':{height:182,religion:'Catholic'},'s3':{height:165,religion:'Atheist'},'s4':{height:178,religion:'Agnostic'},'s5':{height:170,religion:'Christian'}};var _pid=profile.singleId||profile.id||'';if(_pem[_pid]){if(!profile.height)profile.height=_pem[_pid].height;if(!profile.religion)profile.religion=_pem[_pid].religion;}}
+  }
   if(!profile){
     profile={name:'Sophie',age:28,gender:'Woman',job:'Architect',loc:'Paris, France',
       tags:['Creative','Adventurous','Authentic'],
@@ -3110,6 +3082,7 @@ function initScan(){
     +'<div style="height:16px"></div>'
     +(profile.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px">'+'<div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
+    +'<div style="height:4px"></div>'
     +'<div style="height:16px"></div>'
     +'<div class="scan-actions">'
     +'<button class="btn btn-p mb8" onclick="scanInterested()">&#128140; Send my profile</button>'
@@ -3144,7 +3117,7 @@ function scanInterested(){
 }
 function scanSaveLater(){const url=location.href;if(navigator.share)navigator.share({title:'Circle intro saved',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link saved! 📋')}else toast('Copy: '+url)}
 function scanDecline(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><h2 class="mb8">No worries</h2><p class="cap" style="max-width:240px">Sophie will not know you viewed this.</p><button class="btn-ghost primary mt24" onclick="history.back()">Close</button></div>`}
-function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent=m.isDirect?'':('Intro by '+m.mmName);document.getElementById('chat-sub').style.display=m.isDirect?'none':'';const ctx=document.getElementById('chat-ctx');if(m.ctx){ctx.style.display='block';document.getElementById('chat-ctx-txt').textContent='"'+m.ctx+'"';document.getElementById('chat-ctx-by').textContent='— '+m.mmName}else ctx.style.display='none';renderMsgs(id);go('chat')}
+function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent=m.isDirect?'':('Intro by '+m.mmName);document.getElementById('chat-sub').style.display=m.isDirect?'none':'';const _col=AVCOLS[(m.ci||0)%AVCOLS.length];const _av=document.getElementById('chat-av');if(_av){_av.style.background=_col.bg;_av.style.color=_col.tc;_av.textContent=ini(m.oName);}const ctx=document.getElementById('chat-ctx');if(!m.isDirect){ctx.style.display='block';const _matchEl=document.getElementById('chat-ctx-match');if(_matchEl){const _d=new Date(m.ts).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});_matchEl.textContent='\u2728 You and '+m.oName+' matched on '+_d;}if(m.ctx){document.getElementById('chat-ctx-txt').textContent='\"'+m.ctx+'\"';document.getElementById('chat-ctx-by').textContent='\u2014 '+m.mmName;document.getElementById('chat-ctx-txt').style.display='';document.getElementById('chat-ctx-by').style.display='';}else{document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}}else ctx.style.display='none';renderMsgs(id);go('chat')}
 function renderMsgs(matchId){const msgs=DB.msgs(matchId),el=document.getElementById('chat-msgs');if(!el)return;el.innerHTML=msgs.map(m=>`<div class="msg ${m.from==='me'?'msg-me':'msg-th'}"><div class="bubble ${m.from==='me'?'bubble-me':'bubble-th'}">${m.text}</div><div class="mts">${fmtTime(m.ts)}</div></div>`).join('');el.scrollTop=el.scrollHeight}
 function sendMsg(){if(!S.currentMatch)return;const el=document.getElementById('chat-in'),txt=el.value.trim();if(!txt)return;el.value='';const msg={id:Date.now(),from:'me',text:txt,ts:Date.now()};DB.addMsg(S.currentMatch.id,msg);renderMsgs(S.currentMatch.id);setTimeout(()=>{const replies=["That's really interesting!","Ha, I love that! 😄","Yes, exactly!","Tell me more.","Same here!"];const r={id:Date.now()+1,from:'them',text:replies[Math.floor(Math.random()*replies.length)],ts:Date.now()};DB.addMsg(S.currentMatch.id,r);renderMsgs(S.currentMatch.id)},1200+Math.random()*1000)}
 function showChatMenu(){const m=S.currentMatch;if(!m)return;if(confirm('Close conversation with '+m.oName+'?')){const matches=DB.matches(),idx=matches.findIndex(x=>x.id===m.id);if(idx!==-1){matches[idx].closed=true;DB.setMatches(matches)}go('intros');switchTab('matches');toast('Conversation closed')}}
