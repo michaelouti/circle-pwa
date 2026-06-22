@@ -1048,9 +1048,9 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-pause-mm">
   <div class="modal-sheet">
     <div class="mhandle"></div>
-    <h3 class="mb8">Pause introductions?</h3>
+    <h3 class="mb8" id="pause-mm-title">Pause introductions?</h3>
     <p class="cap mb20" id="pause-mm-msg">This matchmaker won't be able to send you new introductions while paused.</p>
-    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseMm()">Yes, pause</button>
+    <button class="btn btn-s mb8" style="border-color:var(--p);color:var(--p)" onclick="doPauseMm()" id="pause-mm-btn">Yes, pause</button>
     <button class="btn btn-s" onclick="closeModal('modal-pause-mm')">Cancel</button>
   </div>
 </div>
@@ -2243,7 +2243,7 @@ function renderCoMmsGrid(){
       :isPending
       ?'<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,.4);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">Pending</div>'
       :isPaused
-      ?'<div style="position:absolute;top:8px;right:8px;background:rgba(90,90,90,.85);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>'
+      ?'<div style="position:absolute;top:8px;right:8px;background:rgba(198,40,40,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>'
       :'';
     var subText=isPending
       ?(isIncoming?'Tap to respond':'Awaiting response')
@@ -2607,10 +2607,10 @@ function renderCommDetail(connId){
   var connDate=new Date(conn.acceptedAt||conn.createdAt).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
   var _isPaused=conn.status==='paused';
   var _pausedBanner=_isPaused
-    ?'<div style="background:#F5F5F5;border:1px solid #D0D0D0;border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">'
-    +'<span style="font-size:18px">&#9646;&#9646;</span>'
-    +'<div><div style="font-size:13px;font-weight:700;color:#555">Connection paused</div>'
-    +'<div style="font-size:11px;color:#888;margin-top:1px">'+conn.name+' cannot view your singles or suggest intros</div></div></div>'
+    ?'<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">'
+    +'<span style="font-size:18px;color:#C62828">&#9646;&#9646;</span>'
+    +'<div><div style="font-size:13px;font-weight:700;color:#C62828">Connection paused</div>'
+    +'<div style="font-size:11px;color:#8B2E2E;margin-top:1px">'+conn.name+' cannot view your singles or suggest intros</div></div></div>'
     :'';
   var html='<div style="display:flex;align-items:center;gap:14px;margin-bottom:16px">'
     +'<div class="av" style="width:64px;height:64px;font-size:22px;background:'+col.bg+';color:'+col.tc+'">'+ini(conn.name)+'</div>'
@@ -2821,7 +2821,17 @@ function openMmProfile(idx) {
   const bs='display:flex;flex-direction:column;align-items:center;gap:5px;background:var(--bg2);border-radius:var(--r2);padding:11px 4px;border:none;cursor:pointer;font-family:inherit';
   const ls='font-size:9px;font-weight:600;color:var(--tx);text-align:center;line-height:1.2';
   const ss='width:20px;height:20px;stroke:var(--tx);stroke-width:1.6;fill:none;display:block;margin:0 auto';
-  const mmActionsHtml=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px"><button style="${bs}" onclick="openMmDash(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="${ls}">Dashboard</span></button><button style="${bs}" onclick="messageMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="${ls}">Message</span></button><button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="${ls}">Pause</span></button></div>`;
+  const _mmIsP=mm.status==='paused';
+  const _pausedBannerMm=_mmIsP
+    ?`<div style="background:#FFEBEE;border:1px solid rgba(198,40,40,.25);border-radius:10px;padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:10px">`
+    +`<span style="font-size:18px;color:#C62828">&#9646;&#9646;</span>`
+    +`<div><div style="font-size:13px;font-weight:700;color:#C62828">Introductions paused</div>`
+    +`<div style="font-size:11px;color:#8B2E2E;margin-top:1px">${mm.name} won\u2019t send you new intros while paused</div></div></div>`
+    :'';
+  const _pauseBtn=_mmIsP
+    ?`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss};stroke:var(--ok)"><path d="M5 4l10 5-10 5V4z"/></svg><span style="${ls};color:var(--ok)">Resume</span></button>`
+    :`<button style="${bs}" onclick="openPauseMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="4" y="3" width="3.5" height="12" rx="1"/><rect x="10.5" y="3" width="3.5" height="12" rx="1"/></svg><span style="${ls}">Pause</span></button>`;
+  const mmActionsHtml=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px"><button style="${bs}" onclick="openMmDash(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/><rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/></svg><span style="${ls}">Dashboard</span></button><button style="${bs}" onclick="messageMm(window._viewMmIdx)"><svg viewBox="0 0 18 18" style="${ss}"><path d="M2 4h14a1 1 0 011 1v7a1 1 0 01-1 1H5l-4 3V5a1 1 0 011-1z" stroke-linejoin="round"/></svg><span style="${ls}">Message</span></button>${_pauseBtn}</div>`;
   const removeBtn=`<button onclick="openRemoveMm(window._viewMmIdx)" style="width:100%;padding:13px;background:var(--erbg);color:var(--er);border:none;border-radius:var(--r2);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:8px">Remove ${mm.name}</button>`;
   document.getElementById('preview-body').innerHTML =
     `<div style="position:relative;margin:-20px -20px 16px">
@@ -2833,7 +2843,7 @@ function openMmProfile(idx) {
         <div style="font-size:12px;color:rgba(255,255,255,.9)">${[mm.rel, mm.loc].filter(Boolean).join(' · ')}</div>
       </div>
     </div>
-    ${mmActionsHtml}
+    ${_pausedBannerMm}${mmActionsHtml}
     <div style="background:var(--p1);border-radius:var(--r2);padding:14px;text-align:center;margin-bottom:16px">
       <div style="font-size:28px;font-weight:800;color:var(--p)">${total}</div>
       <div style="font-size:13px;color:var(--tx2);margin-top:3px">introduction${total!==1?'s':''} made for you</div>
@@ -2855,10 +2865,16 @@ function renderMcMmsGrid() {
     const mm = mms[i];
     if (mm) {
       const c = AVCOLS[mm.ci % AVCOLS.length];
-      html += '<div class="mc-card" style="cursor:pointer;background:' + c.bg + '\" onclick="openMmProfile(' + i + ')">'
+      const _mmPaused = mm.status==='paused';
+      const _mmBadge = _mmPaused
+        ? '<div style="position:absolute;top:8px;right:8px;background:rgba(198,40,40,.9);color:#fff;font-size:9px;font-weight:700;padding:2px 8px;border-radius:10px">&#9646;&#9646; Paused</div>'
+        : '';
+      const _mmSub = _mmPaused ? 'Paused' : (mm.loc || mm.rel || '');
+      html += '<div class="mc-card" style="cursor:pointer;background:' + c.bg + ';position:relative" onclick="openMmProfile(' + i + ')">'
             + '<button class="mc-menu" onclick="event.stopPropagation();openMmMenu(' + i + ',this)"><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="2.5" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="7" r="1.2" fill="var(--tx2)"/><circle cx="7" cy="11.5" r="1.2" fill="var(--tx2)"/></svg></button>'
-            + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity=".45"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
-            + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:rgba(255,255,255,.8);margin-top:2px">' + (mm.loc || mm.rel || '') + '</div></div>'
+            + _mmBadge
+            + '<div style="width:100%;height:calc(100% - 50px);display:flex;align-items:center;justify-content:center"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="' + c.tc + '" stroke-width="1" opacity="' + (_mmPaused ? '.3' : '.45') + '"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke-linecap="round"/></svg></div>'
+            + '<div class="mc-card-overlay"><div style="font-size:15px;font-weight:700;color:#fff">' + mm.name + '</div><div style="font-size:11px;color:' + (_mmPaused ? 'rgba(255,160,160,.95)' : 'rgba(255,255,255,.8)') + ';margin-top:2px">' + _mmSub + '</div></div>'
             + '</div>';
     } else {
       const isNext = (i === mms.length);
@@ -3653,15 +3669,30 @@ function messageMm(idx) {
 let pauseMmIdx = null, removeMmIdx = null;
 function openPauseMm(idx) {
   pauseMmIdx = idx;
-  const u = DB.user(); const mm = u.matchmakers[idx];
-  document.getElementById('pause-mm-msg').textContent = mm
-    ? mm.name + " won't be able to send you new introductions while paused."
-    : 'This matchmaker will be paused.';
+  const u = DB.user(); const mm = u&&u.matchmakers?u.matchmakers[idx]:null;
+  const _isP=mm&&mm.status==='paused';
+  const _ti=document.getElementById('pause-mm-title');
+  if(_ti)_ti.textContent=_isP?'Resume introductions?':'Pause introductions?';
+  const _msg=document.getElementById('pause-mm-msg');
+  if(_msg)_msg.textContent=_isP
+    ?(mm.name+' will be able to send you new introductions again.')
+    :(mm?mm.name+" won't be able to send you new introductions while paused.":'This matchmaker will be paused.');
+  const _btn=document.getElementById('pause-mm-btn');
+  if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
   showModal('modal-pause-mm');
 }
 function doPauseMm() {
   closeModal('modal-pause-mm');
-  toast('Matchmaker paused — they can\'t send intros for now');
+  if(pauseMmIdx===null||pauseMmIdx===undefined)return;
+  const u=DB.user();if(!u||!u.matchmakers)return;
+  const mm=u.matchmakers[pauseMmIdx];if(!mm)return;
+  const _wasP=mm.status==='paused';
+  mm.status=_wasP?'active':'paused';
+  DB.setUser(u);
+  renderMcMmsGrid();
+  if(window._viewMmIdx===pauseMmIdx)openMmProfile(pauseMmIdx);
+  toast(_wasP?(mm.name+' resumed \u2014 they can send you intros again'):(mm.name+' paused \u2014 they won\u2019t send intros for now'));
+  pauseMmIdx=null;
 }
 
 function openRemoveMm(idx) {
