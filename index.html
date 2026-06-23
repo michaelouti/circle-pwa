@@ -1075,6 +1075,16 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
     <button class="btn btn-danger mb8" onclick="doRemoveMm()">Yes, remove</button>
     <button class="btn btn-s" onclick="closeModal('modal-remove-mm')">Cancel</button>
   </div>
+
+<div class="modal-ov" id="modal-remove-comm">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb8" style="color:var(--er)">Remove connection?</h3>
+    <p class="cap mb20" id="remove-comm-msg">They will no longer be able to view your singles.</p>
+    <button class="btn btn-danger mb8" onclick="doRemoveCoMm()">Yes, remove</button>
+    <button class="btn btn-s" onclick="closeModal('modal-remove-comm')">Cancel</button>
+  </div>
+</div>
 </div>
 
 
@@ -2369,8 +2379,21 @@ function declineCommInvite(connId){
   renderCoMmsGrid();toast('Invitation declined');
 }
 
-function removeCoMm(connId){
-  if(!confirm('Remove this connection? They will no longer be able to view your singles.'))return;
+var removeCommId=null;
+function removeCoMm(connId){openRemoveCoMm(connId);}
+function openRemoveCoMm(connId){
+  removeCommId=connId;
+  var conn=DB.commConnections().find(function(c){return c.id===connId;});
+  var msg=document.getElementById('remove-comm-msg');
+  if(msg)msg.textContent=conn
+    ?'Remove '+conn.name+'? They will no longer be able to view your singles.'
+    :'Remove this connection?';
+  showModal('modal-remove-comm');
+}
+function doRemoveCoMm(){
+  closeModal('modal-remove-comm');
+  if(!removeCommId)return;
+  var connId=removeCommId;removeCommId=null;
   DB.setCommConnections(DB.commConnections().filter(function(c){return c.id!==connId;}));
   DB.setCommPerms(DB.commPerms().filter(function(p){return p.connId!==connId;}));
   back();renderCoMmsGrid();toast('Connection removed');
