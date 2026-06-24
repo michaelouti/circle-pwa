@@ -1524,7 +1524,7 @@ function updQBtn(){const n=Object.keys(S.setup.qs).length,b=document.getElementB
 function saveQs(){if(Object.keys(S.setup.qs).length<QS.length){toast('Answer all questions');return}go('setup')}
 function initPrefsScreen(){const rw=document.getElementById('pref-rel-wrap');if(!rw)return;rw.innerHTML=RELIGIONS.map(r=>`<button class="opill" onclick="toggleRelPref(this,'${r}')">${r}</button>`).join('');checkPrefsBtn();}
 function toggleRelPref(btn){btn.classList.toggle('sel');S.setup.prefs.religions=Array.from(document.querySelectorAll('#pref-rel-wrap .opill.sel')).map(b=>b.textContent)}
-function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:(S.setup.prefs||{}).religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
+function savePrefs(){S.setup.prefs={gender:S.setup.pref_gender,ageMin:parseInt(document.getElementById('pref-amin').value)||22,ageMax:parseInt(document.getElementById('pref-amax').value)||36,religions:(S.setup.prefs||{}).religions||[],note:document.getElementById('pref-note').value.trim()};const u={id:'u_'+Date.now(),email:S.setup.email||'user@circle.app',name:S.setup.name,age:S.setup.age,dob:S.setup.dob,gender:S.setup.gender,location:S.setup.location,photos:S.setup.photos||[],height:S.setup.height||170,job:S.setup.job,religion:S.setup.religion,bio:S.setup.bio||'',tags:S.setup.tags,qs:S.setup.qs,prefs:S.setup.prefs,isOpen:true,setupPath:'long',points:5,createdAt:Date.now(),matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0,gender:'Woman',age:30,job:'Event Planner',bio:"Your best friend since college. Knows you better than you know yourself and has been trying to set you up for years.",photos:['https://randomuser.me/api/portraits/women/55.jpg']},{name:'Paul',rel:'Colleague',loc:'Lyon',ci:1,gender:'Man',age:35,job:'Marketing Director',bio:'Your work colleague turned close friend. Keeps an eye out for you and thinks he has great taste in people (he does).',photos:['https://randomuser.me/api/portraits/men/45.jpg']}]};DB.setUser(u);S.user=u;seedDemo(u.name);toast('Welcome to Circle!');setTimeout(()=>navTo('home'),300)}
 function seedDemo(uname){
   /* ── Singles (My Circle) ── */
   DB.setSingles([
@@ -1555,27 +1555,33 @@ function seedDemo(uname){
   const i1='intro_1',i2='intro_2',i3='intro_3';
   const m1='match_1',m2='match_2',m3='match_3';
   DB.setIntros([
-    {id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',mmName:'Marie',mmRel:'Best friend',
+    {id:i1,sName:'Thomas',sAge:30,sJob:'Photographer',sLoc:'Paris, France',gender:'Man',height:183,religion:'Agnostic',
+     mmName:'Marie',mmRel:'Best friend',
      ctx:"You both love hiking and he's one of the most thoughtful people I know. I think you'd really get along.",
-     status:'pending',ts:now-3600000*14,exp:now+3600000*58,ci:2,gender:'Man',
+     status:'pending',ts:now-3600000*14,exp:now+86400000*30,ci:2,
      photos:['https://randomuser.me/api/portraits/men/18.jpg'],
      tags:['Adventurous','Thoughtful','Creative'],
-     bio:'Photographer splitting time between Paris and the mountains. Passionate about visual storytelling and slow travel.',
-     qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'}},
-    {id:i2,sName:'Lea',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',mmName:'Paul',mmRel:'Colleague',
+     bio:'Photographer splitting time between Paris and the mountains. Passionate about visual storytelling and the art of slowing down. Shoots film on weekends, always has a book in his bag.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:"It's a big part of my life",travel:'Every chance I get',food:'No preference'},
+     prefs:{gender:'Woman',ageMin:25,ageMax:34,religions:['No preference'],note:"Someone adventurous and real. Doesn't need to love photography but should appreciate slowing down."}},
+    {id:i2,sName:'Léa',sAge:27,sJob:'UX Designer',sLoc:'Paris, France',gender:'Woman',height:167,religion:'Agnostic',
+     mmName:'Paul',mmRel:'Colleague',
      ctx:"She's brilliant, funny, and has the same dry humor as you. You'll either become best friends or fall in love — probably both.",
-     status:'pending',ts:now-3600000*6,exp:now+3600000*66,ci:6,gender:'Woman',
+     status:'pending',ts:now-3600000*6,exp:now+86400000*30,ci:6,
      photos:['https://randomuser.me/api/portraits/women/28.jpg'],
      tags:['Ambitious','Funny','Authentic'],
-     bio:'UX designer who believes great design should feel invisible. Bookworm, amateur cook, and always planning the next trip.',
-     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'}},
-    {id:i3,sName:'Hugo',sAge:32,sJob:'Lawyer',sLoc:'Lyon, France',mmName:'Julie',mmRel:'Childhood friend',
-     ctx:"Hugo is one of the most genuine people I know. Successful but never arrogant, great listener, and he cooks better than any chef I know.",
-     status:'pending',ts:now-3600000*2,exp:now+3600000*70,ci:3,gender:'Man',
+     bio:'UX designer who believes great design should feel invisible. Bookworm, amateur cook, always planning the next trip. Takes ideas seriously but not herself.',
+     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'},
+     prefs:{gender:'Man',ageMin:26,ageMax:35,religions:['No preference'],note:"Someone who takes ideas seriously but doesn't take himself too seriously. Warmth matters more than status."}},
+    {id:i3,sName:'Hugo',sAge:32,sJob:'Lawyer',sLoc:'Lyon, France',gender:'Man',height:185,religion:'Catholic',
+     mmName:'Julie',mmRel:'Childhood friend',
+     ctx:"Hugo is one of the most genuine people I know. Successful but never arrogant, a great listener, and he cooks better than any chef I know.",
+     status:'pending',ts:now-3600000*2,exp:now+86400000*30,ci:3,
      photos:['https://randomuser.me/api/portraits/men/41.jpg'],
      tags:['Reliable','Genuine','Cultured'],
-     bio:'Corporate lawyer who unwinds through cooking, classical piano, and long runs along the Rhône. Prefers depth over small talk.',
-     qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'}}
+     bio:'Corporate lawyer who unwinds through cooking, classical piano, and long runs along the Rhône. Prefers depth over small talk and Sunday markets over nightclubs.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
+     prefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:"Looking for someone with depth and humour. Doesn't mind that he occasionally talks about wine for too long."}}
   ]);
 
   /* ── Matches + conversations ── */
@@ -2180,14 +2186,18 @@ function alexResponseResult(interested){
 
 function seedCoMmDemo(){
   var _enrichedPaulSingles=[
-    {id:'cs_1',name:'Alex',age:29,job:'Designer',loc:'Paris, France',bio:'Music lover and amateur photographer who loves weekend trips.',ci:3,
-     photos:['https://randomuser.me/api/portraits/men/18.jpg'],
-     religion:'Agnostic',height:182,
-     qs:{intent:'Looking for a serious relationship',location:'Open to moving for the right person',family:'Wants children one day',sport:'Loves hiking and rock climbing',travel:'Travels often, passionate about new cultures',food:'Loves trying new restaurants and cooking at home'}},
-    {id:'cs_2',name:'Julie',age:27,job:'Teacher',loc:'Lyon, France',bio:'Yoga enthusiast, passionate about education and the outdoors.',ci:5,
-     photos:['https://randomuser.me/api/portraits/women/28.jpg'],
-     religion:'Catholic',height:165,
-     qs:{intent:'Looking for a serious long-term relationship',location:'Would consider relocating',family:'Hopes to start a family',sport:'Yoga daily, enjoys swimming',travel:'Loves slow travel and off-the-beaten-path destinations',food:'Vegetarian, passionate about healthy cooking'}}
+    {id:'cs_1',name:'Alex',age:29,job:'Art Director',gender:'Man',loc:'Paris, France',height:182,religion:'Agnostic',ci:3,
+     photos:['https://randomuser.me/api/portraits/men/25.jpg'],
+     tags:['Creative','Curious','Laid-back'],
+     bio:'Art director who splits weekends between gallery openings and record shops. Believes great design should make people feel something.',
+     qs:{intent:'A serious relationship',location:'Prefer someone in my city',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'Every chance I get',food:'No preference'},
+     prefs:{gender:'Woman',ageMin:25,ageMax:34,religions:['No preference'],note:'Looking for someone genuine and curious. Bonus if she loves design or music.'}},
+    {id:'cs_2',name:'Julie',age:27,job:'Primary School Teacher',gender:'Woman',loc:'Lyon, France',height:165,religion:'Catholic',ci:5,
+     photos:['https://randomuser.me/api/portraits/women/42.jpg'],
+     tags:['Caring','Grounded','Genuine'],
+     bio:'Primary school teacher with a quiet life and a full heart. Mornings for yoga, evenings for books. Deeply values loyalty and kindness.',
+     qs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:"It's a big part of my life",travel:'A couple times a year',food:'Vegetarian'},
+     prefs:{gender:'Man',ageMin:27,ageMax:37,religions:['No preference'],note:'Someone emotionally present and family-oriented. Values simplicity and depth over excitement.'}}
   ];
   var comms=DB.commConnections();
   // Migrate: enrich Paul's demo singles if they lack the new fields (religion, height, qs)
@@ -2199,10 +2209,10 @@ function seedCoMmDemo(){
   if(comms.length>0)return;
   // First-time seed
   var conns=[
-    {id:'comm_demo_paul',name:'Paul',ci:2,status:'active',initiatedBy:'them',
+    {id:'comm_demo_paul',name:'Paul',ci:2,status:'active',gender:'Man',initiatedBy:'them',
      createdAt:Date.now()-86400000*5,acceptedAt:Date.now()-86400000*4,
      theirSingles:_enrichedPaulSingles},
-    {id:'comm_demo_lea',name:'L\u00e9a',ci:1,status:'pending',initiatedBy:'them',createdAt:Date.now()-3600000*4}
+    {id:'comm_demo_lea',name:'L\u00e9a',ci:1,status:'pending',gender:'Woman',initiatedBy:'them',createdAt:Date.now()-3600000*4}
   ];
   DB.setCommConnections(conns);
   var perms=[];
@@ -3752,8 +3762,8 @@ function finishShortSetup(){
     job:S.setup.job||'',religion:S.setup.religion||'',
     tags:[],qs:{},prefs:{},isOpen:false,setupPath:'short',points:5,
     createdAt:Date.now(),
-    matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0},
-                 {name:'Paul',rel:'Colleague',loc:'Lyon',ci:1}]};
+    matchmakers:[{name:'Marie',rel:'Best friend',loc:'Paris',ci:0,gender:'Woman',age:30,job:'Event Planner',bio:"Your best friend since college. Knows you better than you know yourself and has been trying to set you up for years.",photos:['https://randomuser.me/api/portraits/women/55.jpg']},
+                 {name:'Paul',rel:'Colleague',loc:'Lyon',ci:1,gender:'Man',age:35,job:'Marketing Director',bio:'Your work colleague turned close friend. Keeps an eye out for you and thinks he has great taste in people (he does).',photos:['https://randomuser.me/api/portraits/men/45.jpg']}]};
   DB.setUser(u);S.user=u;seedDemo(u.name);
   toast('Welcome to Circle!');
   setTimeout(function(){navTo('home');},300);
