@@ -508,16 +508,18 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- MY CIRCLE -->
 <div id="s-my-circle" class="screen" style="padding-bottom:0">
-  <div class="home-header" style="padding-top:max(12px,var(--sat))">
-    <h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">My Circle</h1>
+  <div style="position:sticky;top:0;z-index:20;background:var(--bg)">
+    <div class="home-header" style="padding-top:max(12px,var(--sat))">
+      <h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">My Circle</h1>
+    </div>
+    <!-- Tab bar -->
+    <div class="mc-tab-bar">
+      <button class="mc-tab on" id="mc-t-singles" onclick="mcSwitchTab('singles')">Singles I'm helping</button>
+      <button class="mc-tab" id="mc-t-mms" onclick="mcSwitchTab('mms')">My Matchmakers</button>
+      <button class="mc-tab" id="mc-t-comms" onclick="mcSwitchTab('comms')">Matchmaker Network</button>
+    </div>
+    <div id="mc-counter" class="mc-counter"></div>
   </div>
-  <!-- Tab bar -->
-  <div class="mc-tab-bar">
-    <button class="mc-tab on" id="mc-t-singles" onclick="mcSwitchTab('singles')">Singles I'm helping</button>
-    <button class="mc-tab" id="mc-t-mms" onclick="mcSwitchTab('mms')">My Matchmakers</button>
-    <button class="mc-tab" id="mc-t-comms" onclick="mcSwitchTab('comms')">Matchmaker Network</button>
-  </div>
-  <div id="mc-counter" class="mc-counter"></div>
   <!-- Grids -->
   <div id="mc-singles-grid" class="mc-grid"></div>
   <div id="mc-mms-grid" class="mc-grid" style="display:none"></div>
@@ -550,11 +552,13 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 
 <!-- INTROS -->
 <div id="s-intros" class="screen">
-  <div class="home-header" style="padding-top:max(12px,var(--sat))"><h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Introductions</h1></div>
-  <div class="tabs">
-    <button class="tab-btn on" id="t-pending" onclick="switchTab('pending')">Pending<span class="tab-badge" id="pb-badge" style="display:none"></span></button>
-    <button class="tab-btn" id="t-matches" onclick="switchTab('matches')">Matches</button>
-    <button class="tab-btn" id="t-activity" onclick="switchTab('activity')">Activity</button>
+  <div style="position:sticky;top:0;z-index:20;background:var(--bg)">
+    <div class="home-header" style="padding-top:max(12px,var(--sat))"><h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">Introductions</h1></div>
+    <div class="tabs">
+      <button class="tab-btn on" id="t-pending" onclick="switchTab('pending')">Pending<span class="tab-badge" id="pb-badge" style="display:none"></span></button>
+      <button class="tab-btn" id="t-matches" onclick="switchTab('matches')">Matches</button>
+      <button class="tab-btn" id="t-activity" onclick="switchTab('activity')">Activity</button>
+    </div>
   </div>
   <div class="tab-pane on" id="tp-pending"><div id="pending-list"></div></div>
   <div class="tab-pane" id="tp-matches"><div id="matches-list"></div></div>
