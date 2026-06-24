@@ -2385,8 +2385,9 @@ function openRemoveCoMm(connId){
   removeCommId=connId;
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   var msg=document.getElementById('remove-comm-msg');
+  var _proConn=conn?(conn.gender==='Woman'?'She':conn.gender==='Man'?'He':'They'):'They';
   if(msg)msg.textContent=conn
-    ?'Remove '+conn.name+'? They will no longer be able to view your singles.'
+    ?'Remove '+conn.name+'? '+_proConn+' will no longer be able to view your singles.'
     :'Remove this connection?';
   showModal('modal-remove-comm');
 }
@@ -3580,8 +3581,9 @@ let stopHelpingSid = null;
 function openStopHelping(sid) {
   stopHelpingSid = sid;
   const s = DB.singles().find(function(x){return x.id===sid});
+  const _pro = s ? (s.gender==='Woman' ? 'She' : s.gender==='Man' ? 'He' : 'They') : 'They';
   document.getElementById('stop-helping-msg').textContent = s
-    ? 'Are you sure you want to stop helping ' + s.name + '? They will be removed from your circle.'
+    ? 'Are you sure you want to stop helping ' + s.name + '? ' + _pro + ' will be removed from your circle.'
     : 'Are you sure?';
   showModal('modal-stop-helping');
 }
@@ -3696,8 +3698,9 @@ function doPauseMm() {
 function openRemoveMm(idx) {
   removeMmIdx = idx;
   const u = DB.user(); const mm = u.matchmakers[idx];
+  const _proMm = mm ? (mm.gender==='Woman' ? 'She' : mm.gender==='Man' ? 'He' : 'They') : 'They';
   document.getElementById('remove-mm-msg').textContent = mm
-    ? 'Remove ' + mm.name + '? They will no longer be able to make introductions for you.'
+    ? 'Remove ' + mm.name + '? ' + _proMm + ' will no longer be able to make introductions for you.'
     : 'Remove this matchmaker?';
   showModal('modal-remove-mm');
 }
