@@ -2623,7 +2623,7 @@ function openPauseComm(connId){
   var conn=DB.commConnections().find(function(c){return c.id===connId;});
   var _isP=conn&&conn.status==='paused';
   var _ti=document.getElementById('pause-comm-title');if(_ti)_ti.textContent=_isP?'Resume this connection?':'Pause this connection?';
-  var _msg=document.getElementById('pause-comm-msg');if(_msg)_msg.textContent=_isP?(conn.name+' will be able to view your singles and suggest introductions again.'):(conn?conn.name+'\u2019t be able to view your singles or suggest introductions while paused.':'This connection will be paused.');
+  var _msg=document.getElementById('pause-comm-msg');if(_msg)_msg.textContent=_isP?(conn.name+' will be able to view your singles and suggest introductions again.'):(conn?conn.name+' won\u2019t be able to view your singles or suggest introductions while paused.':'This connection will be paused.');
   var _btn=document.getElementById('pause-comm-btn');if(_btn)_btn.textContent=_isP?'Yes, resume':'Yes, pause';
   showModal('modal-pause-comm');
 }
