@@ -568,6 +568,11 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-intro-detail" class="screen">
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduction</span><span style="min-width:56px"></span></div>
   <div id="id-body" class="p20"></div>
+
+<div id="s-match-profile" class="screen">
+  <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span id="mp-title" style="font-weight:700">Profile</span><span style="min-width:56px"></span></div>
+  <div id="mp-body" class="p20"></div>
+</div>
 </div>
 
 <!-- INTRODUCE + QR + CONTEXT + SENT -->
@@ -627,7 +632,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-chat" class="screen" style="padding-bottom:80px;display:flex;flex-direction:column;overflow:hidden">
   <div class="topbar between" id="chat-topbar" style="padding-top:max(12px,var(--sat))">
     <button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div style="flex:1;display:flex;align-items:center;gap:10px;padding-left:4px;min-width:0"><div id="chat-av" style="width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700"></div><div style="min-width:0"><div id="chat-name" style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><p class="tiny" id="chat-sub" style="color:var(--p)"></p></div></div>
+    <div style="flex:1;display:flex;align-items:center;gap:10px;padding-left:4px;min-width:0;cursor:pointer" onclick="openMatchProfile(S.currentMatch&&S.currentMatch.id)"><div id="chat-av" style="width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700"></div><div style="min-width:0"><div id="chat-name" style="font-weight:700;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis"></div><p class="tiny" id="chat-sub" style="color:var(--p)"></p></div></div>
     <button class="btn-icon" onclick="showChatMenu()"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="5" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="10" r="1.5" fill="var(--tx3)"/><circle cx="10" cy="15" r="1.5" fill="var(--tx3)"/></svg></button>
   </div>
   <div id="chat-ctx" style="display:none;background:var(--p1);border-bottom:.5px solid rgba(216,90,48,.15);padding:10px 16px"><p class="tiny mb4" id="chat-ctx-match" style="color:var(--p);font-weight:600"></p><p class="tiny" id="chat-ctx-txt" style="color:var(--p6);font-style:italic;line-height:1.55"></p><p class="tiny mt4" id="chat-ctx-by" style="color:var(--p);font-weight:600"></p></div>
@@ -1279,7 +1284,7 @@ var _modalOpenAt=0;
 function showModal(id){_modalOpenAt=Date.now();document.getElementById(id).classList.add('on');var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='600';}
 function closeModal(id){document.getElementById(id).classList.remove('on');if(!document.querySelector('.modal-ov.on')){var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='';} }
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m&&Date.now()-_modalOpenAt>350)closeModal(m.id)})});
-const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick','scan']);
+const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','match-profile','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick','scan']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
 function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
 function back(){if(!S.stack.length)return;var _prev=S.stack[S.stack.length-1];var _onb=['ob','login','signup','verify','path-choice','setup'];if(!DB.user()&&_onb.indexOf(_prev)===-1)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
@@ -1590,9 +1595,27 @@ function seedDemo(uname){
 
   /* ── Matches + conversations ── */
   DB.setMatches([
-    {id:m1,oName:'Sara',oAge:29,oJob:'Journalist',oLoc:'Paris',mmName:'Marie',ctx:"You're both obsessed with great storytelling.",ts:now-3600000*48,ci:7,unread:2,oPhoto:'https://randomuser.me/api/portraits/women/65.jpg'},
-    {id:m2,oName:'Alice',oAge:27,oJob:'Teacher',oLoc:'Nantes, France',mmName:'Marc',ctx:"Two people who make everyone around them better.",ts:now-3600000*96,ci:1,unread:0,oPhoto:'https://randomuser.me/api/portraits/women/22.jpg'},
-    {id:m3,oName:'Julien',oAge:33,oJob:'Strategy Consultant',oLoc:'Paris',mmName:'Sophie',ctx:"Sharp minds who both secretly want a simple life.",ts:now-3600000*120,ci:9,unread:1,oPhoto:'https://randomuser.me/api/portraits/men/41.jpg'}
+    {id:m1,oName:'Sara',oAge:29,oJob:'Journalist',oLoc:'Paris, France',oGender:'Woman',oHeight:168,oReligion:'Agnostic',mmName:'Marie',mmRel:'Best friend',
+     ctx:"You're both obsessed with great storytelling. I've seen her captivate a whole dinner table — I think you'd love her energy.",
+     ts:now-3600000*48,ci:7,unread:2,oPhoto:'https://randomuser.me/api/portraits/women/65.jpg',
+     oTags:['Witty','Curious','Warm'],
+     oBio:'Investigative journalist who writes about culture and people. Believes the best stories are the ones you almost didn\'t tell. Passionate about words, coffee, and late-night conversations.',
+     oQs:{intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'Every chance I get',food:'No preference'},
+     oPrefs:{gender:'Man',ageMin:27,ageMax:37,religions:['No preference'],note:'Someone with a point of view. Curious about the world. Doesn\'t need to be in media but should care about ideas.'}},
+    {id:m2,oName:'Alice',oAge:27,oJob:'Primary School Teacher',oLoc:'Nantes, France',oGender:'Woman',oHeight:163,oReligion:'Catholic',mmName:'Marc',mmRel:'Cousin',
+     ctx:"Two people who make everyone around them better. Alice has this rare ability to make people feel seen — you\'ll know what I mean the moment you meet her.",
+     ts:now-3600000*96,ci:1,unread:0,oPhoto:'https://randomuser.me/api/portraits/women/22.jpg',
+     oTags:['Caring','Thoughtful','Genuine'],
+     oBio:'Primary school teacher who chose her job for the same reason most people do — she genuinely loves it. Reads constantly, bakes on Sundays, and is always the one who remembers your birthday.',
+     oQs:{intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'},
+     oPrefs:{gender:'Man',ageMin:25,ageMax:35,religions:['No preference'],note:'Looking for someone kind-hearted and present. Not necessarily ambitious in the traditional sense — just passionate about something.'}},
+    {id:m3,oName:'Julien',oAge:33,oJob:'Strategy Consultant',oLoc:'Paris, France',oGender:'Man',oHeight:181,oReligion:'Agnostic',mmName:'Sophie',mmRel:'College friend',
+     ctx:"Sharp minds who both secretly want a simple life. Julien is one of those rare people who is both impressive and completely down to earth.",
+     ts:now-3600000*120,ci:9,unread:1,oPhoto:'https://randomuser.me/api/portraits/men/41.jpg',
+     oTags:['Driven','Witty','Loyal'],
+     oBio:'Strategy consultant by day, amateur chef by night. Spent two years in Singapore before coming back to Paris. Takes his work seriously but tries not to take himself too seriously.',
+     oQs:{intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'},
+     oPrefs:{gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Someone who has a life and a laugh. Intelligence is important but warmth more so. Hates small talk, loves long dinners.'}}
   ]);
 
   DB.setMsgs(m1,[
@@ -1783,6 +1806,27 @@ function migrateDemoPhotos(){
     if(conn.id==='comm_demo_lea'&&!conn.gender){conn.gender='Woman';_mcc=true;}
   });
   if(_mcc)DB.setCommConnections(_mc);
+  // Migrate match profiles (for users seeded before full profiles were added)
+  var _mm2=DB.matches();var _mmc=false;
+  _mm2.forEach(function(m){
+    if(m.oName==='Sara'&&!m.oBio){m.oGender='Woman';m.oHeight=168;m.oReligion='Agnostic';m.mmRel='Best friend';
+      m.oTags=['Witty','Curious','Warm'];
+      m.oBio='Investigative journalist who writes about culture and people. Believes the best stories are the ones you almost didn\'t tell. Passionate about words, coffee, and late-night conversations.';
+      m.oQs={intent:'A serious relationship',location:'Prefer someone in my city',family:'I want children',sport:'I stay active but keep it casual',travel:'Every chance I get',food:'No preference'};
+      m.oPrefs={gender:'Man',ageMin:27,ageMax:37,religions:['No preference'],note:'Someone with a point of view. Curious about the world.'};
+      m.oLoc='Paris, France';m.ctx="You're both obsessed with great storytelling. I've seen her captivate a whole dinner table.";_mmc=true;}
+    if(m.oName==='Alice'&&!m.oBio){m.oGender='Woman';m.oHeight=163;m.oReligion='Catholic';m.mmRel='Cousin';
+      m.oTags=['Caring','Thoughtful','Genuine'];m.oJob='Primary School Teacher';m.oLoc='Nantes, France';
+      m.oBio='Primary school teacher who chose her job for the same reason most people do — she genuinely loves it. Reads constantly, bakes on Sundays.';
+      m.oQs={intent:'A serious relationship',location:'Open within my country',family:'I want children',sport:'I stay active but keep it casual',travel:'A couple times a year',food:'Vegetarian'};
+      m.oPrefs={gender:'Man',ageMin:25,ageMax:35,religions:['No preference'],note:'Looking for someone kind-hearted and present.'};_mmc=true;}
+    if(m.oName==='Julien'&&!m.oBio){m.oGender='Man';m.oHeight=181;m.oReligion='Agnostic';m.mmRel='College friend';
+      m.oTags=['Driven','Witty','Loyal'];
+      m.oBio='Strategy consultant by day, amateur chef by night. Spent two years in Singapore before coming back to Paris.';
+      m.oQs={intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'};
+      m.oPrefs={gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Someone who has a life and a laugh. Intelligence is important but warmth more so.'};_mmc=true;}
+  });
+  if(_mmc)DB.setMatches(_mm2);
 }
 function initHome(){
   migrateDemoPhotos();
@@ -3198,6 +3242,44 @@ function scanInterested(){
 }
 function scanSaveLater(){const url=location.href;if(navigator.share)navigator.share({title:'Circle intro saved',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link saved! 📋')}else toast('Copy: '+url)}
 function scanDecline(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><h2 class="mb8">No worries</h2><p class="cap" style="max-width:240px">Sophie will not know you viewed this.</p><button class="btn-ghost primary mt24" onclick="history.back()">Close</button></div>`}
+function openMatchProfile(id){
+  if(!id)return;
+  var m=DB.matches().find(function(x){return x.id===id;});
+  if(!m)return;
+  var col=AVCOLS[(m.ci||0)%AVCOLS.length];
+  var _ig=m.oGender||'';
+  var heroHtml=m.oPhoto
+    ?('<div style="min-width:100%;height:220px"><img src="'+m.oPhoto+'" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block"></div>')
+    :('<div style="position:absolute;inset:0;background:linear-gradient(145deg,'+col.bg+','+col.bg+'bb)"></div><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center"><div style="width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.18);border:2.5px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:800;color:'+col.tc+'">'+ini(m.oName)+'</div></div>');
+  var metaItems=[];
+  if(m.oHeight)metaItems.push('&#x1F4CF; '+m.oHeight+'cm');
+  if(m.oReligion&&m.oReligion!=='No preference')metaItems.push(m.oReligion);
+  var metaHtml=metaItems.length?('<p style="font-size:13px;color:var(--tx3);margin-bottom:16px">'+metaItems.join(' &nbsp;·&nbsp; ')+'</p>'):'""';
+  var tagsHtml=m.oTags&&m.oTags.length?('<div class="row mb16" style="flex-wrap:wrap;gap:6px">'+m.oTags.map(function(t){return '<span style="background:var(--bg2);border:1px solid var(--bd2);border-radius:100px;padding:4px 12px;font-size:12px;font-weight:600;color:var(--tx2)">'+t+'</span>';}).join('')+'</div>'):'""';
+  var bioHtml=m.oBio?('<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+m.oName+'</div><p style="font-size:15px;color:var(--tx);line-height:1.65">'+m.oBio+'</p></div>'):'""';
+  var qaHtml='';
+  if(m.oQs&&Object.keys(m.oQs).length){
+    var _qC={intent:{label:'Looking for',icon:'heart'},location:{label:'Location flexibility',icon:'location'},family:{label:'Family',icon:'family'},sport:{label:'Physical activity',icon:'sport'},travel:{label:'Travel',icon:'travel'},food:{label:'Food lifestyle',icon:'food'}};
+    var _qP={heart:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',family:'<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',sport:'<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',travel:'<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',food:'<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>'};
+    var qE=Object.entries(m.oQs);
+    qaHtml='<div class="micro mb8">ABOUT '+m.oName.toUpperCase()+'</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'
+      +qE.map(function(kv,i){
+        var cfg=_qC[kv[0]]||{label:kv[0],icon:'heart'};
+        var icon='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="#E07060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+_qP[cfg.icon]+'</svg>';
+        var span=qE.length%2!==0&&i===qE.length-1?'grid-column:span 2':'';
+        return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'"><div class="row mb6" style="gap:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div><span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div><div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(kv[1],_ig)+'</div></div>';
+      }).join('')+'</div>';
+  }
+  var ctxCard=m.ctx?('<div class="card-warm mb14"><div class="row mb8" style="gap:8px">'+av(ini(m.mmName),0,28)+'<div><div style="font-size:13px;font-weight:700;color:var(--p8)">Introduced by '+(m.mmName||'')+(m.mmRel?(' · '+m.mmRel):'')+'</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;'+m.ctx+'&#x201D;</p></div>'):'""';
+  document.getElementById('mp-title').textContent=m.oName;
+  document.getElementById('mp-body').innerHTML=
+    '<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">'+heroHtml
+    +'<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)">'
+    +'<div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">'+m.oName+', '+m.oAge+'</div>'
+    +'<div style="display:flex;flex-wrap:wrap;gap:10px">'+(m.oJob?'<span style="font-size:12px;color:rgba(255,255,255,.9)">'+m.oJob+'</span>':'')+(m.oLoc?'<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; '+m.oLoc+'</span>':'')+'</div>'
+    +'</div></div>'+metaHtml+tagsHtml+ctxCard+bioHtml+qaHtml;
+  go('match-profile');
+}
 function openChat(id){S.currentMatch=DB.matches().find(m=>m.id===id);if(!S.currentMatch)return;const m=S.currentMatch;const matches=DB.matches(),idx=matches.findIndex(x=>x.id===id);if(idx!==-1){matches[idx].unread=0;DB.setMatches(matches)}document.getElementById('chat-name').textContent=m.oName;document.getElementById('chat-sub').textContent=m.isDirect?'':('Intro by '+m.mmName);document.getElementById('chat-sub').style.display=m.isDirect?'none':'';const _col=AVCOLS[(m.ci||0)%AVCOLS.length];const _av=document.getElementById('chat-av');if(_av){var _photo=m.oPhoto||'';if(!_photo){DB.singles().forEach(function(s){if(s.name===m.oName&&s.photos&&s.photos[0])_photo=s.photos[0];});}if(!_photo){var _u2=DB.user();if(_u2&&_u2.matchmakers)_u2.matchmakers.forEach(function(mm){if(mm.name===m.oName&&mm.photos&&mm.photos[0])_photo=mm.photos[0];});}if(_photo){_av.innerHTML='<img src="'+_photo+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;border-radius:50%">';}else{_av.innerHTML='';_av.style.background=_col.bg;_av.style.color=_col.tc;_av.textContent=ini(m.oName);}}const ctx=document.getElementById('chat-ctx');ctx.style.display='block';const _matchEl=document.getElementById('chat-ctx-match');if(!m.isDirect){if(_matchEl){const _d=new Date(m.ts).toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});_matchEl.textContent='\u2728 You and '+m.oName+' matched on '+_d;}if(m.ctx){document.getElementById('chat-ctx-txt').textContent='\"'+m.ctx+'\"';document.getElementById('chat-ctx-by').textContent='\u2014 '+m.mmName;document.getElementById('chat-ctx-txt').style.display='';document.getElementById('chat-ctx-by').style.display='';}else{document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}}else{if(_matchEl)_matchEl.textContent='\u2709 Direct message';document.getElementById('chat-ctx-txt').style.display='none';document.getElementById('chat-ctx-by').style.display='none';}renderMsgs(id);go('chat')}
 function renderMsgs(matchId){const msgs=DB.msgs(matchId),el=document.getElementById('chat-msgs');if(!el)return;el.innerHTML=msgs.map(m=>`<div class="msg ${m.from==='me'?'msg-me':'msg-th'}"><div class="bubble ${m.from==='me'?'bubble-me':'bubble-th'}">${m.text}</div><div class="mts">${fmtTime(m.ts)}</div></div>`).join('');el.scrollTop=el.scrollHeight}
 function sendMsg(){if(!S.currentMatch)return;const el=document.getElementById('chat-in'),txt=el.value.trim();if(!txt)return;el.value='';const msg={id:Date.now(),from:'me',text:txt,ts:Date.now()};DB.addMsg(S.currentMatch.id,msg);renderMsgs(S.currentMatch.id);setTimeout(()=>{const replies=["That's really interesting!","Ha, I love that! 😄","Yes, exactly!","Tell me more.","Same here!"];const r={id:Date.now()+1,from:'them',text:replies[Math.floor(Math.random()*replies.length)],ts:Date.now()};DB.addMsg(S.currentMatch.id,r);renderMsgs(S.currentMatch.id)},1200+Math.random()*1000)}
