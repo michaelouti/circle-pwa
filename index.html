@@ -1826,6 +1826,23 @@ function migrateDemoPhotos(){
       m.oQs={intent:'A serious relationship',location:'Open within my country',family:"I'm open to children",sport:'I stay active but keep it casual',travel:'A couple times a year',food:'No preference'};
       m.oPrefs={gender:'Woman',ageMin:27,ageMax:36,religions:['No preference'],note:'Someone who has a life and a laugh. Intelligence is important but warmth more so.'};_mmc=true;}
   });
+  // Also enrich any other match missing profile data (e.g. from acceptIntro)
+  _mm2.forEach(function(m){
+    if(!m.oAge||!m.oPhoto||!m.oBio){
+      var _s=DB.singles().find(function(s){return s.name===m.oName;});
+      if(_s){
+        if(!m.oAge){m.oAge=_s.age;_mmc=true;}
+        if(!m.oPhoto&&_s.photos&&_s.photos[0]){m.oPhoto=_s.photos[0];_mmc=true;}
+        if(!m.oGender){m.oGender=_s.gender;_mmc=true;}
+        if(!m.oHeight){m.oHeight=_s.height;_mmc=true;}
+        if(!m.oReligion){m.oReligion=_s.religion;_mmc=true;}
+        if(!m.oBio){m.oBio=_s.bio||'';_mmc=true;}
+        if(!m.oTags||!m.oTags.length){m.oTags=_s.tags||[];_mmc=true;}
+        if(!m.oQs||!Object.keys(m.oQs).length){m.oQs=_s.qs||{};_mmc=true;}
+        if(!m.oPrefs){m.oPrefs=_s.prefs||{};_mmc=true;}
+      }
+    }
+  });
   if(_mmc)DB.setMatches(_mm2);
 }
 function initHome(){
@@ -3044,7 +3061,7 @@ function openIntroDetail(id){
   document.getElementById('id-body').innerHTML=`<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">${heroHtml}<div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tx)">&#x23F1; ${hoursLeft}h left</div><div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)"><div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">${i.sName}, ${i.sAge}</div><div style="display:flex;flex-wrap:wrap;gap:10px">${i.sJob?`<span style="font-size:12px;color:rgba(255,255,255,.9)">${i.sJob}</span>`:''}${i.sLoc?`<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; ${i.sLoc}</span>`:''}</div></div></div><div class="card-warm mb14"><div class="row mb8" style="gap:8px">${av(ini(i.mmName),0,28)}<div><div style="font-size:13px;font-weight:700;color:var(--p8)">${i.mmName} thinks you should meet</div><div class="tiny" style="color:var(--p6)">${i.mmRel}</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;${i.ctx||'No context note yet.'}&#x201D;</p></div>${bioHtml}${qaHtml}<div class="row mb8" style="gap:8px"><button class="btn btn-s flex1" onclick="declineIntro(this.dataset.id)" data-id="${i.id}">Decline</button><button class="btn btn-p flex1" onclick="acceptIntro(this.dataset.id)" data-id="${i.id}">Accept &#x2713;</button></div><button class="btn-ghost primary w100 center" onclick="openFeedback(this.dataset.id)" data-id="${i.id}">Rate this intro</button>`;
   go('intro-detail');
 }
-function acceptIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;const i=intros[idx];i.status='matched';DB.setIntros(intros);const m={id:'match_'+Date.now(),oName:i.sName,oJob:i.sJob,oLoc:i.sLoc,mmName:i.mmName,ctx:i.ctx,ts:Date.now(),ci:i.ci,unread:0};const matches=DB.matches();matches.unshift(m);DB.setMatches(matches);addPts(10);toast('Matched with '+i.sName+'! +10 pts');setTimeout(()=>{go('intros');switchTab('matches')},500)}
+function acceptIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;const i=intros[idx];i.status='matched';DB.setIntros(intros);const m={id:'match_'+Date.now(),oName:i.sName,oAge:i.sAge,oJob:i.sJob,oLoc:i.sLoc,oGender:i.gender,oHeight:i.height,oReligion:i.religion,oPhoto:i.photos&&i.photos[0]||'',oBio:i.bio||'',oTags:i.tags||[],oQs:i.qs||{},oPrefs:i.prefs||{},mmName:i.mmName,mmRel:i.mmRel,ctx:i.ctx,ts:Date.now(),ci:i.ci,unread:0};const matches=DB.matches();matches.unshift(m);DB.setMatches(matches);addPts(10);toast('Matched with '+i.sName+'! +10 pts');setTimeout(()=>{go('intros');switchTab('matches')},500)}
 function declineIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;intros[idx].status='declined';DB.setIntros(intros);renderPending();if(S.screen==='intro-detail')go('intros');toast('Introduction declined')}
 function openFeedback(id){S.fbIntroId=id;const i=DB.intros().find(x=>x.id===id);document.getElementById('fb-from').textContent=`Let ${i?.mmName||'your matchmaker'} know how it went`;document.querySelectorAll('#modal-feedback .qopt').forEach(b=>b.classList.remove('sel'));document.getElementById('fb-note-area').style.display='none';showModal('modal-feedback')}
 function selFb(btn){document.querySelectorAll('#modal-feedback .qopt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');document.getElementById('fb-note-area').style.display='block'}
@@ -3246,6 +3263,34 @@ function openMatchProfile(id){
   if(!id)return;
   var m=DB.matches().find(function(x){return x.id===id;});
   if(!m)return;
+  // Enrich from singles if match record is incomplete (e.g. from acceptIntro)
+  if(!m.oAge||!m.oPhoto||!m.oBio){
+    var _s=DB.singles().find(function(s){return s.name===m.oName;});
+    if(_s){
+      if(!m.oAge)m.oAge=_s.age;
+      if(!m.oPhoto&&_s.photos&&_s.photos[0])m.oPhoto=_s.photos[0];
+      if(!m.oGender)m.oGender=_s.gender;
+      if(!m.oHeight)m.oHeight=_s.height;
+      if(!m.oReligion)m.oReligion=_s.religion;
+      if(!m.oBio)m.oBio=_s.bio||'';
+      if(!m.oTags||!m.oTags.length)m.oTags=_s.tags||[];
+      if(!m.oQs||!Object.keys(m.oQs).length)m.oQs=_s.qs||{};
+      if(!m.oPrefs)m.oPrefs=_s.prefs||{};
+    } else {
+      // Try intros list
+      var _i=DB.intros().find(function(i){return i.sName===m.oName;});
+      if(_i){
+        if(!m.oAge)m.oAge=_i.sAge;
+        if(!m.oPhoto&&_i.photos&&_i.photos[0])m.oPhoto=_i.photos[0];
+        if(!m.oGender)m.oGender=_i.gender;
+        if(!m.oHeight)m.oHeight=_i.height;
+        if(!m.oReligion)m.oReligion=_i.religion;
+        if(!m.oBio)m.oBio=_i.bio||'';
+        if(!m.oTags||!m.oTags.length)m.oTags=_i.tags||[];
+        if(!m.oQs||!Object.keys(m.oQs).length)m.oQs=_i.qs||{};
+      }
+    }
+  }
   var col=AVCOLS[(m.ci||0)%AVCOLS.length];
   var _ig=m.oGender||'';
   var heroHtml=m.oPhoto
@@ -3270,12 +3315,12 @@ function openMatchProfile(id){
         return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'"><div class="row mb6" style="gap:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div><span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div><div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+_p3(kv[1],_ig)+'</div></div>';
       }).join('')+'</div>';
   }
-  var ctxCard=m.ctx?('<div class="card-warm mb14"><div class="row mb8" style="gap:8px">'+av(ini(m.mmName),0,28)+'<div><div style="font-size:13px;font-weight:700;color:var(--p8)">Introduced by '+(m.mmName||'')+(m.mmRel?(' · '+m.mmRel):'')+'</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;'+m.ctx+'&#x201D;</p></div>'):'';
+  var ctxCard=(!m.isDirect&&m.ctx&&m.mmName)?('<div class="card-warm mb14"><div class="row mb8" style="gap:8px">'+av(ini(m.mmName),0,28)+'<div><div style="font-size:13px;font-weight:700;color:var(--p8)">Introduced by '+(m.mmName||'')+(m.mmRel?(' · '+m.mmRel):'')+'</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;'+m.ctx+'&#x201D;</p></div>'):'';
   document.getElementById('mp-title').textContent=m.oName;
   document.getElementById('mp-body').innerHTML=
     '<div style="position:relative;height:220px;overflow:hidden;margin:-20px -20px 16px">'+heroHtml
     +'<div style="position:absolute;bottom:0;left:0;right:0;padding:32px 16px 12px;background:linear-gradient(to top,rgba(0,0,0,.72),transparent)">'
-    +'<div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">'+m.oName+', '+m.oAge+'</div>'
+    +'<div style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:4px">'+m.oName+(m.oAge?', '+m.oAge:'')+'</div>'
     +'<div style="display:flex;flex-wrap:wrap;gap:10px">'+(m.oJob?'<span style="font-size:12px;color:rgba(255,255,255,.9)">'+m.oJob+'</span>':'')+(m.oLoc?'<span style="font-size:12px;color:rgba(255,255,255,.9)">&#x1F4CD; '+m.oLoc+'</span>':'')+'</div>'
     +'</div></div>'+metaHtml+tagsHtml+ctxCard+bioHtml+qaHtml;
   go('match-profile');
