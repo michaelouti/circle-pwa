@@ -511,6 +511,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   <div style="position:sticky;top:0;z-index:20;background:var(--bg)">
     <div class="home-header" style="padding-top:max(12px,var(--sat))">
       <h1 style="font-size:28px;color:var(--p);font-weight:800;letter-spacing:-1.5px">My Circle</h1>
+      <button onclick="openMcHelp()" style="background:none;border:1px solid var(--bd2);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx3);font-size:14px;font-weight:600;flex-shrink:0" aria-label="How it works">ⓘ</button>
     </div>
     <!-- Tab bar -->
     <div class="mc-tab-bar">
@@ -573,6 +574,26 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-match-profile" class="screen">
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span id="mp-title" style="font-weight:700">Profile</span><span style="min-width:56px"></span></div>
   <div id="mp-body" class="p20"></div>
+</div>
+
+<div class="modal-ov" id="modal-mc-help">
+  <div class="modal-sheet">
+    <div class="mhandle"></div>
+    <h3 class="mb16">How My Circle works</h3>
+    <div style="margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">Singles I'm helping</div>
+      <p style="font-size:14px;color:var(--tx);line-height:1.6">Think of these as the friends you've promised to set up. You're playing matchmaker for them.</p>
+    </div>
+    <div style="border-top:.5px solid var(--bd2);padding-top:16px;margin-bottom:16px">
+      <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">My Matchmakers</div>
+      <p style="font-size:14px;color:var(--tx);line-height:1.6">The friends who have promised to set you up. They're playing matchmaker for you.</p>
+    </div>
+    <div style="border-top:.5px solid var(--bd2);padding-top:16px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:var(--p);letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px">Matchmaker Network</div>
+      <p style="font-size:14px;color:var(--tx);line-height:1.6">Other matchmakers in the app. You can team up with them — they introduce your singles to theirs, and you do the same for them.</p>
+    </div>
+    <button class="btn btn-s" onclick="closeModal('modal-mc-help')">Got it</button>
+  </div>
 </div>
 
 <!-- INTRODUCE + QR + CONTEXT + SENT -->
@@ -3273,6 +3294,7 @@ function scanInterested(){
 }
 function scanSaveLater(){const url=location.href;if(navigator.share)navigator.share({title:'Circle intro saved',url});else if(navigator.clipboard){navigator.clipboard.writeText(url);toast('Link saved! 📋')}else toast('Copy: '+url)}
 function scanDecline(){document.getElementById('scan-body').innerHTML=`<div style="min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center"><h2 class="mb8">No worries</h2><p class="cap" style="max-width:240px">Sophie will not know you viewed this.</p><button class="btn-ghost primary mt24" onclick="history.back()">Close</button></div>`}
+function openMcHelp(){showModal('modal-mc-help');}
 function openMatchProfile(id){
   if(!id)return;
   var m=DB.matches().find(function(x){return x.id===id;});
