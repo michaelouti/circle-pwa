@@ -1991,6 +1991,16 @@ function renderMcCounter() {
     const dots = Array.from({length: Math.min(n, 3)}, () => '<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--p);margin-left:2px;vertical-align:middle"></span>').join('');
     el.innerHTML = 'Your team: ' + n + ' / ' + MAX + ' ' + dots;
   }
+  // Keep Matchmaker Network tab visibility in sync as singles change
+  const _ctBtn=document.getElementById('mc-t-comms');
+  if(_ctBtn){
+    const _cu=DB.user();const _hs2=DB.singles().length>0;
+    const _io2=_cu?_cu.isOpen!==false:true;
+    const _show=_hs2||!_io2;
+    _ctBtn.style.display=_show?'':'none';
+    // If tab is now hidden but user is on it, redirect to singles
+    if(!_show&&mcTab==='comms')mcSwitchTab('singles');
+  }
 }
 
 function mcFabAction() {
@@ -2835,6 +2845,10 @@ function initMyCircle() {
   // Show/hide My Matchmakers tab (only for singles open to intros)
   const mmsBtn = document.getElementById('mc-t-mms');
   if (mmsBtn) mmsBtn.style.display = isOpen ? '' : 'none';
+  // Show/hide Matchmaker Network tab:
+  // hide only if user has NO singles AND is open to intros (pure single, nothing to offer)
+  const commsBtn = document.getElementById('mc-t-comms');
+  if(commsBtn){const _hs=DB.singles().length>0;commsBtn.style.display=(_hs||!isOpen)?'':'none';}
   mcTab = 'singles';
   document.getElementById('mc-t-singles').classList.add('on');
   if (mmsBtn) mmsBtn.classList.remove('on');
