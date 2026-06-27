@@ -212,7 +212,7 @@ select{background-image:url("data:image/svg+xml,%3Csvg width='16' height='16' vi
 .qblock{background:var(--bg2);border-radius:var(--r2);padding:16px;margin-bottom:12px}.qttl{font-size:14px;font-weight:700;margin-bottom:10px;color:var(--tx)}.qopts{display:flex;flex-direction:column;gap:6px}.qopt{padding:12px 14px;background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r);font-size:14px;cursor:pointer;text-align:left;font-family:inherit;color:var(--tx);transition:all .15s;line-height:1.35}.qopt.sel{background:var(--p1);border-color:var(--p);color:var(--p6);font-weight:600}.qopt:hover:not(.sel){background:var(--bg3)}
 input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:var(--bg4);border-radius:2px;outline:none;width:100%;cursor:pointer}input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--p);cursor:pointer;box-shadow:0 2px 8px rgba(216,90,48,.35);border:3px solid #fff}input[type=range]::-moz-range-thumb{width:26px;height:26px;border-radius:50%;background:var(--p);border:3px solid #fff;cursor:pointer}
 .ob-track{display:flex;transition:transform .35s cubic-bezier(.4,0,.2,1)}.ob-slide{min-width:100%;padding:32px 28px 16px;display:flex;flex-direction:column;align-items:center;text-align:center}.ob-dots{display:flex;gap:6px;justify-content:center;margin:20px 0 8px}.ob-dot{width:6px;height:6px;border-radius:3px;background:var(--bg4);transition:all .22s;cursor:pointer}.ob-dot.on{background:var(--p);width:20px}
-.tabs{display:flex;border-bottom:.5px solid var(--bd2);background:var(--bg)}.tab-btn{flex:1;padding:12px 4px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--tx3);font-family:inherit;border-bottom:2.5px solid transparent;margin-bottom:-.5px;transition:all .15s}.tab-btn.on{color:var(--p);border-bottom-color:var(--p)}.tab-pane{display:none;padding:16px 20px}.tab-pane.on{display:block}.tab-badge{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--p);color:#fff;font-size:9px;font-weight:700;margin-left:4px;vertical-align:middle}
+.tabs{display:flex;border-bottom:.5px solid var(--bd2);background:var(--bg)}.ptab{flex:1;padding:7px 12px;background:none;border:none;cursor:pointer;font-size:13px;font-weight:500;color:var(--tx3);border-radius:100px;transition:none}.ptab.on{background:var(--bg);color:var(--p);box-shadow:0 1px 3px rgba(0,0,0,.08)}.tab-btn{flex:1;padding:12px 4px;background:none;border:none;cursor:pointer;font-size:14px;font-weight:600;color:var(--tx3);font-family:inherit;border-bottom:2.5px solid transparent;margin-bottom:-.5px;transition:all .15s}.tab-btn.on{color:var(--p);border-bottom-color:var(--p)}.tab-pane{display:none;padding:16px 20px}.tab-pane.on{display:block}.tab-badge{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;background:var(--p);color:#fff;font-size:9px;font-weight:700;margin-left:4px;vertical-align:middle}
 .ic{background:var(--bg);border:.5px solid var(--bd2);border-radius:var(--r3);overflow:hidden;margin-bottom:12px;cursor:pointer;transition:transform .15s}.ic:active{transform:scale(.985)}.ic-accent{height:4px;background:linear-gradient(90deg,var(--p3),var(--p))}.ic-body{padding:14px 16px}
 .car-track{overflow:hidden;border-radius:var(--r3);border:.5px solid var(--bd2)}.car-inner{display:flex;transition:transform .3s ease}.car-slide{min-width:100%;flex-shrink:0}.car-dots{display:flex;gap:6px;justify-content:center;margin-top:10px}.car-dot{width:6px;height:6px;border-radius:3px;background:var(--bg4);transition:all .22s;cursor:pointer}.car-dot.on{background:var(--p);width:18px}
 .msgs{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:4px}.msg{max-width:75%;display:flex;flex-direction:column}.msg-me{align-self:flex-end;align-items:flex-end}.msg-th{align-self:flex-start;align-items:flex-start}.bubble{padding:10px 14px;font-size:15px;line-height:1.5;word-break:break-word;border-radius:18px}.bubble-me{background:var(--p);color:#fff;border-bottom-right-radius:5px}.bubble-th{background:var(--bg2);color:var(--tx);border-bottom-left-radius:5px}.mts{font-size:10px;color:var(--tx3);margin-top:3px;padding:0 4px}
@@ -559,7 +559,16 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
       <button class="tab-btn" id="t-activity" onclick="switchTab('activity')">Activity</button>
     </div>
   </div>
-  <div class="tab-pane on" id="tp-pending"><div id="pending-list"></div></div>
+  <div class="tab-pane on" id="tp-pending">
+    <div style="padding:12px 16px 8px">
+      <div style="display:flex;background:var(--bg2);border-radius:100px;padding:3px;gap:2px">
+        <button class="ptab on" id="pt-forme" onclick="switchPendingSubTab('forme')">For me</button>
+        <button class="ptab" id="pt-managing" onclick="switchPendingSubTab('managing')">I'm managing</button>
+      </div>
+    </div>
+    <div id="pending-list-forme"></div>
+    <div id="pending-list-managing" style="display:none"></div>
+  </div>
   <div class="tab-pane" id="tp-matches"><div id="matches-list"></div></div>
   <div class="tab-pane" id="tp-activity"><div id="activity-list"></div></div>
 </div>
@@ -594,6 +603,21 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
   </div>
 </div>
 
+<div id="s-decline-feedback" class="screen">
+  <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Leave feedback</span><span style="min-width:56px"></span></div>
+  <div class="p20">
+    <div class="card-warm mb16"><div class="row" style="gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--p);flex-shrink:0"></div><p class="cap" id="dfb-msg" style="color:var(--p6)">Help your matchmaker improve their search.</p></div></div>
+    <h2 class="mb4">What didn't work?</h2>
+    <p class="cap mb16" id="dfb-sub">Your feedback is private — only your matchmaker will see it.</p>
+    <div class="igrp"><label class="lbl">Your feedback</label>
+      <textarea id="dfb-ta" rows="5" placeholder="e.g. We're looking for different things, and I didn't feel a strong connection based on the profile." oninput="dfbChange(this)"></textarea>
+      <div class="between mt4"><span class="tiny" id="dfb-hint" style="color:var(--tx3)">Minimum 20 characters</span><span class="tiny" id="dfb-count">0/400</span></div>
+    </div>
+    <button class="btn btn-danger mb8 mt8" id="dfb-btn" onclick="confirmDecline()" disabled>Confirm decline</button>
+    <button class="btn-ghost primary w100 center" onclick="back()">Go back</button>
+  </div>
+</div>
+
 <!-- INTRODUCE + QR + CONTEXT + SENT -->
 <div id="s-introduce" class="screen">
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Introduce</span><span style="min-width:56px"></span></div>
@@ -624,15 +648,16 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div id="s-context" class="screen">
   <div class="topbar"><button class="back-btn" onclick="back()"><svg viewBox="0 0 20 20"><path d="M12.5 15l-5-5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span style="font-weight:700">Add context</span><span style="min-width:56px"></span></div>
   <div class="p20">
-    <div class="card-warm mb20"><div class="row" style="gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0"></div><p class="cap" id="ctx-scan-msg" style="color:var(--p6)">Someone wants to meet your friend!</p></div></div>
-    <h2 class="mb4">Why would they click?</h2><p class="cap mb16">A personal note makes a big difference</p>
-    <div class="igrp"><label class="lbl">Your note</label>
-      <textarea id="ctx-ta" rows="5" placeholder="e.g. You both love hiking and he's genuinely one of the most thoughtful people I know." oninput="ctxChange(this)"></textarea>
-      <div class="between mt4"><span class="tiny" id="ctx-hint" style="color:var(--tx3)">Minimum 10 characters</span><span class="tiny" id="ctx-count">0/240</span></div>
+    <div class="card-warm mb16"><div class="row" style="gap:8px"><div style="width:8px;height:8px;border-radius:50%;background:var(--ok);flex-shrink:0"></div><p class="cap" id="ctx-scan-msg" style="color:var(--p6)">Someone wants to meet your single!</p></div></div>
+    <h2 class="mb4" id="ctx-title">Your note to <span id="ctx-single-name">your single</span></h2>
+    <p class="cap mb16" id="ctx-subtitle">Give them some context — you have 24h before the profile is released.</p>
+    <div class="igrp"><label class="lbl">Your note <span style="color:var(--tx3);font-weight:400">(optional)</span></label>
+      <textarea id="ctx-ta" rows="5" placeholder="e.g. He reached out through your QR — I think you'd really get along." oninput="ctxChange(this)"></textarea>
+      <div class="between mt4"><span class="tiny" id="ctx-hint" style="color:var(--tx3)">The more specific, the better</span><span class="tiny" id="ctx-count">0/240</span></div>
     </div>
-    <div style="background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:20px"><p class="tiny" style="line-height:1.6;color:var(--tx2)">&#128161; Be specific - it builds trust before the first message.</p></div>
-    <button class="btn btn-p mb8" id="ctx-btn" onclick="sendIntro()" disabled>Send introduction &#8594;</button>
-    <button class="btn-ghost primary w100 center" onclick="sendIntroNoNote()">Send without a note <span style="color:var(--tx3)">(not recommended)</span></button>
+    <div style="background:var(--bg2);border-radius:var(--r);padding:12px 14px;margin-bottom:20px"><p class="tiny" style="line-height:1.6;color:var(--tx2)">&#128161; A personal note makes a real difference — your single will see it before meeting them.</p></div>
+    <button class="btn btn-p mb8" id="ctx-btn" onclick="sendMmNote()">Send note &#8594;</button>
+    <button class="btn-ghost primary w100 center" onclick="sendMmNoteSkip()">Release profile without a note <span style="color:var(--tx3)">(not recommended)</span></button>
   </div>
 </div>
 
@@ -1303,7 +1328,7 @@ var _modalOpenAt=0;
 function showModal(id){_modalOpenAt=Date.now();document.getElementById(id).classList.add('on');var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='600';}
 function closeModal(id){document.getElementById(id).classList.remove('on');if(!document.querySelector('.modal-ov.on')){var ss=document.getElementById('screen-stack');if(ss)ss.style.zIndex='';} }
 document.querySelectorAll('.modal-ov').forEach(m=>{m.addEventListener('click',e=>{if(e.target===m&&Date.now()-_modalOpenAt>350)closeModal(m.id)})});
-const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','match-profile','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick','scan']);
+const NAV_SCREENS=new Set(['home','my-circle','intros','introduce','profile','settings','edit-profile','notifs','intro-detail','qr','context','intro-sent','chat','match-profile','decline-feedback','single-dash','levels-rewards','prof-preview','how-circle-works','setup','comm-detail','suggest-pick','scan']);
 const NAV_MAP={'home':'nb-home','notifs':'nb-home','my-circle':'nb-circle','introduce':'nb-add','qr':'nb-add','context':'nb-add','intro-sent':'nb-add','intros':'nb-intros','intro-detail':'nb-intros','chat':'nb-intros','profile':'nb-profile','edit-profile':'nb-profile','settings':'nb-profile','single-dash':'nb-circle','levels-rewards':'nb-profile','prof-preview':'nb-profile','how-circle-works':'nb-profile'};
 function go(id){var _onb=['ob','login','signup','verify','path-choice','setup','scan','intro-sent','context','qr'];if(!DB.user()&&_onb.indexOf(id)===-1){id=(S.setup&&S.setup.path)?'setup':'path-choice';}const prev=S.screen;if(prev===id)return;const prevEl=_el(prev),nextEl=_el(id);if(!nextEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(prevEl)prevEl.classList.add('active');nextEl.getBoundingClientRect();if(prevEl)prevEl.classList.remove('no-trans');nextEl.classList.remove('no-trans');if(prevEl){prevEl.classList.remove('active');prevEl.classList.add('behind')}nextEl.classList.add('active');nextEl.scrollTop=0;S.stack.push(prev);S.screen=id;updateNav(id);_init(id)}
 function back(){if(!S.stack.length)return;var _prev=S.stack[S.stack.length-1];var _onb=['ob','login','signup','verify','path-choice','setup'];if(!DB.user()&&_onb.indexOf(_prev)===-1)return;const prev=S.stack.pop(),currEl=_el(S.screen),prevEl=_el(prev);if(!prevEl)return;document.getElementById('screen-stack').querySelectorAll('.screen').forEach(s=>{s.classList.add('no-trans');s.classList.remove('active','behind')});if(currEl)currEl.classList.add('active');prevEl.classList.add('behind');prevEl.getBoundingClientRect();if(currEl)currEl.classList.remove('no-trans');prevEl.classList.remove('no-trans');if(currEl)currEl.classList.remove('active');prevEl.classList.remove('behind');prevEl.classList.add('active');S.screen=prev;updateNav(prev)}
@@ -3014,12 +3039,18 @@ function mcCardTap(id) {viewSingleProfile(id);}
 function initIntros(){const _u=DB.user();if(_u)S.user=_u;renderPending();renderMatches();renderActivity()}
 function switchTab(t){['pending','matches','activity'].forEach(x=>{document.getElementById('t-'+x)?.classList.toggle('on',x===t);document.getElementById('tp-'+x)?.classList.toggle('on',x===t)});if(t==='pending')renderPending();if(t==='matches')renderMatches();if(t==='activity')renderActivity()}
 function renderPending(){
-  const list=document.getElementById('pending-list');
-  if(!list)return;
-  const intros=DB.intros().filter(i=>i.status==='pending');
+  var listF=document.getElementById('pending-list-forme');
+  var listM=document.getElementById('pending-list-managing');
+  if(!listF||!listM)return;
+  var now_rp=Date.now();
+  var allIntros=DB.intros().filter(function(i){return i.status==='pending'||i.status==='scanner_accepted';});
+  var introsForme=allIntros.filter(function(i){return !i.mmView;});
+  var introsManaging=allIntros.filter(function(i){return !!i.mmView;});
   const sugs=DB.suggestions().filter(function(s){return s.status==='pending_their_single'||s.status==='their_single_interested';});
-  if(!intros.length&&!sugs.length){
-    list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;
+  var intros=introsForme;
+  if(!introsForme.length&&!introsManaging.length&&!sugs.length){
+    listF.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;
+    listM.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">👥</div><h3>Nothing to manage yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your managed introductions will appear here</p></div>`;
     return;
   }
   // Suggestion cards
@@ -3042,8 +3073,54 @@ function renderPending(){
       +'</div></div>';
   }).join('');
   // Regular intro cards (unchanged)
-  var introHtml=intros.map(i=>`<div class="ic" onclick="openIntroDetail('${i.id}')"><div class="ic-accent"></div><div class="ic-body"><div class="between mb10"><span class="pill pill-new">New intro</span><span class="tiny">${ago(i.ts)}</span></div><div class="row gap8 mb10">${av(ini(i.sName),i.ci,50)}<div class="flex1"><div style="font-size:17px;font-weight:700">${i.sName}, ${i.sAge}</div><p class="tiny">${i.sJob} \u00b7 ${i.sLoc}</p></div></div><div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From ${i.mmName} (${i.mmRel})</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">"${i.ctx||'No context yet'}"</p></div><div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro('${i.id}')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro('${i.id}')">Accept ✓</button></div></div></div>`).join('');
-  list.innerHTML=sugHtml+introHtml;
+  var introHtml=intros.map(function(i){
+    var _isExp=i.exp&&now_rp>i.exp;
+    var _isScanAcc=i.status==='scanner_accepted';
+    var _badge=_isExp
+      ?'<span class="pill" style="background:var(--bg3);color:var(--tx3)">Expired</span>'
+      :_isScanAcc
+        ?'<span class="pill" style="background:rgba(216,90,48,.12);color:var(--p)">Profile incoming</span>'
+        :'<span class="pill pill-new">New intro</span>';
+    var _note=i.mmNote?('"'+i.mmNote+'"'):(i.ctx?('"'+i.ctx+'"'):'<em style="color:var(--tx3)">No note yet</em>');
+    var _actions=_isExp
+      ?'<button class="btn btn-p w100" style="padding:11px" onclick="event.stopPropagation();renewIntro(\'' +i.id+ '\')">Renew (+72h)</button>'
+      :_isScanAcc
+        ?'<button class="btn btn-s w100" style="padding:11px" onclick="event.stopPropagation();openMmNoteScreen(\'' +i.id+ '\')">Add your note for '+(i.targetSingle||i.sName||'your single')+'</button>'
+        :'<div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();declineIntro(\'' +i.id+ '\')">Decline</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();acceptIntro(\'' +i.id+ '\')">Accept ✓</button></div>';
+    return '<div class="ic" onclick="openIntroDetail(\'' +i.id+ '\')"><div class="ic-accent"></div><div class="ic-body">'
+      +'<div class="between mb10">'+_badge+'<span class="tiny">'+ago(i.ts)+'</span></div>'
+      +'<div class="row gap8 mb10">'+av(ini(i.sName),i.ci,50)+'<div class="flex1"><div style="font-size:17px;font-weight:700">'+i.sName+(i.sAge?', '+i.sAge:'')+'</div>'
+      +(i.sJob?'<p class="tiny">'+i.sJob+(i.sLoc?' · '+i.sLoc:'')+'</p>':'')+'</div></div>'
+      +'<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px">'
+      +(i.mmName?'<p class="tiny mb4">From '+i.mmName+(i.mmRel?' ('+i.mmRel+')':'')+'</p>':'')
+      +'<p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+_note+'</p></div>'
+      +_actions+'</div></div>';}).join('');
+  listF.innerHTML=introsForme.length?introHtml:'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>All clear</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">No intros waiting for you right now</p></div>';
+  var managingHtml=introsManaging.map(function(i){
+    var _isExp=i.exp&&now_rp>i.exp;
+    var _isScanAcc=i.status==='scanner_accepted';
+    var _badge=_isExp
+      ?'<span class="pill" style="background:var(--bg3);color:var(--tx3)">Expired</span>'
+      :_isScanAcc
+        ?'<span class="pill" style="background:rgba(216,90,48,.12);color:var(--p)">Profile incoming</span>'
+        :'<span class="pill pill-new">Active</span>';
+    var _note=i.mmNote?('"'+i.mmNote+'"'):'<em style="color:var(--tx3)">No note added yet</em>';
+    var _actions=_isExp
+      ?'<button class="btn btn-p w100" style="padding:11px" onclick="event.stopPropagation();renewIntro(\'' +i.id+ '\')">Renew (+72h)</button>'
+      :_isScanAcc
+        ?'<button class="btn btn-s w100" style="padding:11px" onclick="event.stopPropagation();openMmNoteScreen(\'' +i.id+ '\')">'+( i.mmNoteSent?'Note sent ✓':'Add your note for '+(i.targetSingle||'your single'))+'</button>'
+        :'';
+    return '<div class="ic"><div class="ic-accent"></div><div class="ic-body">'
+      +'<div class="between mb10">'+_badge+'<span class="tiny">'+ago(i.ts)+'</span></div>'
+      +'<div style="font-size:15px;font-weight:700;margin-bottom:4px">'+(i.targetSingle||i.sName||'Your single')+'</div>'
+      +'<p class="tiny mb10">'+(i.sName||'Someone')+' wants to meet '+(i.targetSingle||'your single')+'</p>'
+      +'<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px">'
+      +'<p class="tiny mb4">Your note</p>'
+      +'<p style="font-size:13px;color:var(--tx2);line-height:1.55">'+_note+'</p></div>'
+      +_actions+'</div></div>';
+  }).join('');
+  listM.innerHTML=(introsManaging.length?managingHtml:'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">👥</div><h3>Nothing to manage yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Introductions you make as a matchmaker will appear here</p></div>')+sugHtml;
+  switchPendingSubTab(S.pendingSubTab||'forme');
 }
 function renderMatches(){const list=document.getElementById('matches-list');if(!list)return;const ms=DB.matches();if(!ms.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💬</div><h3>No matches yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Accept an intro to start a conversation</p></div>`;return}list.innerHTML=ms.map(m=>{const msgs=DB.msgs(m.id),last=msgs[msgs.length-1];return `<div class="card card-tap" style="padding:12px 14px" onclick="openChat('${m.id}')"><div class="row" style="gap:12px">${av(ini(m.oName),m.ci,50)}<div class="flex1" style="min-width:0"><div class="between"><div style="font-size:16px;font-weight:700">${m.oName}</div><div class="tiny">${last?ago(last.ts):''}</div></div><div class="row mt4" style="gap:6px">${m.unread?'<div class="unread"></div>':''}<p style="font-size:14px;color:${m.unread?'var(--tx)':'var(--tx3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:${m.unread?'600':'400'}">${last?last.text:'Matched via '+m.mmName}</p></div><p class="tiny mt4">Intro by ${m.mmName}</p></div></div></div>`}).join('')}
 function renderActivity(){
@@ -3095,7 +3172,21 @@ function openIntroDetail(id){
   go('intro-detail');
 }
 function acceptIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;const i=intros[idx];i.status='matched';DB.setIntros(intros);const m={id:'match_'+Date.now(),oName:i.sName,oAge:i.sAge,oJob:i.sJob,oLoc:i.sLoc,oGender:i.gender,oHeight:i.height,oReligion:i.religion,oPhoto:i.photos&&i.photos[0]||'',oBio:i.bio||'',oTags:i.tags||[],oQs:i.qs||{},oPrefs:i.prefs||{},mmName:i.mmName,mmRel:i.mmRel,ctx:i.ctx,ts:Date.now(),ci:i.ci,unread:0};const matches=DB.matches();matches.unshift(m);DB.setMatches(matches);addPts(10);toast('Matched with '+i.sName+'! +10 pts');setTimeout(()=>{go('intros');switchTab('matches')},500)}
-function declineIntro(id){const intros=DB.intros(),idx=intros.findIndex(i=>i.id===id);if(idx===-1)return;intros[idx].status='declined';DB.setIntros(intros);renderPending();if(S.screen==='intro-detail')go('intros');toast('Introduction declined')}
+function declineIntro(id){
+  var intros=DB.intros(),idx=intros.findIndex(function(i){return i.id===id;});
+  if(idx===-1)return;
+  S.decliningIntroId=id;
+  var intro=intros[idx];
+  var msg=document.getElementById('dfb-msg');
+  if(msg)msg.textContent='Help '+(intro.mmName||'your matchmaker')+' understand what didn\'t work.';
+  var sub=document.getElementById('dfb-sub');
+  if(sub)sub.textContent='Your feedback is private — only '+(intro.mmName||'your matchmaker')+' will see it.';
+  var ta=document.getElementById('dfb-ta');if(ta)ta.value='';
+  var btn=document.getElementById('dfb-btn');if(btn)btn.disabled=true;
+  var cnt=document.getElementById('dfb-count');if(cnt)cnt.textContent='0/400';
+  var hint=document.getElementById('dfb-hint');if(hint){hint.textContent='Minimum 20 characters';hint.style.color='var(--tx3)';}
+  go('decline-feedback');
+}
 function openFeedback(id){S.fbIntroId=id;const i=DB.intros().find(x=>x.id===id);document.getElementById('fb-from').textContent=`Let ${i?.mmName||'your matchmaker'} know how it went`;document.querySelectorAll('#modal-feedback .qopt').forEach(b=>b.classList.remove('sel'));document.getElementById('fb-note-area').style.display='none';showModal('modal-feedback')}
 function selFb(btn){document.querySelectorAll('#modal-feedback .qopt').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');document.getElementById('fb-note-area').style.display='block'}
 function submitFb(){const v=document.querySelector('#modal-feedback .qopt.sel')?.dataset.v;if(!v){toast('Please select an option');return}if(v==='great')addPts(5);closeModal('modal-feedback');toast('Feedback sent!'+(v==='great'?' +5 pts':''))}
@@ -3255,6 +3346,9 @@ function initScan(){
     heroHtml
     +'<div style="padding:16px 20px 0">'
     +'<div style="height:16px"></div>'
+    +'<div style="margin-bottom:14px;padding:10px 14px;background:var(--bg2);border-radius:10px;display:flex;align-items:center;gap:8px">'
+    +'<div style="width:7px;height:7px;border-radius:50%;background:var(--p);flex-shrink:0"></div>'
+    +'<p style="font-size:13px;color:var(--tx2)">Introduced by <strong style="color:var(--tx)">'+profile.mmName+'</strong></p></div>'
     +(profile.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px">'+'<div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+profile.name+'</div>'+'<p style="font-size:15px;color:var(--tx);line-height:1.65">'+profile.bio+'</p></div>':'')
     +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'+tilesHtml+'</div>'
     +'<div style="height:4px"></div>'
@@ -3266,16 +3360,90 @@ function initScan(){
     +'<button class="btn btn-s flex1" onclick="scanDecline()">Not interested</button>'
     +'</div></div></div>';
 }
+function openMmNoteScreen(introId){
+  var intro=DB.intros().find(function(i){return i.id===introId;});
+  if(!intro)return;
+  S.mmNoteIntroId=introId;
+  var sn=intro.targetSingle||intro.sName||'your single';
+  var el=document.getElementById('ctx-single-name');if(el)el.textContent=sn;
+  var msg=document.getElementById('ctx-scan-msg');
+  if(msg)msg.textContent=(intro.sName||'Someone')+' wants to meet '+sn+'!';
+  var sub=document.getElementById('ctx-subtitle');
+  if(sub)sub.textContent='Give '+sn+' some context before '+(intro.sName||'their')+"'s profile is released. (optional)";
+  var ta=document.getElementById('ctx-ta');if(ta)ta.value=intro.mmNote||'';
+  var btn=document.getElementById('ctx-btn');if(btn)btn.disabled=false;
+  var cnt=document.getElementById('ctx-count');if(cnt)cnt.textContent=((intro.mmNote||'').length)+'/240';
+  go('context');
+}
+function sendMmNote(){
+  var id=S.mmNoteIntroId;if(!id)return;
+  var note=(document.getElementById('ctx-ta')&&document.getElementById('ctx-ta').value.trim())||'';
+  var intros=DB.intros(),idx=intros.findIndex(function(i){return i.id===id;});
+  if(idx===-1)return;
+  intros[idx].mmNote=note;intros[idx].mmNoteSent=true;intros[idx].status='pending';
+  DB.setIntros(intros);
+  back();toast('Note sent to '+intros[idx].targetSingle+'!');
+}
+function sendMmNoteSkip(){
+  var id=S.mmNoteIntroId;if(!id)return;
+  var intros=DB.intros(),idx=intros.findIndex(function(i){return i.id===id;});
+  if(idx===-1)return;
+  intros[idx].status='pending';DB.setIntros(intros);
+  back();toast('Profile released without note.');
+}
+function renewIntro(id){
+  var intros=DB.intros(),idx=intros.findIndex(function(i){return i.id===id;});
+  if(idx===-1)return;
+  intros[idx].exp=Date.now()+72*3600000;
+  DB.setIntros(intros);renderPending();toast('Introduction extended by 72 hours.');
+}
+function switchPendingSubTab(tab){
+  S.pendingSubTab=tab;
+  var fl=document.getElementById('pending-list-forme');
+  var ml=document.getElementById('pending-list-managing');
+  var fb=document.getElementById('pt-forme');
+  var mb=document.getElementById('pt-managing');
+  if(fl)fl.style.display=tab==='forme'?'':'none';
+  if(ml)ml.style.display=tab==='managing'?'':'none';
+  if(fb){fb.classList.toggle('on',tab==='forme');}
+  if(mb){mb.classList.toggle('on',tab==='managing');}
+}
+function dfbChange(ta){
+  var n=ta.value.length;
+  document.getElementById('dfb-count').textContent=n+'/400';
+  var hint=document.getElementById('dfb-hint');
+  hint.textContent=n<20?'Minimum 20 characters':'Thanks — this really helps!';
+  hint.style.color=n>=20?'var(--ok)':'var(--tx3)';
+  document.getElementById('dfb-btn').disabled=n<20;
+}
+function confirmDecline(){
+  var id=S.decliningIntroId;if(!id)return;
+  var feedback=(document.getElementById('dfb-ta')&&document.getElementById('dfb-ta').value.trim())||'';
+  if(feedback.length<20){toast('Please write at least 20 characters.');return;}
+  var intros=DB.intros(),idx=intros.findIndex(function(i){return i.id===id;});
+  if(idx===-1)return;
+  intros[idx].status='declined';intros[idx].feedback=feedback;
+  DB.setIntros(intros);
+  go('intros');switchTab('activity');toast('Introduction declined.');
+}
 function scanInterested(){
   var u=DB.user();
   if(u){
+    // Scanner sends their own profile directly — no note screen for scanner
     var s=S.introSingle;
-    var msg='Someone wants to meet '+(s?s.name:'your friend')+'! Add a personal note \u2014 you have 24 hours.';
-    var el=document.getElementById('ctx-scan-msg');if(el)el.textContent=msg;
-    var ta=document.getElementById('ctx-ta');if(ta)ta.value='';
-    var btn=document.getElementById('ctx-btn');if(btn)btn.disabled=true;
-    var cnt=document.getElementById('ctx-count');if(cnt)cnt.textContent='0/240';
-    go('context');
+    var ni={id:S.introId||('intro_'+Date.now()),
+      sName:u.name||'Someone',sAge:u.age||'',sJob:u.job||'',sLoc:u.loc||'',
+      sGender:u.gender||'',sPhoto:(u.photos&&u.photos[0])||'',
+      sBio:u.bio||'',sQs:u.qs||{},sSingleId:'scanner',
+      targetSingle:s?s.name:'your single',
+      mmName:s?(DB.user()&&DB.user().name)||'Your matchmaker':'Your matchmaker',
+      ctx:'',mmNote:'',mmView:true,status:'scanner_accepted',
+      ts:Date.now(),exp:Date.now()+86400000*30};
+    var intros=DB.intros();
+    if(!intros.find(function(i){return i.id===ni.id;})){intros.unshift(ni);DB.setIntros(intros);}
+    document.getElementById('sent-msg').textContent='Your profile has been sent to '+(s?s.name:'the single')+'!';
+    document.getElementById('sent-pts').textContent='+5 points earned!';
+    addPts(5);go('intro-sent');toast('Profile sent! +5 pts');
   }else{
     var _ps=localStorage.getItem('c_pending_scan');
     var _sName=(_ps?JSON.parse(_ps).singleName:null)||'this person';
