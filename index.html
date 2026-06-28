@@ -3095,7 +3095,9 @@ function renderPending(){
       +(i.mmName?'<p class="tiny mb4">From '+i.mmName+(i.mmRel?' ('+i.mmRel+')':'')+'</p>':'')
       +'<p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+_note+'</p></div>'
       +_actions+'</div></div>';}).join('');
-  listF.innerHTML=introsForme.length?introHtml:'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>All clear</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">No intros waiting for you right now</p></div>';
+  listF.innerHTML=introsForme.length
+    ?introHtml
+    :'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>All clear</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">No intros waiting for you right now</p></div>';
   var managingHtml=introsManaging.map(function(i){
     var _isExp=i.exp&&now_rp>i.exp;
     var _isScanAcc=i.status==='scanner_accepted';
@@ -3119,7 +3121,10 @@ function renderPending(){
       +'<p style="font-size:13px;color:var(--tx2);line-height:1.55">'+_note+'</p></div>'
       +_actions+'</div></div>';
   }).join('');
-  listM.innerHTML=(introsManaging.length?managingHtml:'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">👥</div><h3>Nothing to manage yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Introductions you make as a matchmaker will appear here</p></div>')+sugHtml;
+  var managingEmpty=!introsManaging.length&&!sugs.length;
+  listM.innerHTML=managingEmpty
+    ?'<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">👥</div><h3>Nothing to manage yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Introductions you make as a matchmaker will appear here</p></div>'
+    :(introsManaging.length?managingHtml:'')+sugHtml;
   switchPendingSubTab(S.pendingSubTab||'forme');
 }
 function renderMatches(){const list=document.getElementById('matches-list');if(!list)return;const ms=DB.matches();if(!ms.length){list.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💬</div><h3>No matches yet</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Accept an intro to start a conversation</p></div>`;return}list.innerHTML=ms.map(m=>{const msgs=DB.msgs(m.id),last=msgs[msgs.length-1];return `<div class="card card-tap" style="padding:12px 14px" onclick="openChat('${m.id}')"><div class="row" style="gap:12px">${av(ini(m.oName),m.ci,50)}<div class="flex1" style="min-width:0"><div class="between"><div style="font-size:16px;font-weight:700">${m.oName}</div><div class="tiny">${last?ago(last.ts):''}</div></div><div class="row mt4" style="gap:6px">${m.unread?'<div class="unread"></div>':''}<p style="font-size:14px;color:${m.unread?'var(--tx)':'var(--tx3)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:${m.unread?'600':'400'}">${last?last.text:'Matched via '+m.mmName}</p></div><p class="tiny mt4">Intro by ${m.mmName}</p></div></div></div>`}).join('')}
