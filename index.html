@@ -2375,11 +2375,12 @@ function seedCoMmDemo(){
      prefs:{gender:'Man',ageMin:27,ageMax:37,religions:['No preference'],note:'Someone emotionally present and family-oriented. Values simplicity and depth over excitement.'}}
   ];
   var comms=DB.commConnections();
-  // Migrate: enrich Paul's demo singles if they lack the new fields (religion, height, qs)
+  // Migrate: always ensure Paul's theirSingles has correct enriched data including photos
   var paul=comms.find(function(c){return c.id==='comm_demo_paul';});
-  if(paul&&paul.theirSingles&&paul.theirSingles[0]&&!paul.theirSingles[0].qs){
-    paul.theirSingles=_enrichedPaulSingles;
-    DB.setCommConnections(comms);
+  if(paul){
+    var _cs1=paul.theirSingles&&paul.theirSingles.find(function(x){return x.id==='cs_1';});
+    var _needsUpdate=!_cs1||!_cs1.qs||!_cs1.photos||!_cs1.photos.length||_cs1.photos[0]!=='https://randomuser.me/api/portraits/men/25.jpg';
+    if(_needsUpdate){paul.theirSingles=_enrichedPaulSingles;DB.setCommConnections(comms);}
   }
   // Always ensure Paul's demo suggestion exists
   var _sugs=DB.suggestions();
@@ -2395,13 +2396,6 @@ function seedCoMmDemo(){
         note:'I think they\u2019d really get along \u2014 both creative, both genuine.',
         status:'pending_their_single',feedback:'',createdAt:Date.now()-86400000*2});
       DB.setSuggestions(_sugs);
-    } else {
-      // Patch photo in case old seed had wrong portrait
-      var _existSug=_sugs.find(function(sg){return sg.id==='sug_demo_1';});
-      if(_existSug&&(!_existSug.theirSinglePhotos||_existSug.theirSinglePhotos[0]!=='https://randomuser.me/api/portraits/men/25.jpg')){
-        _existSug.theirSinglePhotos=['https://randomuser.me/api/portraits/men/25.jpg'];
-        DB.setSuggestions(_sugs);
-      }
     }
   }
   if(comms.length>0)return;
@@ -3105,8 +3099,6 @@ function renderPending(){
   var listF=document.getElementById('pending-list-forme');
   var listM=document.getElementById('pending-list-managing');
   if(!listF||!listM)return;
-  // Always patch sug_demo_1 photo in case old localStorage has wrong portrait
-  (function(){var _sp=DB.suggestions();var _sd=_sp.find(function(sg){return sg.id==='sug_demo_1';});if(_sd&&(_sd.theirSinglePhotos||[])[0]!=='https://randomuser.me/api/portraits/men/25.jpg'){_sd.theirSinglePhotos=['https://randomuser.me/api/portraits/men/25.jpg'];DB.setSuggestions(_sp);}})();
   var now_rp=Date.now();
   var allIntros=DB.intros().filter(function(i){return i.status==='pending'||i.status==='scanner_accepted';});
   var introsForme=allIntros.filter(function(i){return !i.mmView;});
@@ -3119,10 +3111,27 @@ function renderPending(){
     return;
   }
   // Suggestion cards
+  // Ensure conn.theirSingles has correct photos before card render (migration-safe)
+  (function(){
+    var _mc=DB.commConnections(),_changed=false;
+    var _photoFix={'cs_1':'https://randomuser.me/api/portraits/men/25.jpg','cs_2':'https://randomuser.me/api/portraits/women/42.jpg'};
+    _mc.forEach(function(c){
+      if(c.theirSingles){c.theirSingles.forEach(function(s){
+        var _correct=_photoFix[s.id];
+        if(_correct&&(!s.photos||!s.photos.length||s.photos[0]!==_correct)){s.photos=[_correct];_changed=true;}
+      });}
+    });
+    if(_changed)DB.setCommConnections(_mc);
+  })();
+  var _allConns=DB.commConnections();
   var sugHtml=sugs.map(function(sug){
     var col=AVCOLS[(sug.theirSingleCi||0)%AVCOLS.length];
-    var ph=sug.theirSinglePhotos&&sug.theirSinglePhotos.length
-      ?'<img src="'+sug.theirSinglePhotos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
+    // Always resolve photo from live conn.theirSingles — same source as openSuggestionProfile
+    var _sugConn=_allConns.find(function(c){return c.id===sug.connId;});
+    var _sugFullS=_sugConn&&_sugConn.theirSingles&&_sugConn.theirSingles.find(function(x){return x.id===sug.theirSingleId;});
+    var _sugPhotos=(_sugFullS&&_sugFullS.photos)||sug.theirSinglePhotos||[];
+    var ph=_sugPhotos.length
+      ?'<img src="'+_sugPhotos[0]+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block">'
       :'<div style="width:100%;height:100%;background:'+col.bg+';display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:'+col.tc+'">'+ini(sug.theirSingleName)+'</div>';
     var isPending=sug.status==='pending_their_single';
     return '<div class="ic" onclick="openSuggestionProfile(\''+sug.id+'\')"><div class="ic-accent"></div><div class="ic-body">'
