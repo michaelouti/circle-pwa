@@ -2395,6 +2395,13 @@ function seedCoMmDemo(){
         note:'I think they\u2019d really get along \u2014 both creative, both genuine.',
         status:'pending_their_single',feedback:'',createdAt:Date.now()-86400000*2});
       DB.setSuggestions(_sugs);
+    } else {
+      // Patch photo in case old seed had wrong portrait
+      var _existSug=_sugs.find(function(sg){return sg.id==='sug_demo_1';});
+      if(_existSug&&(!_existSug.theirSinglePhotos||_existSug.theirSinglePhotos[0]!=='https://randomuser.me/api/portraits/men/25.jpg')){
+        _existSug.theirSinglePhotos=['https://randomuser.me/api/portraits/men/25.jpg'];
+        DB.setSuggestions(_sugs);
+      }
     }
   }
   if(comms.length>0)return;
@@ -3251,7 +3258,7 @@ function openIntroDetail(id){
     var _idTimerBadge='<div style="position:absolute;top:10px;right:10px;background:rgba(255,255,255,.9);backdrop-filter:blur(6px);border-radius:100px;padding:4px 10px;font-size:11px;font-weight:600;color:var(--tx)">&#x23F1; '+hoursLeft+'h left</div>';
     var _idCol=AVCOLS[(i.ci||0)%AVCOLS.length];
     var _mmAvHtml='<div style="width:28px;height:28px;border-radius:50%;overflow:hidden;flex-shrink:0;background:'+_idCol.bg+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:'+_idCol.tc+'">'+ini(i.mmName)+'</div>';
-    document.getElementById('id-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+_idOverlay+_idTimerBadge+'</div></div>'
+    document.getElementById('id-body').innerHTML='<div style="position:relative;overflow:hidden;margin:-20px -20px 16px">'+heroHtml+_idOverlay+_idTimerBadge+'</div>'
       +'<div class="card-warm mb14"><div class="row mb8" style="gap:8px">'+_mmAvHtml+'<div><div style="font-size:13px;font-weight:700;color:var(--p8)">'+i.mmName+' thinks you should meet</div><div class="tiny" style="color:var(--p6)">'+i.mmRel+'</div></div></div><p style="font-size:13px;color:var(--p8);line-height:1.6;font-style:italic">&#x201C;'+(i.ctx||'No context note yet.')+'&#x201D;</p></div>'
       +bioHtml+qaHtml
       +'<div class="row mb8" style="gap:8px"><button class="btn btn-p flex1" onclick="acceptIntro(this.dataset.id)" data-id="'+i.id+'">Accept &#x2713;</button><button class="btn btn-s flex1" onclick="declineIntro(this.dataset.id)" data-id="'+i.id+'">Decline</button></div>'
@@ -3306,7 +3313,7 @@ function ctxChange(ta){const n=ta.value.length;document.getElementById('ctx-coun
 function sendIntro(){
   var s=S.introSingle,u=DB.user();
   var note=(document.getElementById('ctx-ta')&&document.getElementById('ctx-ta').value.trim())||'';
-  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',height:183,religion:'Agnostic',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',height:178,religion:'Catholic',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',height:176,religion:'Atheist',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
   var sc=_pool[Math.floor(Math.random()*_pool.length)];
   var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,bio:sc.bio||'',tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:note,status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
   var intros=DB.intros();
@@ -3318,7 +3325,7 @@ function sendIntro(){
 }
 function sendIntroNoNote(){
   var s=S.introSingle,u=DB.user();
-  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
+  var _pool=[{name:'Thomas',age:30,job:'Photographer',loc:'Paris, France',height:183,religion:'Agnostic',ci:1,bio:'Storyteller at heart — spends weekends chasing light through city streets or on hiking trails, camera always in hand.',tags:['Adventurous','Thoughtful','Creative'],qs:{intent:'Looking for something serious',travel:'Every chance I get',sport:'Moderately active'}},{name:'Romain',age:32,job:'Consultant',loc:'Paris, France',height:178,religion:'Catholic',ci:2,bio:'Equally at home in a boardroom and at a mountain summit. Loves a good debate, even better when it ends in laughter.',tags:['Ambitious','Reliable','Curious'],qs:{intent:'Looking for something serious',travel:'A few times a year',sport:'Very active'}},{name:'Mathieu',age:29,job:'Graphic Designer',loc:'Lyon, France',height:176,religion:'Atheist',ci:3,bio:'Makes things beautiful for a living, collects vinyl for the soul. Always up for a spontaneous road trip or a three-hour dinner.',tags:['Creative','Open-minded','Passionate'],qs:{intent:'Open to something serious',travel:'Every chance I get',sport:'Moderately active'}}];
   var sc=_pool[Math.floor(Math.random()*_pool.length)];
   var ni={id:S.introId||('intro_'+Date.now()),sName:sc.name,sAge:sc.age,sJob:sc.job,sLoc:sc.loc,ci:sc.ci,bio:sc.bio||'',tags:sc.tags,qs:sc.qs,photos:[],mmName:(u&&u.name)||'Your matchmaker',mmRel:'Matchmaker',ctx:'',status:'pending',ts:Date.now(),exp:Date.now()+72*3600000};
   var intros=DB.intros();
