@@ -940,7 +940,7 @@ input[type=range]{-webkit-appearance:none;appearance:none;height:4px;background:
 <div class="modal-ov" id="modal-suggest-feedback">
   <div class="modal-sheet" style="padding:24px 20px">
     <div style="font-size:17px;font-weight:700;color:var(--tx);margin-bottom:6px">Leave feedback?</div>
-    <p style="font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:16px">Optional — help your matchmaker make better suggestions for you.</p>
+    <p style="font-size:13px;color:var(--tx2);line-height:1.55;margin-bottom:16px">Optional — let your co-matchmaker know why this wasn’t the right fit.</p>
     <textarea id="sug-feedback-txt" placeholder="E.g. Not quite my type, but I appreciate the thought…" style="width:100%;height:88px;border:.5px solid var(--bd2);border-radius:10px;padding:12px;font-size:14px;color:var(--tx);background:var(--bg);resize:none;font-family:inherit;box-sizing:border-box"></textarea>
     <div style="display:flex;gap:10px;margin-top:16px">
       <button id="sug-feedback-skip" class="btn btn-s flex1" style="justify-content:center">Skip</button>
@@ -1888,6 +1888,11 @@ function migrateDemoPhotos(){
     }
   });
   if(_mmc)DB.setMatches(_mm2);
+
+  // Reset stale suggestion status from old flow
+  var _ms=DB.suggestions();var _msc=false;
+  _ms.forEach(function(sg){if(sg.status==='their_single_interested'){sg.status='pending_their_single';_msc=true;}});
+  if(_msc)DB.setSuggestions(_ms);
 }
 function initHome(){
   migrateDemoPhotos();
@@ -2134,7 +2139,7 @@ function sendSuggestion(note){
 
 function _sugStatusLabel(sug){
   return {'pending_their_single':'Awaiting your response',
-    'their_single_interested':'You expressed interest \u2014 awaiting matchmaker review',
+    'intro_sent_to_single':'Intro sent — awaiting response',
     'closed_declined':'You passed on this suggestion',
     'pending_alex_response':sug.theirSingleName+' is now reviewing '+sug.mySingleName+'\u2019s profile',
     'closed_accepted':'Introduction created \u2014 you matched! \ud83c\udf89',
@@ -2180,7 +2185,7 @@ function openSuggestionProfile(sugId){
   var noteHtml=sug.note?'<div style="background:var(--p1);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Note from '+sug.commName+'</div><p style="font-size:13px;color:var(--tx);line-height:1.65">\u201c'+sug.note+'\u201d</p></div>':'';
   var privNote='<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:flex-start;gap:9px;margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="6" width="8" height="6" rx="1"/><path d="M5 6V4a2 2 0 014 0v2"/></svg><p style="font-size:12px;color:var(--tx2);line-height:1.55">Dating preferences are private \u2014 only visible to <strong>'+sug.commName+'</strong>, '+s.name+'\u2019s direct matchmaker.</p></div>';
   var canAct=sug.status==='pending_their_single';
-  var _statusMap={'their_single_interested':'You approved for '+sug.mySingleName+' \u2014 awaiting '+sug.commName,'closed_declined':'You passed on this suggestion','pending_alex_response':sug.mySingleName+' is now reviewing '+s.name,'closed_accepted':'Match created! \ud83c\udf89','closed_declined_comm':sug.commName+' decided not to proceed','closed_declined_alex':s.name+' wasn\u2019t interested'};
+  var _statusMap={'intro_sent_to_single':s.name+' intro sent to '+sug.mySingleName,'closed_declined':'You passed on this suggestion','pending_alex_response':sug.mySingleName+' is now reviewing '+s.name,'closed_accepted':'Match created! \ud83c\udf89','closed_declined_comm':sug.commName+' decided not to proceed','closed_declined_alex':s.name+' wasn\u2019t interested'};
   var actHtml=canAct
     ?'<div style="display:flex;gap:10px"><button data-sid="'+sugId+'" onclick="suggestionDeclined(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center">Not for '+sug.mySingleName+'</button><button data-sid="'+sugId+'" onclick="suggestionInterested(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center">Looks good \u2192</button></div>'
     :'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;text-align:center;font-size:12.5px;color:var(--tx2)">'+(_statusMap[sug.status]||sug.status)+'</div>';
@@ -2194,12 +2199,20 @@ function suggestionInterested(sugId){
   var sugs=DB.suggestions();
   var sug=sugs.find(function(s){return s.id===sugId;});
   if(!sug)return;
-  sug.status='their_single_interested';
-  sug.reviewDeadline=Date.now()+86400000;
+  var newIntroId='intro_sug_'+Date.now();
+  var intros=DB.intros();
+  intros.push({id:newIntroId,name:sug.theirSingleName,age:sug.theirSingleAge,
+    job:sug.theirSingleJob||'',loc:sug.theirSingleLoc||'',
+    photos:sug.theirSinglePhotos||[],ci:sug.theirSingleCi||0,
+    sName:sug.theirSingleName,targetSingle:sug.mySingleName,
+    status:'scanner_accepted',mmView:true,fromSuggestion:sugId,
+    exp:Date.now()+86400000*30,createdAt:Date.now()});
+  DB.setIntros(intros);
+  sug.status='intro_sent_to_single';
   DB.setSuggestions(sugs);
-  DB.addActivity({ic:'\u2705',t:'You said '+sug.mySingleName+' is interested in '+sug.theirSingleName+' \u2014 sent to '+sug.commName+' for review',ts:Date.now()});
-  back();
-  showModal('modal-suggest-interested');
+  DB.addActivity({ic:'\u2705',t:'You sent '+sug.theirSingleName+'\'s profile to '+sug.mySingleName,ts:Date.now()});
+  if(S.screen==='prof-preview')back();
+  openMmNoteScreen(newIntroId);
   renderPending();
   if(S._commDetailId)renderCommDetail(S._commDetailId);
 }
@@ -2224,7 +2237,7 @@ function sendDeclineFeedback(sugId,feedback){
   if(!sug)return;
   sug.status='closed_declined';sug.feedback=feedback||'';
   DB.setSuggestions(sugs);
-  DB.addActivity({ic:'\u274c',t:'You said '+sug.mySingleName+' isn\u2019t interested in '+sug.theirSingleName,ts:Date.now()});
+  DB.addActivity({ic:'\u274c',t:'You passed on '+sug.theirSingleName+' for '+sug.mySingleName,ts:Date.now()});
   renderPending();
   if(S._commDetailId)renderCommDetail(S._commDetailId);
   toast('Suggestion closed');
@@ -2367,6 +2380,22 @@ function seedCoMmDemo(){
   if(paul&&paul.theirSingles&&paul.theirSingles[0]&&!paul.theirSingles[0].qs){
     paul.theirSingles=_enrichedPaulSingles;
     DB.setCommConnections(comms);
+  }
+  // Always ensure Paul's demo suggestion exists
+  var _sugs=DB.suggestions();
+  if(paul&&!_sugs.find(function(sg){return sg.id==='sug_demo_1';})){
+    var _usingles=DB.singles();
+    var _tgt=_usingles.find(function(x){return x.id==='s1';})||_usingles[0];
+    if(_tgt){
+      _sugs.push({id:'sug_demo_1',connId:'comm_demo_paul',
+        theirSingleId:'cs_1',theirSingleName:'Alex',theirSingleAge:29,
+        theirSingleJob:'Art Director',theirSingleLoc:'Paris, France',
+        theirSingleCi:3,theirSinglePhotos:['https://randomuser.me/api/portraits/men/25.jpg'],
+        mySingleId:_tgt.id,mySingleName:_tgt.name,commName:'Paul',
+        note:'I think they\u2019d really get along \u2014 both creative, both genuine.',
+        status:'pending_their_single',feedback:'',createdAt:Date.now()-86400000*2});
+      DB.setSuggestions(_sugs);
+    }
   }
   if(comms.length>0)return;
   // First-time seed
@@ -2872,16 +2901,16 @@ function renderCommDetail(connId){
     sugs.forEach(function(sg){
       var sTx={
         'pending_their_single':'Awaiting '+sg.mySingleName+'\u2019s response',
-        'their_single_interested':sg.mySingleName+' is interested \u2014 awaiting '+sg.commName+'\u2019s review',
+        'intro_sent_to_single':sg.theirSingleName+' intro sent to '+sg.mySingleName,
         'pending_alex_response':sg.theirSingleName+' is reviewing '+sg.mySingleName+'\u2019s profile',
         'closed_declined':'Closed \u2014 '+sg.mySingleName+' passed',
         'closed_declined_comm':'This introduction didn\u2019t proceed.',
         'closed_declined_alex':'This introduction didn\u2019t proceed.',
         'closed_accepted':'Introduction created \u2014 you matched! \ud83c\udf89'
       }[sg.status]||sg.status;
-      var sCol={'pending_their_single':'var(--tx2)','their_single_interested':'var(--ok)','pending_alex_response':'var(--ok)','closed_declined':'var(--tx3)','closed_declined_comm':'var(--tx3)','closed_declined_alex':'var(--tx3)','closed_accepted':'var(--ok)'}[sg.status]||'var(--tx2)';
+      var sCol={'pending_their_single':'var(--tx2)','intro_sent_to_single':'var(--ok)','pending_alex_response':'var(--ok)','closed_declined':'var(--tx3)','closed_declined_comm':'var(--tx3)','closed_declined_alex':'var(--tx3)','closed_accepted':'var(--ok)'}[sg.status]||'var(--tx2)';
       var sActions='';
-      if(sg.status==='their_single_interested'){
+      if(sg.status==='intro_sent_to_single'){
         sActions='<div style="display:flex;gap:8px;margin-top:10px">'
           +'<button data-sid="'+sg.id+'" onclick="openCommReview(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center;padding:9px;font-size:12px">Simulate '+sg.commName+'\u2019s response</button>'
           +'<button data-sid="'+sg.id+'" onclick="simulateAutoApprove(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center;padding:9px;font-size:12px">Simulate 24h \u2192</button>'
@@ -2897,7 +2926,7 @@ function renderCommDetail(connId){
         +'<div style="font-size:11px;color:'+sCol+'">'+sTx+'</div>'
         +'<div style="font-size:10px;color:var(--tx3);margin-top:2px">'+ago(sg.createdAt)+'</div>'
         +(sg.feedback?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Feedback: \u201c'+sg.feedback+'\u201d</div>':'')
-        +(sg.commNote&&sg.status!=='their_single_interested'?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Note to '+sg.theirSingleName+': \u201c'+sg.commNote+'\u201d</div>':'')
+        +(sg.commNote&&sg.status!=='intro_sent_to_single'?'<div style="font-size:11px;color:var(--tx2);margin-top:6px;padding-top:6px;border-top:.5px solid var(--bd);font-style:italic">Note to '+sg.theirSingleName+': \u201c'+sg.commNote+'\u201d</div>':'')
         +sActions
         +'</div>';
     });
@@ -3073,7 +3102,7 @@ function renderPending(){
   var allIntros=DB.intros().filter(function(i){return i.status==='pending'||i.status==='scanner_accepted';});
   var introsForme=allIntros.filter(function(i){return !i.mmView;});
   var introsManaging=allIntros.filter(function(i){return !!i.mmView;});
-  const sugs=DB.suggestions().filter(function(s){return s.status==='pending_their_single'||s.status==='their_single_interested';});
+  const sugs=DB.suggestions().filter(function(s){return s.status==='pending_their_single';});
   var intros=introsForme;
   if(!introsForme.length&&!introsManaging.length&&!sugs.length){
     listF.innerHTML=`<div style="text-align:center;padding:48px 20px"><div style="font-size:44px;margin-bottom:12px">💌</div><h3>No pending intros</h3><p class="cap mt8" style="max-width:220px;margin:8px auto 0">Your matchmakers will notify you when they find someone great</p></div>`;
@@ -3100,7 +3129,7 @@ function renderPending(){
       +(isPending
         ?'<div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();suggestionDeclined(\''+sug.id+'\')">Not interested</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();openSuggestionProfile(\''+sug.id+'\')">View profile \u2192</button></div>'
         :'<div style="background:var(--bg2);border-radius:var(--r);padding:9px 12px;text-align:center;font-size:12px;color:var(--tx2)">'
-        +({'their_single_interested':'You approved for '+sug.mySingleName+' \u2014 awaiting '+sug.commName,
+        +({'intro_sent_to_single':sug.theirSingleName+' intro sent to '+sug.mySingleName,
            'closed_declined':'You passed on this suggestion',
            'pending_alex_response':sug.mySingleName+' is now reviewing '+sug.theirSingleName,
            'closed_accepted':'Match created! \ud83c\udf89',
