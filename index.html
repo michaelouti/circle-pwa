@@ -3105,6 +3105,8 @@ function renderPending(){
   var listF=document.getElementById('pending-list-forme');
   var listM=document.getElementById('pending-list-managing');
   if(!listF||!listM)return;
+  // Always patch sug_demo_1 photo in case old localStorage has wrong portrait
+  (function(){var _sp=DB.suggestions();var _sd=_sp.find(function(sg){return sg.id==='sug_demo_1';});if(_sd&&(_sd.theirSinglePhotos||[])[0]!=='https://randomuser.me/api/portraits/men/25.jpg'){_sd.theirSinglePhotos=['https://randomuser.me/api/portraits/men/25.jpg'];DB.setSuggestions(_sp);}})();
   var now_rp=Date.now();
   var allIntros=DB.intros().filter(function(i){return i.status==='pending'||i.status==='scanner_accepted';});
   var introsForme=allIntros.filter(function(i){return !i.mmView;});
@@ -3222,6 +3224,16 @@ function openIntroDetail(id){
   S.currentIntro=DB.intros().find(function(x){return x.id===id});
   if(!S.currentIntro)return;
   var i=S.currentIntro, col=AVCOLS[i.ci%AVCOLS.length];
+  // Enrich i with height/religion from DB.singles() if missing — covers any creation path
+  if(!i.height||!i.religion){
+    var _enrS=DB.singles().find(function(s){return s.name===i.sName||(i.singleId&&s.id===i.singleId);});
+    if(_enrS){if(!i.height&&_enrS.height)i.height=_enrS.height;if(!i.religion&&_enrS.religion)i.religion=_enrS.religion;}
+    // Also cover the seeded intros by name map
+    var _enrM={'Thomas':{height:183,religion:'Agnostic'},'Léa':{height:167,religion:'Agnostic'},'Hugo':{height:185,religion:'Catholic'},
+               'Romain':{height:178,religion:'Catholic'},'Mathieu':{height:176,religion:'Atheist'}};
+    var _enrD=_enrM[i.sName];
+    if(_enrD){if(!i.height)i.height=_enrD.height;if(!i.religion)i.religion=_enrD.religion;}
+  }
   var hoursLeft=Math.max(0,Math.round((i.exp-Date.now())/3600000));
   var heroHtml=(i.photos&&i.photos.length)
     ?`<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">${i.photos.map(p=>`<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0"><img src="${p}" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block"></div>`).join('')}</div>`
