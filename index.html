@@ -2146,20 +2146,47 @@ function openSuggestionProfile(sugId){
   var sug=DB.suggestions().find(function(s){return s.id===sugId;});
   if(!sug)return;
   S._viewingSugId=sugId;
-  window._profPhotos=sug.theirSinglePhotos||[];
-  var col=AVCOLS[(sug.theirSingleCi||0)%AVCOLS.length];
-  var heroHtml=sug.theirSinglePhotos&&sug.theirSinglePhotos.length
-    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+sug.theirSinglePhotos.map(function(p,i){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;cursor:pointer" onclick="openLightbox('+i+')"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;pointer-events:none"></div>';}).join('')+'</div>'
-    :'<div style="height:320px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:'+col.tc+';border:2.5px solid rgba(255,255,255,.3)">'+ini(sug.theirSingleName)+'</div></div>';
-  var overlay='<div style="position:absolute;bottom:0;left:0;right:0;padding:40px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.75),transparent)"><div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:8px">'+sug.theirSingleName+(sug.theirSingleAge?', '+sug.theirSingleAge:'')+'</div>'+(sug.theirSingleJob?'<div style="font-size:12.5px;color:rgba(255,255,255,.9)">'+sug.theirSingleJob+'</div>':'')+'</div>';
+  var conn=DB.commConnections().find(function(co){return co.id===sug.connId;});
+  var fullS=conn&&conn.theirSingles&&conn.theirSingles.find(function(x){return x.id===sug.theirSingleId;});
+  var s=fullS||{id:sug.theirSingleId,name:sug.theirSingleName,age:sug.theirSingleAge,job:sug.theirSingleJob,loc:sug.theirSingleLoc,ci:sug.theirSingleCi,photos:sug.theirSinglePhotos||[],bio:'',qs:{}};
+  var col=AVCOLS[(s.ci||0)%AVCOLS.length];
+  window._profPhotos=s.photos||[];
+  var heroHtml=(s.photos&&s.photos.length)
+    ?'<div style="display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;height:320px">'+s.photos.map(function(p,ii){return '<div style="min-width:100%;scroll-snap-align:start;flex-shrink:0;cursor:pointer" onclick="openLightbox('+ii+')"><img src="'+p+'" style="width:100%;height:100%;object-fit:cover;object-position:50% 15%;display:block;pointer-events:none"></div>';}).join('')+'</div>'
+    :'<div style="height:320px;background:linear-gradient(145deg,'+col.bg+','+col.bg+'bb);display:flex;align-items:center;justify-content:center"><div class="av" style="width:88px;height:88px;font-size:30px;background:rgba(255,255,255,.18);color:'+col.tc+';border:2.5px solid rgba(255,255,255,.3)">'+ini(s.name)+'</div></div>';
+  var _is='width="13" height="13" viewBox="0 0 14 14" fill="none" stroke="rgba(255,255,255,.88)" stroke-width="1.5" stroke-linecap="round"';
+  var _mi=[];
+  if(s.loc)_mi.push('<svg '+_is+'><path d="M7 1a5 5 0 0 1 5 5c0 3.8-5 8-5 8S2 9.8 2 6a5 5 0 0 1 5-5z"/><circle cx="7" cy="6" r="2"/></svg> '+s.loc);
+  if(s.job)_mi.push('<svg '+_is+'><rect x="1" y="4" width="12" height="8" rx="1.5"/><path d="M4 4V3a1 1 0 011-1h4a1 1 0 011 1v1"/></svg> '+s.job);
+  if(s.height){var _ins=s.height/2.54,_ft=Math.floor(_ins/12),_inch=Math.round(_ins%12);_mi.push('<svg '+_is+'><path d="M7 1v12M4 3l3-2 3 2M4 11l3 2 3-2"/></svg> '+_ft+"'"+_inch+'" ('+s.height+' cm)');}
+  if(s.religion&&s.religion!=='Prefer not to say')_mi.push(getReligionIcon(s.religion)+' '+s.religion);
+  var _metaHtml=_mi.map(function(m){return '<div style="display:flex;align-items:center;gap:5px;font-size:12.5px;color:rgba(255,255,255,.92);font-weight:500">'+m+'</div>';}).join('');
+  var overlay='<div style="position:absolute;bottom:0;left:0;right:0;padding:40px 16px 16px;background:linear-gradient(to top,rgba(0,0,0,.75) 0%,transparent 100%)"><div style="font-size:26px;font-weight:800;color:#fff;letter-spacing:-.4px;margin-bottom:8px">'+s.name+(s.age?', '+s.age:'')+'</div><div style="display:flex;flex-wrap:wrap;gap:8px 16px">'+_metaHtml+'</div></div>';
+  var ctxBanner='<div style="background:var(--p1);border-radius:var(--r2);padding:10px 14px;margin-bottom:14px;display:flex;align-items:center;gap:8px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--p)" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="5" r="2.5"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg><p style="font-size:12.5px;color:var(--p6);line-height:1.4"><strong>'+sug.commName+'</strong> suggested '+s.name+' for <strong>'+sug.mySingleName+'</strong></p></div>';
+  var bioHtml=s.bio?'<div style="background:linear-gradient(135deg,rgba(216,90,48,.10),rgba(216,90,48,.04));border:1px solid rgba(216,90,48,.2);border-radius:12px;padding:14px;margin-bottom:16px"><div style="font-size:10px;font-weight:800;color:var(--p);letter-spacing:.1em;text-transform:uppercase;margin-bottom:6px">About '+s.name+'</div><p style="font-size:15px;color:var(--tx);line-height:1.65">'+s.bio+'</p></div>':'';
+  var vcQC={intent:{label:'Looking for',color:'#E07060'},location:{label:'Location flexibility',color:'#E07060'},family:{label:'Family',color:'#E07060'},sport:{label:'Physical activity',color:'#E07060'},travel:{label:'Travel',color:'#E07060'},food:{label:'Food lifestyle',color:'#E07060'}};
+  var vcQP={intent:'<path d="M9 15s-6-3.8-6-7.5C3 4.8 5 3 9 5.8c4-2.8 6-1.2 6 1.7C15 11.2 9 15 9 15z"/>',location:'<circle cx="6.5" cy="5" r="2.5"/><path d="M1.5 16c0-3 2-4.5 5-4.5"/><path d="M13 3a3.5 3.5 0 0 1 3.5 3.5c0 3-3.5 6.5-3.5 6.5S9.5 9.5 9.5 6.5A3.5 3.5 0 0 1 13 3z"/><circle cx="13" cy="6.5" r="1.2"/>',family:'<circle cx="3.5" cy="3.5" r="1.8"/><path d="M3.5 5.5v4M2 6.5h3M3.5 9.5l-1 3M3.5 9.5l1 3"/><circle cx="9" cy="5" r="1.3"/><path d="M9 6.8v3M7.8 7.8h2.4M9 9.8l-.8 2.5M9 9.8l.8 2.5"/><circle cx="14.5" cy="3.5" r="1.8"/><path d="M14.5 5.5v4M13 6.5h3M14.5 9.5l-1 3M14.5 9.5l1 3"/><path d="M5.3 8q1.8 1 3.7-.2"/><path d="M12.7 8q-1.8 1-3.7-.2"/>',sport:'<rect x="0.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="14.5" y="6.5" width="3" height="5" rx="1.5"/><rect x="3.5" y="5.5" width="2.5" height="7" rx=".8"/><rect x="12" y="5.5" width="2.5" height="7" rx=".8"/><line x1="6" y1="9" x2="12" y2="9"/>',travel:'<g transform="rotate(45 9 9)"><path d="M16 6L10 3.5V2a1 1 0 0 0-2 0v1.5L2 6l2 2 2.5-.8.8 5.8-1.5-.8v1.8l3.2 1.2 3.2-1.2v-1.8l-1.5.8.8-5.8L14 8z"/></g>',food:'<path d="M6 2v3.5a1.5 1.5 0 0 0 1.5 1.5V16"/><path d="M4.5 2v3M7.5 2v3"/><path d="M12 2c1.5 0 3 1.2 3 3.5V16"/><path d="M12 2v4.5"/>'};
+  var vcQaHtml='';
+  if(s.qs&&Object.keys(s.qs).length){
+    var vcEntries=Object.entries(s.qs);
+    vcQaHtml='<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">'+vcEntries.map(function(kv,idx){
+      var cfg=vcQC[kv[0]]||{label:kv[0],color:'#E07060'};
+      var iconKey=kv[0]==='intent'?'intent':kv[0]==='location'?'location':kv[0]==='family'?'family':kv[0]==='sport'?'sport':kv[0]==='travel'?'travel':'food';
+      var icon='<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="'+cfg.color+'" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">'+vcQP[iconKey]+'</svg>';
+      var span=vcEntries.length%2!==0&&idx===vcEntries.length-1?'grid-column:span 2':'';
+      return '<div style="background:var(--bg2);border-radius:var(--r3);padding:14px 14px 16px;'+span+'"><div style="display:flex;align-items:center;gap:6px;margin-bottom:6px"><div style="width:32px;height:32px;border-radius:50%;background:rgba(224,112,96,.12);display:flex;align-items:center;justify-content:center">'+icon+'</div><span style="font-size:12px;font-weight:600;color:var(--tx3)">'+cfg.label+'</span></div><div style="font-size:15px;font-weight:600;color:var(--tx);line-height:1.4">'+kv[1]+'</div></div>';
+    }).join('')+'</div>';
+  }
   var noteHtml=sug.note?'<div style="background:var(--p1);border-radius:var(--r2);padding:12px 14px;margin-bottom:14px"><div style="font-size:9.5px;font-weight:700;color:var(--p);letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px">Note from '+sug.commName+'</div><p style="font-size:13px;color:var(--tx);line-height:1.65">\u201c'+sug.note+'\u201d</p></div>':'';
+  var privNote='<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;display:flex;align-items:flex-start;gap:9px;margin-bottom:16px"><svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><rect x="3" y="6" width="8" height="6" rx="1"/><path d="M5 6V4a2 2 0 014 0v2"/></svg><p style="font-size:12px;color:var(--tx2);line-height:1.55">Dating preferences are private \u2014 only visible to <strong>'+sug.commName+'</strong>, '+s.name+'\u2019s direct matchmaker.</p></div>';
   var canAct=sug.status==='pending_their_single';
+  var _statusMap={'their_single_interested':'You approved for '+sug.mySingleName+' \u2014 awaiting '+sug.commName,'closed_declined':'You passed on this suggestion','pending_alex_response':sug.mySingleName+' is now reviewing '+s.name,'closed_accepted':'Match created! \ud83c\udf89','closed_declined_comm':sug.commName+' decided not to proceed','closed_declined_alex':s.name+' wasn\u2019t interested'};
   var actHtml=canAct
-    ?'<div style="display:flex;gap:10px;margin-top:16px"><button data-sid="'+sugId+'" onclick="suggestionDeclined(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center">Not interested</button><button data-sid="'+sugId+'" onclick="suggestionInterested(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center">Interested \u2192</button></div>'
-    :'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;margin-top:16px;text-align:center;font-size:12px;color:var(--tx2)">'+_sugStatusLabel(sug)+'</div>';
-  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+noteHtml+actHtml;
+    ?'<div style="display:flex;gap:10px"><button data-sid="'+sugId+'" onclick="suggestionDeclined(this.dataset.sid)" class="btn btn-s flex1" style="justify-content:center">Not for '+sug.mySingleName+'</button><button data-sid="'+sugId+'" onclick="suggestionInterested(this.dataset.sid)" class="btn btn-p flex1" style="justify-content:center">Looks good \u2192</button></div>'
+    :'<div style="background:var(--bg2);border-radius:var(--r2);padding:12px 14px;text-align:center;font-size:12.5px;color:var(--tx2)">'+(_statusMap[sug.status]||sug.status)+'</div>';
+  document.getElementById('preview-body').innerHTML='<div style="position:relative;margin:-20px -20px 16px"><div style="position:relative">'+heroHtml+overlay+'</div></div>'+ctxBanner+bioHtml+vcQaHtml+noteHtml+privNote+actHtml;
   var titleEl=document.getElementById('prof-preview-title');
-  if(titleEl)titleEl.textContent=sug.theirSingleName+"'s profile";
+  if(titleEl)titleEl.textContent=s.name+'\u2019s profile';
   go('prof-preview');
 }
 
@@ -3066,10 +3093,20 @@ function renderPending(){
       +'<div style="width:50px;height:50px;border-radius:50%;flex-shrink:0;overflow:hidden">'+ph+'</div>'
       +'<div class="flex1"><div style="font-size:17px;font-weight:700">'+sug.theirSingleName+(sug.theirSingleAge?', '+sug.theirSingleAge:'')+'</div>'
       +'<p class="tiny">'+sug.theirSingleJob+' \u00b7 '+sug.theirSingleLoc+'</p></div></div>'
+      +'<div style="display:flex;align-items:center;gap:5px;margin-bottom:10px">'
+      +'<svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="var(--tx3)" stroke-width="1.4" stroke-linecap="round"><circle cx="7" cy="5" r="2.5"/><path d="M2 13c0-2.8 2.2-5 5-5s5 2.2 5 5"/></svg>'
+      +'<span style="font-size:11px;color:var(--tx3)">for <strong style="color:var(--tx2)">'+sug.mySingleName+'</strong></span></div>'
       +(sug.note?'<div style="background:var(--bg2);border-radius:var(--r);padding:10px 12px;margin-bottom:12px"><p class="tiny mb4">From '+sug.commName+'</p><p style="font-size:13px;color:var(--tx2);line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">\u201c'+sug.note+'\u201d</p></div>':'')
       +(isPending
         ?'<div class="row" style="gap:8px"><button class="btn btn-s flex1" style="padding:11px" onclick="event.stopPropagation();suggestionDeclined(\''+sug.id+'\')">Not interested</button><button class="btn btn-p flex1" style="padding:11px" onclick="event.stopPropagation();openSuggestionProfile(\''+sug.id+'\')">View profile \u2192</button></div>'
-        :'<div style="background:var(--bg2);border-radius:var(--r);padding:9px 12px;text-align:center;font-size:12px;color:var(--tx2)">'+_sugStatusLabel(sug)+'</div>')
+        :'<div style="background:var(--bg2);border-radius:var(--r);padding:9px 12px;text-align:center;font-size:12px;color:var(--tx2)">'
+        +({'their_single_interested':'You approved for '+sug.mySingleName+' \u2014 awaiting '+sug.commName,
+           'closed_declined':'You passed on this suggestion',
+           'pending_alex_response':sug.mySingleName+' is now reviewing '+sug.theirSingleName,
+           'closed_accepted':'Match created! \ud83c\udf89',
+           'closed_declined_comm':sug.commName+' decided not to proceed',
+           'closed_declined_alex':sug.theirSingleName+' wasn\u2019t interested'}[sug.status]||sug.status)
+        +'</div>')
       +'</div></div>';
   }).join('');
   // Regular intro cards (unchanged)
