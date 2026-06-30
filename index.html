@@ -3099,6 +3099,20 @@ function renderPending(){
   var listF=document.getElementById('pending-list-forme');
   var listM=document.getElementById('pending-list-managing');
   if(!listF||!listM)return;
+  // Migration: backfill height/religion on stored intros that predate these fields
+  (function(){
+    var _im={'thomas':{height:183,religion:'Agnostic'},'lea':{height:167,religion:'Agnostic'},'hugo':{height:185,religion:'Catholic'},
+             'romain':{height:178,religion:'Catholic'},'mathieu':{height:176,religion:'Atheist'},'sophie':{height:163,religion:'Agnostic'}};
+    var _ints=DB.intros(),_ichg=false;
+    _ints.forEach(function(ii){
+      if(!ii.height||!ii.religion){
+        var _nn=(ii.sName||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+        var _d=_im[_nn];
+        if(_d){if(!ii.height){ii.height=_d.height;_ichg=true;}if(!ii.religion){ii.religion=_d.religion;_ichg=true;}}
+      }
+    });
+    if(_ichg)DB.setIntros(_ints);
+  })();
   var now_rp=Date.now();
   var allIntros=DB.intros().filter(function(i){return i.status==='pending'||i.status==='scanner_accepted';});
   var introsForme=allIntros.filter(function(i){return !i.mmView;});
@@ -3237,11 +3251,15 @@ function openIntroDetail(id){
   if(!i.height||!i.religion){
     var _enrS=DB.singles().find(function(s){return s.name===i.sName||(i.singleId&&s.id===i.singleId);});
     if(_enrS){if(!i.height&&_enrS.height)i.height=_enrS.height;if(!i.religion&&_enrS.religion)i.religion=_enrS.religion;}
-    // Also cover the seeded intros by name map
-    var _enrM={'Thomas':{height:183,religion:'Agnostic'},'Léa':{height:167,religion:'Agnostic'},'Hugo':{height:185,religion:'Catholic'},
-               'Romain':{height:178,religion:'Catholic'},'Mathieu':{height:176,religion:'Atheist'}};
-    var _enrD=_enrM[i.sName];
+    // Also cover the seeded intros by name map (accent-insensitive match)
+    var _enrM={'thomas':{height:183,religion:'Agnostic'},'lea':{height:167,religion:'Agnostic'},'hugo':{height:185,religion:'Catholic'},
+               'romain':{height:178,religion:'Catholic'},'mathieu':{height:176,religion:'Atheist'}};
+    var _normName=(i.sName||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+    var _enrD=_enrM[_normName];
     if(_enrD){if(!i.height)i.height=_enrD.height;if(!i.religion)i.religion=_enrD.religion;}
+    // Final guaranteed fallback so the profile is never incomplete, even for unknown names
+    if(!i.height)i.height=170;
+    if(!i.religion)i.religion='Prefer not to say';
   }
   var hoursLeft=Math.max(0,Math.round((i.exp-Date.now())/3600000));
   var heroHtml=(i.photos&&i.photos.length)
